@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BluetoothActivity">
+
+    <Button
+        android:text="Scan for Devices"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scanButton"/>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/scannedListView"
+        android:layout_below="@id/scanButton"/>
+
+<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/bottom_navigation"-->
+<!--        android:background="@color/cardview_light_background"-->
+<!--        app:menu="@menu/bottom_nav_menu"-->
+<!--        android:layout_alignParentBottom="true"/>-->
+
+</RelativeLayout>

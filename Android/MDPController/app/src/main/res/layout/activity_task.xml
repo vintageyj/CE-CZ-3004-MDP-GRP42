@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TaskActivity">
+
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/control_left"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="0.25"-->
+<!--            android:orientation="vertical"-->
+<!--            android:paddingLeft="10dp">-->
+
+<!--            <androidx.fragment.app.FragmentContainerView-->
+<!--                android:id="@+id/fragmentLeftCol"-->
+<!--                android:name="com.ntu.cz3004.group4.androidremote.fragments.LeftColFragment"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"/>-->
+
+<!--        </LinearLayout>-->
+
+
+        <LinearLayout
+            android:id="@+id/grid_center"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_weight="0.55"
+            android:orientation="vertical">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/arenaFragment"
+                android:name="ntu.mdp.grp42.fragment.ArenaFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/right_controls"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_weight="0.2"
+            android:orientation="vertical">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/rightControlFragment"
+                android:name="ntu.mdp.grp42.fragment.RightControlFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/bottom_navigation"-->
+<!--        android:background="@color/cardview_light_background"-->
+<!--        app:menu="@menu/bottom_nav_menu"-->
+<!--        android:layout_alignParentBottom="true"/>-->
+</RelativeLayout>
