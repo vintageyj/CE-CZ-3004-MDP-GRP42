@@ -7,7 +7,6 @@ import static android.view.DragEvent.ACTION_DROP;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
@@ -25,6 +24,7 @@ import android.widget.LinearLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import ntu.mdp.grp42.arena.ArenaCell;
+import ntu.mdp.grp42.bluetooth.BluetoothActivity;
 import ntu.mdp.grp42.fragment.ArenaFragment;
 import ntu.mdp.grp42.fragment.RightControlFragment;
 
@@ -34,6 +34,8 @@ public class TaskActivity extends AppCompatActivity
 
     protected static final String[] PERMISSIONS = {
             Manifest.permission.BLUETOOTH,
+            Manifest.permission.BLUETOOTH_ADMIN,
+            Manifest.permission.BLUETOOTH_ADVERTISE,
             Manifest.permission.BLUETOOTH_SCAN,
             Manifest.permission.BLUETOOTH_CONNECT,
             Manifest.permission.RECORD_AUDIO,

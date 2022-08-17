@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioGroup;
 
-import ntu.mdp.grp42.BluetoothActivity;
+import ntu.mdp.grp42.bluetooth.BluetoothActivity;
 import ntu.mdp.grp42.R;
 
 public class RightControlFragment extends Fragment
