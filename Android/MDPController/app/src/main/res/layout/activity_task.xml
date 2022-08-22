@@ -13,21 +13,58 @@
         android:baselineAligned="false"
         android:orientation="horizontal">
 
-<!--        <LinearLayout-->
-<!--            android:id="@+id/control_left"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="0.25"-->
-<!--            android:orientation="vertical"-->
-<!--            android:paddingLeft="10dp">-->
+        <!--        <LinearLayout-->
+        <!--            android:id="@+id/control_left"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:layout_weight="0.25"-->
+        <!--            android:orientation="vertical"-->
+        <!--            android:paddingLeft="10dp">-->
 
-<!--            <androidx.fragment.app.FragmentContainerView-->
-<!--                android:id="@+id/fragmentLeftCol"-->
-<!--                android:name="com.ntu.cz3004.group4.androidremote.fragments.LeftColFragment"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"/>-->
+        <!--            <androidx.fragment.app.FragmentContainerView-->
+        <!--                android:id="@+id/fragmentLeftCol"-->
+        <!--                android:name="com.ntu.cz3004.group4.androidremote.fragments.LeftColFragment"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="match_parent"/>-->
 
-<!--        </LinearLayout>-->
+        <!--        </LinearLayout>-->
+
+        <LinearLayout
+            android:id="@+id/left_controls"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_weight="0.2"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="504dp"
+                android:orientation="vertical">
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/leftControlFragment"
+                    android:name="ntu.mdp.grp42.fragment.LeftFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="501dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="242dp"
+                android:orientation="vertical">
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/upDownControl"
+                    android:name="ntu.mdp.grp42.fragment.control1Fragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
 
         <LinearLayout
@@ -42,7 +79,7 @@
                 android:id="@+id/arenaFragment"
                 android:name="ntu.mdp.grp42.fragment.ArenaFragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -54,11 +91,49 @@
             android:layout_weight="0.2"
             android:orientation="vertical">
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/rightControlFragment"
-                android:name="ntu.mdp.grp42.fragment.RightControlFragment"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="280dp"
+                android:orientation="vertical">
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/rightControlFragment"
+                    android:name="ntu.mdp.grp42.fragment.RightControlFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="268dp"
+                android:orientation="vertical">
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/timer"
+                    android:name="ntu.mdp.grp42.fragment.TimerFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="228dp"
+                android:orientation="vertical">
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/control2Fragment"
+                    android:name="ntu.mdp.grp42.fragment.control2Fragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="203dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

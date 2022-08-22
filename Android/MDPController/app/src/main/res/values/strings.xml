@@ -9,5 +9,9 @@
     <string name="obstacle_cell">Obstacle</string>
     <string name="dummy_cell">Dummy Obstacle</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Strings used for fragments for navigation -->
+
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
 </resources>
