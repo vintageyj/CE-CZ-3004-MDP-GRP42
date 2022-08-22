@@ -4,6 +4,10 @@ import static android.view.DragEvent.ACTION_DRAG_ENTERED;
 import static android.view.DragEvent.ACTION_DRAG_EXITED;
 import static android.view.DragEvent.ACTION_DROP;
 import static ntu.mdp.grp42.arena.Constants.*;
+import static ntu.mdp.grp42.bluetooth.RaspberryPiProtocol.ADD_OBSTACLE;
+import static ntu.mdp.grp42.bluetooth.RaspberryPiProtocol.REMOVE_OBSTACLE;
+import static ntu.mdp.grp42.bluetooth.RaspberryPiProtocol.ROTATE_ROBOT;
+import static ntu.mdp.grp42.bluetooth.RaspberryPiProtocol.SPAWN_ROBOT;
 
 import android.content.ClipData;
 import android.graphics.Color;
@@ -31,6 +35,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -39,8 +44,9 @@ import ntu.mdp.grp42.TaskActivity;
 import ntu.mdp.grp42.arena.ArenaCell;
 import ntu.mdp.grp42.arena.ArenaDragShadowBuilder;
 import ntu.mdp.grp42.arena.Obstacle;
+import ntu.mdp.grp42.bluetooth.BluetoothService;
 
-public class ArenaFragment extends Fragment {
+public class ArenaFragment extends Fragment implements View.OnClickListener {
 
     private String ARENA_FRAGMENT_TAG = "ARENA FRAGMENT";
 
@@ -54,9 +60,11 @@ public class ArenaFragment extends Fragment {
     final String[] directions = {"Up", "Right", "Down", "Left"};
 
     TableLayout arenaTable;
-    ImageView robotIV;
+    private ImageView robotIV;
     static RadioGroup spawnRG;
     Drawable arenaCellBG;
+
+    private BluetoothService bluetoothService;
 
 
     public ArenaFragment() {
@@ -87,6 +95,8 @@ public class ArenaFragment extends Fragment {
             }
             return true;
         });
+
+        robotIV.setOnClickListener(this);
     }
 
     protected void initArena(TableLayout arenaTable) {
@@ -120,6 +130,24 @@ public class ArenaFragment extends Fragment {
         }
     }
 
+    public void setBluetoothService(BluetoothService bluetoothService) {
+        this.bluetoothService = bluetoothService;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.robotIV:
+                rotateRobot();
+                sendBTCommand(ROTATE_ROBOT,String.valueOf(robotIV.getRotation()));
+                break;
+        }
+    }
+
+    private void rotateRobot() {
+        robotIV.setRotation((robotIV.getRotation() + 90) % 360);
+    }
+
     private class ArenaCellClickListener implements View.OnClickListener {
         int x, y, id;
 
@@ -150,7 +178,8 @@ public class ArenaFragment extends Fragment {
 
             if (spawnType.equals(getResources().getString(R.string.robot_cell))) {
                 spawnRobot(arenaCell);
-//                sendBTSpawnRobot();
+                String data = arenaCell.x + "," + arenaCell.y + ",North";
+                sendBTCommand(SPAWN_ROBOT, data);
             }
             else {
                 int totalObstacle = ArenaFragment.arenaCoord.length * ArenaFragment.arenaCoord[0].length;
@@ -167,6 +196,24 @@ public class ArenaFragment extends Fragment {
                 }
             }
         }
+    }
+
+    private void sendBTCommand(String command, String data) {
+        String message;
+        switch(command) {
+            case SPAWN_ROBOT:
+                message = SPAWN_ROBOT + "," + data;
+                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
+                break;
+            case ROTATE_ROBOT:
+                message = ROTATE_ROBOT + "," + data;
+                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
+            case ADD_OBSTACLE:
+                break;
+            case REMOVE_OBSTACLE:
+                break;
+        }
+
     }
 
     private void spawnRobot(ArenaCell arenaCell) {

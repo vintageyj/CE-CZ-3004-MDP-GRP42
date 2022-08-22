@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioGroup;
 
+import ntu.mdp.grp42.TaskActivity;
 import ntu.mdp.grp42.bluetooth.BluetoothActivity;
 import ntu.mdp.grp42.R;
 
@@ -54,8 +55,13 @@ public class RightControlFragment extends Fragment
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.bluetoothBtn:
-                startActivity(new Intent(getActivity(), BluetoothActivity.class));
+                TaskActivity.bluetoothService.start();
+                TaskActivity.activityResultLauncher.launch(new Intent(getActivity(), BluetoothActivity.class));
                 break;
         }
+    }
+
+    public Button getBluetoothBtn() {
+        return bluetoothBtn;
     }
 }

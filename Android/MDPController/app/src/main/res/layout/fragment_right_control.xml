@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <RadioGroup
             android:id="@+id/spawnRG"
             android:layout_width="match_parent"
@@ -47,7 +48,6 @@
             android:id="@+id/bluetoothBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="50dp"
-            android:text="Bluetooth"/>
+            android:text="Bluetooth" />
     </LinearLayout>
 </RelativeLayout>

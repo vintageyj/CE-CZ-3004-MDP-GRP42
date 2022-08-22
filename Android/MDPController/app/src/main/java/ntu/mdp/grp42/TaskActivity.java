@@ -4,12 +4,19 @@ import static android.view.DragEvent.ACTION_DRAG_ENTERED;
 import static android.view.DragEvent.ACTION_DRAG_EXITED;
 import static android.view.DragEvent.ACTION_DROP;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,17 +27,20 @@ import android.view.DragEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import ntu.mdp.grp42.arena.ArenaCell;
 import ntu.mdp.grp42.bluetooth.BluetoothActivity;
-import ntu.mdp.grp42.fragment.ArenaFragment;
-import ntu.mdp.grp42.fragment.RightControlFragment;
+import ntu.mdp.grp42.bluetooth.BluetoothListener;
+import ntu.mdp.grp42.bluetooth.BluetoothService;
+import ntu.mdp.grp42.bluetooth.RaspberryPiProtocol;
+import ntu.mdp.grp42.fragment.*;
 
 public class TaskActivity extends AppCompatActivity
-    implements BottomNavigationView.OnNavigationItemSelectedListener,
-        View.OnDragListener{
+        implements View.OnDragListener, BluetoothListener, View.OnClickListener, RaspberryPiProtocol {
 
     protected static final String[] PERMISSIONS = {
             Manifest.permission.BLUETOOTH,
@@ -46,10 +56,17 @@ public class TaskActivity extends AppCompatActivity
 
 //    BottomNavigationView bottomNavigationView;
 
+    public static ActivityResultLauncher<Intent> activityResultLauncher;
+    BluetoothAdapter bluetoothAdapter;
+    public static BluetoothService bluetoothService;
+
+
     public static Vibrator vibrator;
 
     ArenaFragment arenaFragment;
     RightControlFragment rightControlFragment;
+    control1Fragment control1Fragment;
+    control2Fragment control2Fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,14 +77,33 @@ public class TaskActivity extends AppCompatActivity
         if (!hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, 1);
         }
-        
-//        bottomNavigationView = findViewById(R.id.bottom_navigation);
-//        bottomNavigationView.setSelectedItemId(R.id.navigation_home);
-//        bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
         initViews();
+
+        bluetoothService = new BluetoothService(BluetoothActivity.bluetoothMessageHandler);
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        bluetoothService.setOnBluetoothStatusChange(this);
+        arenaFragment.setBluetoothService(bluetoothService);
+        control1Fragment.setBluetoothService(bluetoothService);
+        control2Fragment.setBluetoothService(bluetoothService);
+
+        getSelectedDevice();
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getSelectedDevice() {
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), (ActivityResult result) -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent intent = result.getData();
+                Bundle bundle = intent.getExtras();
+                String targetMACAddress = bundle.getString("MAC");
+                BluetoothDevice targetDevice = bluetoothAdapter.getRemoteDevice(targetMACAddress);
+                Toast.makeText(TaskActivity.this, "Connecting to " + targetDevice.getName(), Toast.LENGTH_SHORT).show();
+                bluetoothService.connect(targetDevice);
+            }
+        });
     }
 
     @Override
@@ -86,23 +122,15 @@ public class TaskActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.navigation_bluetooth:
-                startActivity(new Intent(getApplicationContext(), BluetoothActivity.class));
-                overridePendingTransition(0,0);
-                return true;
-            default:
-                return false;
-        }
-    }
 
     private void initViews() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         arenaFragment = (ArenaFragment) fragmentManager.findFragmentById(R.id.arenaFragment);
         rightControlFragment = (RightControlFragment) fragmentManager.findFragmentById(R.id.rightControlFragment);
         rightControlFragment.setArenaFragment(arenaFragment);
+
+        control1Fragment = (control1Fragment) fragmentManager.findFragmentById(R.id.control1Fragment);
+        control2Fragment = (control2Fragment) fragmentManager.findFragmentById(R.id.control2Fragment);
 
         LinearLayout mainLayout = findViewById(R.id.main_layout);
         mainLayout.setOnDragListener(this);
@@ -120,5 +148,28 @@ public class TaskActivity extends AppCompatActivity
                 return true;
         }
         return true;
+    }
+
+    public void onBluetoothStatusChange(int status) {
+        ArrayList<String> connectionStatus = new ArrayList<>(Arrays.asList("Not Connected", "", "Connecting", "Connected"));
+        runOnUiThread(() -> {
+            rightControlFragment.getBluetoothBtn().setText(connectionStatus.get(status));
+        });
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bluetoothBtn:
+                bluetoothService.start();
+                activityResultLauncher.launch(new Intent(TaskActivity.this, BluetoothActivity.class));
+                break;
+        }
     }
 }

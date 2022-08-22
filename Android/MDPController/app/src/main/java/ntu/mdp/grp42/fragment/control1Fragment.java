@@ -7,54 +7,26 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+
+import java.nio.charset.StandardCharsets;
 
 import ntu.mdp.grp42.R;
+import ntu.mdp.grp42.bluetooth.BluetoothListener;
+import ntu.mdp.grp42.bluetooth.BluetoothService;
+import ntu.mdp.grp42.bluetooth.RaspberryPiProtocol;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link control1Fragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class control1Fragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class control1Fragment extends Fragment implements View.OnClickListener, RaspberryPiProtocol {
+    BluetoothService bluetoothService;
+    ImageButton forwardButton, reverseButton;
 
     public control1Fragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment control1Fragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static control1Fragment newInstance(String param1, String param2) {
-        control1Fragment fragment = new control1Fragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -62,5 +34,30 @@ public class control1Fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_control1, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        forwardButton = view.findViewById(R.id.upBtn);
+        reverseButton = view.findViewById(R.id.downBtn);
+
+        forwardButton.setOnClickListener(this);
+        reverseButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.upBtn:
+                bluetoothService.write(FORWARD.getBytes(StandardCharsets.UTF_8));
+                break;
+            case R.id.downBtn:
+                bluetoothService.write(REVERSE.getBytes(StandardCharsets.UTF_8));
+                break;
+        }
+    }
+
+    public void setBluetoothService(BluetoothService bluetoothService) {
+        this.bluetoothService = bluetoothService;
     }
 }
