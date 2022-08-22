@@ -34,6 +34,13 @@
                 android:layout_height="wrap_content"
                 android:minHeight="48dp"
                 android:text="@string/obstacle_cell" />
+
+            <RadioButton
+                android:id="@+id/dummyObstacleRGBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/dummy_cell" />
         </RadioGroup>
 
         <Button

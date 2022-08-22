@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -15,8 +17,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -30,10 +35,12 @@ import java.util.Set;
 
 import ntu.mdp.grp42.R;
 import ntu.mdp.grp42.TaskActivity;
+import ntu.mdp.grp42.arena.Constants;
 
 public class BluetoothActivity extends AppCompatActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener,
-        View.OnClickListener {
+        View.OnClickListener,
+        AdapterView.OnItemClickListener {
 
 //    BottomNavigationView bottomNavigationView;
 
@@ -43,6 +50,8 @@ public class BluetoothActivity extends AppCompatActivity
     ListView pairListView, scanListView;
     TextView pairTextView, scanTextView;
     BluetoothAdapter bluetoothAdapter;
+    BluetoothService bluetoothService;
+    private Handler handler;
 
     Set<BluetoothDevice> pairedDevices, scannedDevices;
     ArrayAdapter pairAdapter, scanAdapter;
@@ -71,6 +80,7 @@ public class BluetoothActivity extends AppCompatActivity
             Toast.makeText(BluetoothActivity.this, "This device doesn't support Bluetooth",
                     Toast.LENGTH_SHORT).show();
         }
+        bluetoothService = new BluetoothService(this, mHandler);
 
         if (!bluetoothAdapter.isEnabled()) {
             onButton.setText("On Bluetooth");
@@ -81,6 +91,8 @@ public class BluetoothActivity extends AppCompatActivity
         onButton.setOnClickListener(this);
         discoverableButton.setOnClickListener(this);
         scanButton.setOnClickListener(this);
+
+        pairListView.setOnItemClickListener(this);
     }
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -108,7 +120,8 @@ public class BluetoothActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();;
+        super.onDestroy();
+        ;
         unregisterReceiver(broadcastReceiver);
     }
 
@@ -171,6 +184,31 @@ public class BluetoothActivity extends AppCompatActivity
     }
 
     @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+            BluetoothDevice bluetoothDevice;
+            switch (parent.getId()) {
+                case R.id.pairedListView:
+//                    Toast.makeText(BluetoothActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
+                    bluetoothAdapter.cancelDiscovery();
+                    bluetoothDevice = pairedList.get(position);
+                    bluetoothDevice.createBond();
+                    startBluetoothConnection(bluetoothDevice);
+                    break;
+                case R.id.scannedListView:
+                    bluetoothAdapter.cancelDiscovery();
+                    bluetoothDevice = scanList.get(position);
+                    bluetoothDevice.createBond();
+                    startBluetoothConnection(bluetoothDevice);
+                    break;
+            }
+            return;
+        }
+    }
+
+    // This is responsible for setting the bluetooth button to display "On Bluetooth"
+    // in the event that the user denies to turn on bluetooth during the permission prompt
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
@@ -186,4 +224,55 @@ public class BluetoothActivity extends AppCompatActivity
                 break;
         }
     }
+
+    public void startBluetoothConnection(BluetoothDevice device) {
+        bluetoothService.connect(device, false);
+    }
+
+    private final Handler mHandler = new Handler() {
+        Toast toast;
+        String mConnectedDeviceName;
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Constants.MESSAGE_STATE_CHANGE:
+                    switch (msg.arg1) {
+                        case BluetoothService.STATE_CONNECTED:
+                            toast.cancel();
+                            toast.makeText(BluetoothActivity.this, "Bluetooth device connected", Toast.LENGTH_SHORT).show();
+//                            mConversationArrayAdapter.clear();
+                            break;
+                        case BluetoothService.STATE_CONNECTING:
+                            toast.makeText(BluetoothActivity.this, "Connecting to bluetooth device", Toast.LENGTH_SHORT).show();
+                            break;
+                        case BluetoothService.STATE_LISTEN:
+                        case BluetoothService.STATE_NONE:
+                            break;
+                    }
+                    break;
+                case Constants.MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
+                    String writeMessage = new String(writeBuf);
+//                    mConversationArrayAdapter.add("Me:  " + writeMessage);
+                    break;
+                case Constants.MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+//                    mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                    break;
+                case Constants.MESSAGE_DEVICE_NAME:
+                    // save the connected device's name
+                    mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
+                    Toast.makeText(BluetoothActivity.this, "Connected to "
+                            + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                    break;
+                case Constants.MESSAGE_TOAST:
+                    Toast.makeText(BluetoothActivity.this, msg.getData().getString(Constants.TOAST),
+                            Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
 }

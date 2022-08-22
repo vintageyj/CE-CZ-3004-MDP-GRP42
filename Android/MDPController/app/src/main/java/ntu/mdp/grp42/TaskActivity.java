@@ -115,7 +115,7 @@ public class TaskActivity extends AppCompatActivity
                 return true;
             case ACTION_DROP:
                 ArenaCell arenaCell = (ArenaCell) event.getLocalState();
-                arenaFragment.emptyCell(arenaCell);
+                arenaFragment.removeCell(arenaCell);
                 return true;
         }
         return true;

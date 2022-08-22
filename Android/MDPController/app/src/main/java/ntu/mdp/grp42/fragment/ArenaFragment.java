@@ -6,18 +6,14 @@ import static android.view.DragEvent.ACTION_DROP;
 import static ntu.mdp.grp42.arena.Constants.*;
 
 import android.content.ClipData;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 
-import android.os.Vibrator;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.DragEvent;
@@ -35,7 +31,6 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -54,6 +49,7 @@ public class ArenaFragment extends Fragment {
     int x, y, btnHeight, btnWidth;
     boolean arenaDrawn = false;
     HashMap<Integer, Obstacle> obstacleList = new HashMap<>();
+    HashMap<Integer, Obstacle> dummyObstacleList = new HashMap<>();
 
     final String[] directions = {"Up", "Right", "Down", "Left"};
 
@@ -141,6 +137,11 @@ public class ArenaFragment extends Fragment {
             String spawnType = ArenaFragment.getSpawnType();
             Log.d(ARENA_FRAGMENT_TAG, "Spawning " + spawnType);
 
+            if (arenaCell.getText().equals(" ") && spawnType.equals(getResources().getString(R.string.dummy_cell))){
+                removeCell(arenaCell);
+                return;
+            }
+
             if (!arenaCell.getText().equals("")){
                 Toast.makeText(getContext(), "Obstacle " + arenaCell.obstacleID +
                         " at " + x + ", " + y, Toast.LENGTH_SHORT).show();
@@ -151,13 +152,16 @@ public class ArenaFragment extends Fragment {
                 spawnRobot(arenaCell);
 //                sendBTSpawnRobot();
             }
-            if (spawnType.equals(getResources().getString(R.string.obstacle_cell))) {
+            else {
                 int totalObstacle = ArenaFragment.arenaCoord.length * ArenaFragment.arenaCoord[0].length;
                 Log.d(ARENA_FRAGMENT_TAG, "Max obstacle capacity: " + totalObstacle);
                 for (int obstacleID = 1; obstacleID <= totalObstacle; obstacleID++) {
                     if (!obstacleList.containsKey(obstacleID)) {
                         Log.d(ARENA_FRAGMENT_TAG, "Clicked " + x + " " + y);
-                        queryObstacleDirection(obstacleID, id, x, y);
+                        if (spawnType.equals(getResources().getString(R.string.obstacle_cell)))
+                            queryObstacleDirection(obstacleID, id, x, y);
+                        else if (spawnType.equals(getResources().getString(R.string.dummy_cell)))
+                            addObstacle(obstacleID, id, -1);
                         break;
                     }
                 }
@@ -218,6 +222,9 @@ public class ArenaFragment extends Fragment {
 
         int facingID;
         switch (direction) {
+            case UP:
+                facingID = R.drawable.north_facing_obstacle;
+                break;
             case RIGHT:
                 facingID = R.drawable.east_facing_obstacle;
                 break;
@@ -228,17 +235,23 @@ public class ArenaFragment extends Fragment {
                 facingID = R.drawable.west_facing_obstacle;
                 break;
             default:
-                facingID = R.drawable.north_facing_obstacle;
+                facingID = R.drawable.dummy_obstacle;
                 break;
         }
+        Log.d(ARENA_FRAGMENT_TAG, "Facing ID: " + facingID);
+
 
         ArenaCell arenaCell = arenaTable.findViewById(cellID);
-        arenaCell.setText(String.valueOf(obstacleID));
+        if (direction >= UP && direction <= LEFT)
+            arenaCell.setText(String.valueOf(obstacleID));
+        else
+            arenaCell.setText(" ");
         arenaCell.obstacleID = obstacleID;
 
         // keeps track of obstacle in memory
         Obstacle obstacle = new Obstacle(obstacleID, cellID, arenaCell.x, arenaCell.y, direction);
         obstacleList.put(obstacleID, obstacle);
+        dummyObstacleList.put(obstacleID, obstacle);
 //
 //        // sends addition of obstacle over to robot
 //        sendAddObstacleData(obstacleInfo);
@@ -313,7 +326,7 @@ public class ArenaFragment extends Fragment {
                         }
 
                         // removes original cell
-                        emptyCell(originalCell);
+                        removeCell(originalCell);
 
                         // moves obstacle over to new cell
                         int obstacleID = json.getInt("obstacleID");
@@ -328,7 +341,7 @@ public class ArenaFragment extends Fragment {
         }
     }
 
-    public void emptyCell(ArenaCell arenaCell) {
+    public void removeCell(ArenaCell arenaCell) {
         int obstacleID = arenaCell.obstacleID;
 
 //        // updates robot on obstacle removal
