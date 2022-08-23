@@ -10,4 +10,10 @@ public class Obstacle {
         this.y = y;
         this.direction = direction;
     }
+
+    public String getObstacleData(){
+        String data = String.format("%d,%d,%d,%d,%d",
+                obstacleID, cellID, x, y, direction);
+        return data;
+    }
 }

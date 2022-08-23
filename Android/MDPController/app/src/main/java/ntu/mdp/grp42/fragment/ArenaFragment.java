@@ -199,21 +199,21 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     }
 
     private void sendBTCommand(String command, String data) {
-        String message;
-        switch(command) {
-            case SPAWN_ROBOT:
-                message = SPAWN_ROBOT + "," + data;
-                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
-                break;
-            case ROTATE_ROBOT:
-                message = ROTATE_ROBOT + "," + data;
-                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
-            case ADD_OBSTACLE:
-                break;
-            case REMOVE_OBSTACLE:
-                break;
-        }
-
+        String message = command + "," + data;
+        bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
+//        switch(command) {
+//            case SPAWN_ROBOT:
+//                message = SPAWN_ROBOT + "," + data;
+//                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
+//                break;
+//            case ROTATE_ROBOT:
+//                message = ROTATE_ROBOT + "," + data;
+//                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
+//            case ADD_OBSTACLE:
+//                break;
+//            case REMOVE_OBSTACLE:
+//                break;
+//        }
     }
 
     private void spawnRobot(ArenaCell arenaCell) {
@@ -300,8 +300,8 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         obstacleList.put(obstacleID, obstacle);
         dummyObstacleList.put(obstacleID, obstacle);
 //
-//        // sends addition of obstacle over to robot
-//        sendAddObstacleData(obstacleInfo);
+        // sends addition of obstacle over to robot
+        sendBTCommand(ADD_OBSTACLE, obstacle.getObstacleData());
 
         // draws direction of image onto cell
         Drawable cellFace = AppCompatResources.getDrawable(this.requireContext(), facingID);
@@ -391,9 +391,8 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     public void removeCell(ArenaCell arenaCell) {
         int obstacleID = arenaCell.obstacleID;
 
-//        // updates robot on obstacle removal
-//        ObstacleInfo obstacleInfo = obstacles.get(obstacleID);
-//        sendRemoveObstacle(obstacleInfo);
+        Obstacle obstacle = obstacleList.get(obstacleID);
+        sendBTCommand(REMOVE_OBSTACLE, obstacle.getObstacleData());
 
         obstacleList.remove(obstacleID);
         arenaCell.setText("");
