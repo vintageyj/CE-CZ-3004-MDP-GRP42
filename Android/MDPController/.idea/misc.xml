@@ -5,31 +5,54 @@
       <map>
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable-v24/btn_background.xml" value="0.1" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable-v24/cell_background.xml" value="0.1" />
-        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable-v24/cell_highlighted_background.xml" value="0.1" />
-        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/dummy_obstacle.xml" value="0.1" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable-v24/cell_highlighted_background.xml" value="0.196" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/dummy_obstacle.xml" value="0.1075" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/east_facing_obstacle.xml" value="0.1" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/ic_baseline_bluetooth_24.xml" value="0.1075" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/ic_baseline_double_arrow_24.xml" value="0.1" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/ic_baseline_keyboard_double_arrow_up_24.xml" value="0.109" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.1075" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1075" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.1075" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_12.xml" value="0.195" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_13.xml" value="0.195" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_14.xml" value="0.195" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_15.xml" value="0.195" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_16.xml" value="0.195" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_17.xml" value="0.195" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_18.xml" value="0.195" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_19.xml" value="0.195" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_36.xml" value="0.243" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_37.xml" value="0.243" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_38.xml" value="0.243" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_39.xml" value="0.243" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_40.xml" value="0.243" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/north_facing_obstacle.xml" value="0.1" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/obs1.xml" value="0.243" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/rectangle_border.xml" value="0.196" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/south_facing_obstacle.xml" value="0.1" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/west_facing_obstacle.xml" value="0.1" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/activity_bluetooth.xml" value="0.25" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/activity_main.xml" value="0.17831813576494426" />
-        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/activity_task.xml" value="0.25" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/activity_task.xml" value="0.15118110236220472" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/device_adapter_view_layout.xml" value="0.1" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_arena.xml" value="0.1" />
-        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_control1.xml" value="0.2572463768115942" />
-        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_control2.xml" value="0.2572463768115942" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_control1.xml" value="0.18802083333333333" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_control2.xml" value="0.18802083333333333" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_dashboard.xml" value="0.17831813576494426" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_home.xml" value="0.17831813576494426" />
-        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_left.xml" value="0.2572463768115942" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_left.xml" value="0.191796875" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_left_control.xml" value="0.12708333333333333" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_left_right_control.xml" value="0.22333333333333336" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_notifications.xml" value="0.17831813576494426" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_right_control.xml" value="0.2563405797101449" />
-        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_timer.xml" value="0.2572463768115942" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_start_task.xml" value="0.22333333333333336" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_timer.xml" value="0.2557291666666667" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_up_down_control.xml" value="0.2557291666666667" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36102564102564105" />
       </map>
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="16" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

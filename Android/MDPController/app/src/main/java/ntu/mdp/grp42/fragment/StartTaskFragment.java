@@ -7,11 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.app.Activity;
 import android.os.Handler;
-import android.view.View;
-import android.os.Bundle;
-import java.util.Locale;
 
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,7 +15,7 @@ import android.widget.TextView;
 
 import ntu.mdp.grp42.R;
 
-public class TimerFragment extends Fragment {
+public class StartTaskFragment extends Fragment {
 
     // Is the stopwatch running?
     private boolean running;
@@ -47,19 +43,13 @@ public class TimerFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public TimerFragment() {
+    public StartTaskFragment() {
         // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
-    public static TimerFragment newInstance(String param1, String param2) {
-        TimerFragment fragment = new TimerFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+
+
 
 
     @Override
@@ -72,19 +62,19 @@ public class TimerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.fragment_timer, container, false);
-        Button BTNstart =  (Button)v.findViewById(R.id.start_buttonn);
+        v = inflater.inflate(R.layout.fragment_start_task, container, false);
         Button BTNstop =  (Button)v.findViewById(R.id.stop_buttonn);
         Button BTNreset =  (Button)v.findViewById(R.id.reset_buttonn);
         TextView timerview = (TextView)v.findViewById(R.id.timer);
 
+        Button BTNtask1 =  (Button)v.findViewById(R.id.task1);
+        Button BTNtask2 =  (Button)v.findViewById(R.id.task2);
 
-
-        View.OnClickListener startHandle = new View.OnClickListener() {
+        View.OnClickListener task1Handle = new View.OnClickListener() {
 
             public void onClick(View v) {
+                task1effect();
                 // TODO Auto-generated method stub
-                showStopButton();
                 if(stopped){
                     startTime = System.currentTimeMillis() - elapsedTime;
                 }
@@ -95,12 +85,30 @@ public class TimerFragment extends Fragment {
                 mHandler.postDelayed(startTimer, 0);
             }
         };
-        BTNstart.setOnClickListener(startHandle);
+        BTNtask1.setOnClickListener(task1Handle);
+
+        View.OnClickListener task2Handle = new View.OnClickListener() {
+
+            public void onClick(View v) {
+                task2effect();
+                // TODO Auto-generated method stub
+                if(stopped){
+                    startTime = System.currentTimeMillis() - elapsedTime;
+                }
+                else{
+                    startTime = System.currentTimeMillis();
+                }
+                mHandler.removeCallbacks(startTimer);
+                mHandler.postDelayed(startTimer, 0);
+            }
+        };
+        BTNtask2.setOnClickListener(task2Handle);
 
         View.OnClickListener stopHandle = new View.OnClickListener() {
 
             public void onClick(View v) {
-                hideStopButton();
+                stopBTNeffect();
+
                 mHandler.removeCallbacks(startTimer);
                 stopped = true;
 
@@ -111,39 +119,46 @@ public class TimerFragment extends Fragment {
         View.OnClickListener resetHandle = new View.OnClickListener() {
 
             public void onClick(View v) {
+                resetBTNeffect();
                 stopped = false;
                 timerview.setText("00:00:00");
-                BTNstart.setText("START");
+                //BTNstart.setText("START");
             }
         };
         BTNreset.setOnClickListener(resetHandle);
 
-
-
         return v;
     }
 
-    private void showStopButton(){
-        View v = getView();
-        ((Button)v.findViewById(R.id.start_buttonn)).setVisibility(View.GONE);
-        ((Button)v.findViewById(R.id.reset_buttonn)).setVisibility(View.GONE);
-        ((Button)v.findViewById(R.id.stop_buttonn)).setVisibility(View.VISIBLE);
+    private void task1effect() {
+        ((Button)v.findViewById(R.id.task2)).setEnabled(false);
+        ((Button)v.findViewById(R.id.stop_buttonn)).setEnabled(true);
     }
 
-    private void hideStopButton(){
-        View v = getView();
-        ((Button)v.findViewById(R.id.start_buttonn)).setVisibility(View.VISIBLE);
-        ((Button)v.findViewById(R.id.reset_buttonn)).setVisibility(View.VISIBLE);
-        ((Button)v.findViewById(R.id.stop_buttonn)).setVisibility(View.GONE);
+    private void task2effect() {
+        ((Button)v.findViewById(R.id.task1)).setEnabled(false);
+        ((Button)v.findViewById(R.id.stop_buttonn)).setEnabled(true);
     }
+
+    private void stopBTNeffect() {
+
+        ((Button)v.findViewById(R.id.reset_buttonn)).setEnabled(true);
+    }
+
+    private void resetBTNeffect(){
+        ((Button)v.findViewById(R.id.task1)).setEnabled(true);
+        ((Button)v.findViewById(R.id.task2)).setEnabled(true);
+        ((Button)v.findViewById(R.id.stop_buttonn)).setEnabled(false);
+
+    }
+
 
     private Runnable startTimer = new Runnable() {
         public void run() {
             elapsedTime = System.currentTimeMillis() - startTime;
             updateTimer(elapsedTime);
             mHandler.postDelayed(this,REFRESH_RATE);
-            Button b = ((Button)v.findViewById(R.id.start_buttonn));
-            b.setText("resume");
+
         }
     };
 

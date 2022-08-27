@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -28,6 +29,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,10 +71,25 @@ public class TaskActivity extends AppCompatActivity
     control1Fragment control1Fragment;
     control2Fragment control2Fragment;
 
+    private ViewPagerAdapter viewPagerAdapter, viewPagerAdapter2;
+    private ViewPager viewPager, viewPager2;
+    private TabLayout tabLayout, tabLayout2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
+
+        viewPager = findViewById(R.id.viewpager);
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.add(new StartTaskFragment(), "Start Tasks");
+        viewPagerAdapter.add(new control1Fragment(), "Controllers");
+        viewPager.setAdapter(viewPagerAdapter);
+
+        tabLayout = findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager,true);
+
+
         getSupportActionBar().hide();
 
         if (!hasPermissions(this, PERMISSIONS)) {
