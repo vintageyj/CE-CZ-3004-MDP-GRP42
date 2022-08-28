@@ -125,6 +125,7 @@ public class BluetoothActivity extends AppCompatActivity
         discoverableButton.setOnClickListener(this);
         scanButton.setOnClickListener(this);
         pairListView.setOnItemClickListener(this);
+        scanListView.setOnItemClickListener(this);
 
         scanButton.performClick();
     }
@@ -138,7 +139,7 @@ public class BluetoothActivity extends AppCompatActivity
                 // Discovery has found a device. Get the BluetoothDevice
                 // object and its info from the Intent.
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if (!pairedDevices.contains(device) && device.getName() != null) {
+                if (!pairedDevices.contains(device) && !scanList.contains(device) && device.getName() != null) {
                     scanList.add(device);
                 }
                 scanAdapter = new DeviceAdapter(getApplicationContext(), R.layout.device_adapter_view_layout, scanList);
@@ -197,19 +198,23 @@ public class BluetoothActivity extends AppCompatActivity
                 }
                 break;
             case R.id.scanButton:
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                    // Query paired devices
-                    pairedDevices = bluetoothAdapter.getBondedDevices();
-                    pairedList.clear();
-                    pairedList.addAll(pairedDevices);
-                    pairAdapter = new DeviceAdapter(getApplicationContext(), R.layout.device_adapter_view_layout, pairedList);
-                    pairListView.setAdapter(pairAdapter);
+                if (bluetoothAdapter.isEnabled()) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                        // Query paired devices
+                        pairedDevices = bluetoothAdapter.getBondedDevices();
+                        pairedList.clear();
+                        pairedList.addAll(pairedDevices);
+                        pairAdapter = new DeviceAdapter(getApplicationContext(), R.layout.device_adapter_view_layout, pairedList);
+                        pairListView.setAdapter(pairAdapter);
 
-                    // Discover new devices
-                    bluetoothAdapter.startDiscovery();
-                    IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-                    registerReceiver(broadcastReceiver, filter);
-                    return;
+                        // Discover new devices
+                        bluetoothAdapter.startDiscovery();
+                        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+                        registerReceiver(broadcastReceiver, filter);
+                        return;
+                    }
+                } else {
+                    Toast.makeText(BluetoothActivity.this, "Turn on Bluetooth first!", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.send_button:
@@ -223,6 +228,10 @@ public class BluetoothActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (!bluetoothAdapter.isEnabled()) {
+            Toast.makeText(BluetoothActivity.this, "Turn on Bluetooth first!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
             BluetoothDevice bluetoothDevice;
             switch (parent.getId()) {

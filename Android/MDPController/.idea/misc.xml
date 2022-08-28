@@ -50,6 +50,29 @@
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_timer.xml" value="0.2557291666666667" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_up_down_control.xml" value="0.2557291666666667" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36102564102564105" />
+        <entry key="app/src/main/res/drawable/id_11.xml" value="0.18" />
+        <entry key="app/src/main/res/drawable/id_12.xml" value="0.18" />
+        <entry key="app/src/main/res/drawable/id_13.xml" value="0.18" />
+        <entry key="app/src/main/res/drawable/id_14.xml" value="0.18" />
+        <entry key="app/src/main/res/drawable/id_15.xml" value="0.18" />
+        <entry key="app/src/main/res/drawable/id_16.xml" value="0.18" />
+        <entry key="app/src/main/res/drawable/id_17.xml" value="0.18" />
+        <entry key="app/src/main/res/drawable/id_18.xml" value="0.18" />
+        <entry key="app/src/main/res/drawable/id_19.xml" value="0.18" />
+        <entry key="app/src/main/res/drawable/id_36.xml" value="0.18" />
+        <entry key="app/src/main/res/drawable/id_37.xml" value="0.18" />
+        <entry key="app/src/main/res/drawable/id_38.xml" value="0.18" />
+        <entry key="app/src/main/res/drawable/id_39.xml" value="0.18" />
+        <entry key="app/src/main/res/drawable/id_40.xml" value="0.18" />
+        <entry key="app/src/main/res/layout/activity_bluetooth.xml" value="0.15520833333333334" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.15070921985815602" />
+        <entry key="app/src/main/res/layout/activity_task.xml" value="0.15070921985815602" />
+        <entry key="app/src/main/res/layout/device_adapter_view_layout.xml" value="0.15070921985815602" />
+        <entry key="app/src/main/res/layout/fragment_control1.xml" value="0.15070921985815602" />
+        <entry key="app/src/main/res/layout/fragment_control2.xml" value="0.15070921985815602" />
+        <entry key="app/src/main/res/layout/fragment_left.xml" value="0.15070921985815602" />
+        <entry key="app/src/main/res/layout/fragment_start_task.xml" value="0.15070921985815602" />
+        <entry key="app/src/main/res/layout/fragment_timer.xml" value="0.15070921985815602" />
       </map>
     </option>
   </component>

@@ -16,13 +16,16 @@ import androidx.viewpager.widget.ViewPager;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.view.DragEvent;
 import android.view.MenuItem;
@@ -62,7 +65,9 @@ public class TaskActivity extends AppCompatActivity
     public static ActivityResultLauncher<Intent> activityResultLauncher;
     BluetoothAdapter bluetoothAdapter;
     public static BluetoothService bluetoothService;
-
+    private BluetoothDevice targetDevice;
+    private AlertDialog.Builder builder;
+    private Handler handler;
 
     public static Vibrator vibrator;
 
@@ -103,6 +108,8 @@ public class TaskActivity extends AppCompatActivity
         bluetoothService = new BluetoothService(BluetoothActivity.bluetoothMessageHandler);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         bluetoothService.setOnBluetoothStatusChange(this);
+        handler = new Handler();
+
         arenaFragment.setBluetoothService(bluetoothService);
         control1Fragment.setBluetoothService(bluetoothService);
         control2Fragment.setBluetoothService(bluetoothService);
@@ -117,7 +124,7 @@ public class TaskActivity extends AppCompatActivity
                 Intent intent = result.getData();
                 Bundle bundle = intent.getExtras();
                 String targetMACAddress = bundle.getString("MAC");
-                BluetoothDevice targetDevice = bluetoothAdapter.getRemoteDevice(targetMACAddress);
+                targetDevice = bluetoothAdapter.getRemoteDevice(targetMACAddress);
                 Toast.makeText(TaskActivity.this, "Connecting to " + targetDevice.getName(), Toast.LENGTH_SHORT).show();
                 bluetoothService.connect(targetDevice);
             }
@@ -172,12 +179,30 @@ public class TaskActivity extends AppCompatActivity
         ArrayList<String> connectionStatus = new ArrayList<>(Arrays.asList("Not Connected", "", "Connecting", "Connected"));
         runOnUiThread(() -> {
             rightControlFragment.getBluetoothBtn().setText(connectionStatus.get(status));
-        });
 
+            if (bluetoothService.state == BluetoothService.STATE_NONE) {
+                builder = new AlertDialog.Builder(this);
+                builder.setTitle("Reconnect to Bluetooth Device");
+                builder.setPositiveButton("Yes", (dialogInterface, i) -> {
+                    handler.postDelayed(() -> {
+                        try {
+                            bluetoothService.connect(targetDevice);
+                        } catch (Exception e) {
+                            Toast.makeText(TaskActivity.this, "Failed to reconnect due to " + e, Toast.LENGTH_SHORT).show();
+                        }
+                    }, 2000);
+                });
+                builder.setNegativeButton("No", null);
+                builder.show();
+            } else {
+
+            }
+        });
     }
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
         super.onPointerCaptureChanged(hasCapture);
     }
 
