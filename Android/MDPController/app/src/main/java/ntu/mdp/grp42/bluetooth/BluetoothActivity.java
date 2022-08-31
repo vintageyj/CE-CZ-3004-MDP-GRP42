@@ -1,14 +1,11 @@
 package ntu.mdp.grp42.bluetooth;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -20,9 +17,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -42,8 +37,6 @@ import java.util.Arrays;
 import java.util.Set;
 
 import ntu.mdp.grp42.R;
-import ntu.mdp.grp42.TaskActivity;
-import ntu.mdp.grp42.arena.Constants;
 
 public class BluetoothActivity extends AppCompatActivity
         implements BluetoothListener,

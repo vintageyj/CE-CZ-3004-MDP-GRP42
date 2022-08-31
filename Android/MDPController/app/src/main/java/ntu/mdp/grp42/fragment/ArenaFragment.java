@@ -3,7 +3,7 @@ package ntu.mdp.grp42.fragment;
 import static android.view.DragEvent.ACTION_DRAG_ENTERED;
 import static android.view.DragEvent.ACTION_DRAG_EXITED;
 import static android.view.DragEvent.ACTION_DROP;
-import static ntu.mdp.grp42.arena.Constants.*;
+import static ntu.mdp.grp42.bluetooth.Constants.*;
 import static ntu.mdp.grp42.bluetooth.RaspberryPiProtocol.ADD_OBSTACLE;
 import static ntu.mdp.grp42.bluetooth.RaspberryPiProtocol.REMOVE_OBSTACLE;
 import static ntu.mdp.grp42.bluetooth.RaspberryPiProtocol.ROTATE_ROBOT;
@@ -16,6 +16,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -31,6 +32,8 @@ import android.widget.RadioGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -199,7 +202,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     }
 
     private void sendBTCommand(String command, String data) {
-        String message = command + "," + data;
+        String message = command + " " + data;
         bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
 //        switch(command) {
 //            case SPAWN_ROBOT:
@@ -302,6 +305,8 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 //
         // sends addition of obstacle over to robot
         sendBTCommand(ADD_OBSTACLE, obstacle.getObstacleData());
+        Gson gson = new Gson();
+        sendBTCommand(ADD_OBSTACLE, gson.toJson(obstacle));
 
         // draws direction of image onto cell
         Drawable cellFace = AppCompatResources.getDrawable(this.requireContext(), facingID);
@@ -398,6 +403,13 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         arenaCell.setText("");
         arenaCell.obstacleID = -1;
         arenaCell.setBackground(arenaCellBG);
+    }
+
+    public void updateCellImage(int cellID, int imageID) {
+        Log.d(ARENA_FRAGMENT_TAG, "Cell ID: " + cellID + " Image ID: " + imageID);
+        ArenaCell arenaCell = arenaTable.findViewById(cellID);
+        arenaCell.setText(" ");
+        arenaCell.setBackground(ResourcesCompat.getDrawable(getResources(), arenaCell.getImageID(imageID), null));
     }
 
 

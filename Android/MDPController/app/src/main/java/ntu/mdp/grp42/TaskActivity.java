@@ -7,7 +7,6 @@ import static android.view.DragEvent.ACTION_DROP;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
@@ -20,21 +19,21 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.view.DragEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import ntu.mdp.grp42.arena.ArenaCell;
-import ntu.mdp.grp42.arena.Constants;
+import ntu.mdp.grp42.bluetooth.Constants;
 import ntu.mdp.grp42.bluetooth.BluetoothActivity;
 import ntu.mdp.grp42.bluetooth.BluetoothListener;
 import ntu.mdp.grp42.bluetooth.BluetoothService;
@@ -51,7 +50,7 @@ import ntu.mdp.grp42.bluetooth.RaspberryPiProtocol;
 import ntu.mdp.grp42.fragment.*;
 
 public class TaskActivity extends AppCompatActivity
-        implements View.OnDragListener, BluetoothListener, View.OnClickListener, RaspberryPiProtocol {
+        implements View.OnDragListener, BluetoothListener, View.OnClickListener, RaspberryPiProtocol, Constants{
 
     protected static final String[] PERMISSIONS = {
             Manifest.permission.BLUETOOTH,
@@ -183,10 +182,11 @@ public class TaskActivity extends AppCompatActivity
     }
 
     public void onBluetoothStatusChange(int status) {
-        ArrayList<String> connectionStatus = new ArrayList<>(Arrays.asList("Not Connected", "", "Connecting", "Connected"));
+        ArrayList<String> connectionStatus = new ArrayList<>(Arrays.asList(NOT_CONNECTED, "",CONNECTING, CONNECTED));
+        ArrayList<String> connectionStatusColor = new ArrayList<>(Arrays.asList("#B11226", "", "#FEC20C", "#00FF00"));
         runOnUiThread(() -> {
             rightControlFragment.getBluetoothBtn().setText(connectionStatus.get(status));
-
+            rightControlFragment.getBluetoothBtn().setTextColor(Color.parseColor(connectionStatusColor.get(status)));
             if (bluetoothService.state == BluetoothService.STATE_NONE) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Reconnect to Bluetooth Device");
@@ -239,11 +239,16 @@ public class TaskActivity extends AppCompatActivity
         return false;
     });
 
-    private void receiveMessage(String strMessage) {
-        leftStatusFragment.setDebugWindow(strMessage);
-        switch (strMessage) {
-            case "status, Online":
-                leftStatusFragment.setRobotStatus("Online");
+    private void receiveMessage(String message) {
+        leftStatusFragment.setDebugWindow(message);
+        String[] strMessage = message.split(" ");
+        Gson gson = new Gson();
+        switch (strMessage[0]) {
+            case STATUS:
+                leftStatusFragment.setRobotStatus(strMessage[1]);
+                break;
+            case UPDATE_OBSTACLE:
+                arenaFragment.updateCellImage(Integer.parseInt(strMessage[1]), Integer.parseInt(strMessage[2]));
                 break;
         }
     }

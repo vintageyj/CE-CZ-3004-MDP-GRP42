@@ -15,8 +15,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-import ntu.mdp.grp42.arena.Constants;
-
 @SuppressLint("MissingPermission")
 public class BluetoothService {
     private static final String TAG = "BluetoothService";

@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import ntu.mdp.grp42.R;
-import ntu.mdp.grp42.arena.Constants;
+import ntu.mdp.grp42.bluetooth.Constants;
 
 public class LeftFragment extends Fragment implements Constants {
     private TextView robotStatus, robotDirection, robotCoordinates, debugWindow;

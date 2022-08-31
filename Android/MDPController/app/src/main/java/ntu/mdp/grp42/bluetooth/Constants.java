@@ -1,4 +1,4 @@
-package ntu.mdp.grp42.arena;
+package ntu.mdp.grp42.bluetooth;
 
 public interface Constants {
     // robot facing directions
@@ -13,6 +13,12 @@ public interface Constants {
     int MESSAGE_WRITE = 3;
     int MESSAGE_DEVICE_NAME = 4;
     int MESSAGE_TOAST = 5;
+
+    // Bluetooth Connection Indicator
+    String NOT_CONNECTED = "Not Connected";
+    String CONNECTING = "Connecting";
+    String CONNECTED = "Connected";
+
 
     // Key names received from the BluetoothChatService Handler
     String DEVICE_NAME = "device_name";
