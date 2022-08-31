@@ -32,6 +32,8 @@
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/rectangle_border.xml" value="0.196" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/south_facing_obstacle.xml" value="0.1" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/west_facing_obstacle.xml" value="0.1" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout-land/activity_task.xml" value="0.16" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout-sw600dp/activity_task.xml" value="0.14343928280358598" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/activity_bluetooth.xml" value="0.25" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/activity_main.xml" value="0.17831813576494426" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/activity_task.xml" value="0.15118110236220472" />
@@ -41,7 +43,7 @@
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_control2.xml" value="0.18802083333333333" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_dashboard.xml" value="0.17831813576494426" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_home.xml" value="0.17831813576494426" />
-        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_left.xml" value="0.191796875" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_left.xml" value="0.5" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_left_control.xml" value="0.12708333333333333" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_left_right_control.xml" value="0.22333333333333336" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/fragment_notifications.xml" value="0.17831813576494426" />
@@ -77,5 +79,5 @@
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

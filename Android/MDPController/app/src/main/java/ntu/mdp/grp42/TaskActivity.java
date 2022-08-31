@@ -26,6 +26,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.view.DragEvent;
 import android.view.MenuItem;
@@ -35,10 +36,14 @@ import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import ntu.mdp.grp42.arena.ArenaCell;
+import ntu.mdp.grp42.arena.Constants;
 import ntu.mdp.grp42.bluetooth.BluetoothActivity;
 import ntu.mdp.grp42.bluetooth.BluetoothListener;
 import ntu.mdp.grp42.bluetooth.BluetoothService;
@@ -66,12 +71,13 @@ public class TaskActivity extends AppCompatActivity
     BluetoothAdapter bluetoothAdapter;
     public static BluetoothService bluetoothService;
     private BluetoothDevice targetDevice;
-    private AlertDialog.Builder builder;
+    private AlertDialog alertDialog;
     private Handler handler;
 
     public static Vibrator vibrator;
 
     ArenaFragment arenaFragment;
+    LeftFragment leftStatusFragment;
     RightControlFragment rightControlFragment;
     control1Fragment control1Fragment;
     control2Fragment control2Fragment;
@@ -105,7 +111,7 @@ public class TaskActivity extends AppCompatActivity
 
         initViews();
 
-        bluetoothService = new BluetoothService(BluetoothActivity.bluetoothMessageHandler);
+        bluetoothService = new BluetoothService(bluetoothMessageHandler);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         bluetoothService.setOnBluetoothStatusChange(this);
         handler = new Handler();
@@ -151,6 +157,7 @@ public class TaskActivity extends AppCompatActivity
     private void initViews() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         arenaFragment = (ArenaFragment) fragmentManager.findFragmentById(R.id.arenaFragment);
+        leftStatusFragment = (LeftFragment) fragmentManager.findFragmentById(R.id.leftControlFragment);
         rightControlFragment = (RightControlFragment) fragmentManager.findFragmentById(R.id.rightControlFragment);
         rightControlFragment.setArenaFragment(arenaFragment);
 
@@ -181,7 +188,7 @@ public class TaskActivity extends AppCompatActivity
             rightControlFragment.getBluetoothBtn().setText(connectionStatus.get(status));
 
             if (bluetoothService.state == BluetoothService.STATE_NONE) {
-                builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Reconnect to Bluetooth Device");
                 builder.setPositiveButton("Yes", (dialogInterface, i) -> {
                     handler.postDelayed(() -> {
@@ -190,12 +197,13 @@ public class TaskActivity extends AppCompatActivity
                         } catch (Exception e) {
                             Toast.makeText(TaskActivity.this, "Failed to reconnect due to " + e, Toast.LENGTH_SHORT).show();
                         }
-                    }, 2000);
+                    }, 1000);
                 });
                 builder.setNegativeButton("No", null);
-                builder.show();
+                alertDialog = builder.show();
             } else {
-
+                if (alertDialog != null)
+                    alertDialog.dismiss();
             }
         });
     }
@@ -212,6 +220,30 @@ public class TaskActivity extends AppCompatActivity
             case R.id.bluetoothBtn:
                 bluetoothService.start();
                 activityResultLauncher.launch(new Intent(TaskActivity.this, BluetoothActivity.class));
+                break;
+        }
+    }
+
+    public final Handler bluetoothMessageHandler = new Handler(Looper.myLooper(), message -> {
+        if (message.what == Constants.MESSAGE_READ) {
+            byte[] readBuf = (byte[]) message.obj;
+            String strMessage = new String(readBuf, 0, message.arg1);
+            receiveMessage(strMessage);
+            try {
+                JSONObject json = new JSONObject(strMessage);
+//                rpiMessageHandler(json);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    });
+
+    private void receiveMessage(String strMessage) {
+        leftStatusFragment.setDebugWindow(strMessage);
+        switch (strMessage) {
+            case "status, Online":
+                leftStatusFragment.setRobotStatus("Online");
                 break;
         }
     }
