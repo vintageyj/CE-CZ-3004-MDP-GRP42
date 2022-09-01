@@ -91,6 +91,12 @@
                 android:layout_weight="0.55"
                 android:orientation="vertical">
 
+                <ImageView
+                    android:id="@+id/arenaAxis"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/axis" />
+
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/arenaFragment"
                     android:name="ntu.mdp.grp42.fragment.ArenaFragment"

@@ -2,6 +2,7 @@ package ntu.mdp.grp42.fragment;
 
 import static android.view.DragEvent.ACTION_DRAG_ENTERED;
 import static android.view.DragEvent.ACTION_DRAG_EXITED;
+import static android.view.DragEvent.ACTION_DRAG_LOCATION;
 import static android.view.DragEvent.ACTION_DROP;
 import static ntu.mdp.grp42.bluetooth.Constants.*;
 import static ntu.mdp.grp42.bluetooth.RaspberryPiProtocol.ADD_OBSTACLE;
@@ -39,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -63,7 +65,9 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     final String[] directions = {"Up", "Right", "Down", "Left"};
 
     TableLayout arenaTable;
-    private ImageView robotIV;
+    ArrayList<ArrayList<ArenaCell>> arenaCellList = new ArrayList<ArrayList<ArenaCell>>();
+    ArenaCell lastCell;
+    private ImageView robotIV, arenaAxis;
     static RadioGroup spawnRG;
     Drawable arenaCellBG;
 
@@ -90,6 +94,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         arenaTable = view.findViewById(R.id.arenaTable);
         robotIV = view.findViewById(R.id.robotIV);
+        arenaAxis = view.findViewById(R.id.arenaAxis);
 
         arenaTable.getViewTreeObserver().addOnPreDrawListener( () -> {
             if (!arenaDrawn) {
@@ -111,9 +116,10 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         arenaCellBG = AppCompatResources.getDrawable(this.requireContext(), R.drawable.cell_background);
 
         // 20x20 map
-        for (y = 19; y >= 0; y--) {
+        for (y = 0; y < 20; y++) {
             TableRow row = new TableRow(this.getContext());
             row.setHorizontalGravity(Gravity.CENTER_HORIZONTAL);
+            ArrayList<ArenaCell> arenaCells = new ArrayList<ArenaCell>();
 
             for (x = 0; x < 20; x++) {
                 ArenaCell arenaCell = new ArenaCell(this.getContext(), x, y);
@@ -128,8 +134,10 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                 arenaCell.setOnClickListener(new ArenaCellClickListener(x, y, arenaCell.getId()));
                 arenaCell.setOnDragListener(new ArenaCellDragListener(x, y, arenaCell.getId()));
                 row.addView(arenaCell);
+                arenaCells.add(arenaCell);
             }
             arenaTable.addView(row);
+            arenaCellList.add(arenaCells);
         }
     }
 
@@ -149,6 +157,14 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
     private void rotateRobot() {
         robotIV.setRotation((robotIV.getRotation() + 90) % 360);
+    }
+
+    public void moveRobot() {
+
+    }
+
+    public ArenaCell getLastCell() {
+        return lastCell;
     }
 
     private class ArenaCellClickListener implements View.OnClickListener {
@@ -352,9 +368,19 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
         @Override
         public boolean onDrag(View newCell, DragEvent event) {
+            ArenaCell originalCell;
+            ArenaCell newArenaCell = newCell.findViewById(newCell.getId());
             switch (event.getAction()) {
                 case ACTION_DRAG_ENTERED:
+                    // touch feedback for starting drag or entering a new cell
                     TaskActivity.vibrator.vibrate(100);
+
+                    // removes all the highlights from last adjacent row and column
+                    if (lastCell != null && lastCell != newArenaCell)
+                        removeAdjacentCellHighlights(lastCell);
+                    // highlights all the adjacent row and column
+                    highlightAdjacentCells(newArenaCell);
+                    lastCell = newArenaCell;
                 case ACTION_DRAG_EXITED:
                     return true;
                 case ACTION_DROP:
@@ -363,14 +389,14 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                         ClipData dragData = event.getClipData();
                         JSONObject json = new JSONObject(dragData.getItemAt(0).getText().toString());
 
-                        ArenaCell originalCell = (ArenaCell) event.getLocalState();
+                        originalCell = (ArenaCell) event.getLocalState();
 
                         // stops if dropped cell is same as original cell
                         if (originalCell.getId() == newCell.getId())
                             return true;
 
                         // stops if dropped cell is on a populated cell
-                        ArenaCell newArenaCell = newCell.findViewById(newCell.getId());
+                        newArenaCell = newCell.findViewById(newCell.getId());
                         if (newArenaCell.obstacleID != -1) {
                             Toast.makeText(getContext(), "Remove Obstacle " + newArenaCell.obstacleID +
                                     " first!", Toast.LENGTH_SHORT).show();
@@ -384,6 +410,9 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                         int obstacleID = json.getInt("obstacleID");
                         int selectedDirection = json.getInt("direction");
                         addObstacle(obstacleID, newCell.getId(), selectedDirection);
+
+                        // removes all the highlights
+                        removeAdjacentCellHighlights(newArenaCell);
                     } catch (JSONException ex) {
                         ex.printStackTrace();
                     }
@@ -410,6 +439,40 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         ArenaCell arenaCell = arenaTable.findViewById(cellID);
         arenaCell.setText(" ");
         arenaCell.setBackground(ResourcesCompat.getDrawable(getResources(), arenaCell.getImageID(imageID), null));
+    }
+
+    public void highlightAdjacentCells(ArenaCell arenaCell) {
+        int x = arenaCell.x;
+        int y = arenaCell.y;
+        ArenaCell cellX, cellY;
+        for (int i = 0; i < 20; i++) {
+            cellX = arenaCellList.get(i).get(x);
+            cellY = arenaCellList.get(y).get(i);
+            if (cellX.getText().equals("")) {
+                cellX.setBackground(AppCompatResources.getDrawable(this.requireContext(), R.drawable.cell_highlighted_background));
+            }
+
+            if (cellY.getText().equals("")) {
+                cellY.setBackground(AppCompatResources.getDrawable(this.requireContext(), R.drawable.cell_highlighted_background));
+            }
+        }
+    }
+
+    public void removeAdjacentCellHighlights(ArenaCell arenaCell) {
+        int x = arenaCell.x;
+        int y = arenaCell.y;
+        ArenaCell cellX, cellY;
+        for (int i = 0; i < 20; i++) {
+            cellX = arenaCellList.get(i).get(x);
+            cellY = arenaCellList.get(y).get(i);
+            if (cellX.getText().equals("")) {
+                cellX.setBackground(AppCompatResources.getDrawable(this.requireContext(), R.drawable.cell_background));
+            }
+
+            if (cellY.getText().equals("")) {
+                cellY.setBackground(AppCompatResources.getDrawable(this.requireContext(), R.drawable.cell_background));
+            }
+        }
     }
 
 

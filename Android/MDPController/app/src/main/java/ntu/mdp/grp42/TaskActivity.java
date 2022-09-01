@@ -4,14 +4,6 @@ import static android.view.DragEvent.ACTION_DRAG_ENTERED;
 import static android.view.DragEvent.ACTION_DRAG_EXITED;
 import static android.view.DragEvent.ACTION_DROP;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -32,6 +24,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 
@@ -42,12 +42,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import ntu.mdp.grp42.arena.ArenaCell;
-import ntu.mdp.grp42.bluetooth.Constants;
 import ntu.mdp.grp42.bluetooth.BluetoothActivity;
 import ntu.mdp.grp42.bluetooth.BluetoothListener;
 import ntu.mdp.grp42.bluetooth.BluetoothService;
+import ntu.mdp.grp42.bluetooth.Constants;
 import ntu.mdp.grp42.bluetooth.RaspberryPiProtocol;
-import ntu.mdp.grp42.fragment.*;
+import ntu.mdp.grp42.fragment.ArenaFragment;
+import ntu.mdp.grp42.fragment.LeftFragment;
+import ntu.mdp.grp42.fragment.RightControlFragment;
+import ntu.mdp.grp42.fragment.StartTaskFragment;
+import ntu.mdp.grp42.fragment.control1Fragment;
+import ntu.mdp.grp42.fragment.control2Fragment;
 
 public class TaskActivity extends AppCompatActivity
         implements View.OnDragListener, BluetoothListener, View.OnClickListener, RaspberryPiProtocol, Constants{
@@ -176,6 +181,7 @@ public class TaskActivity extends AppCompatActivity
             case ACTION_DROP:
                 ArenaCell arenaCell = (ArenaCell) event.getLocalState();
                 arenaFragment.removeCell(arenaCell);
+                arenaFragment.removeAdjacentCellHighlights(arenaFragment.getLastCell());
                 return true;
         }
         return true;
