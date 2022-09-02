@@ -32,8 +32,6 @@
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/rectangle_border.xml" value="0.196" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/south_facing_obstacle.xml" value="0.1" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/west_facing_obstacle.xml" value="0.1" />
-        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout-land/activity_task.xml" value="0.18" />
-        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout-sw600dp/activity_task.xml" value="0.17137293086660174" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/activity_bluetooth.xml" value="0.25" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/activity_main.xml" value="0.17831813576494426" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/layout/activity_task.xml" value="0.15118110236220472" />
@@ -73,6 +71,7 @@
         <entry key="app/src/main/res/drawable/id_38.xml" value="0.18" />
         <entry key="app/src/main/res/drawable/id_39.xml" value="0.18" />
         <entry key="app/src/main/res/drawable/id_40.xml" value="0.18" />
+        <entry key="app/src/main/res/layout-land/activity_task.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_bluetooth.xml" value="0.15520833333333334" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.15070921985815602" />
         <entry key="app/src/main/res/layout/activity_task.xml" value="0.15070921985815602" />
@@ -87,5 +86,5 @@
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_16_PREVIEW" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

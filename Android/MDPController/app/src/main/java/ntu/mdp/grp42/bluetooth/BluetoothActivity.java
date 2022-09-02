@@ -111,7 +111,7 @@ public class BluetoothActivity extends AppCompatActivity
         if (!bluetoothAdapter.isEnabled()) {
             onButton.setText("On Bluetooth");
         } else {
-            onButton.setText("Off Bluetooth");
+            onButton.setText("Off Bluetooth"); 
         }
 
         onButton.setOnClickListener(this);
