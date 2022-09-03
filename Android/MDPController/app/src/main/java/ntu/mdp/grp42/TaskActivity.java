@@ -21,6 +21,7 @@ import android.os.Looper;
 import android.os.Vibrator;
 import android.view.DragEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -48,9 +50,11 @@ import ntu.mdp.grp42.bluetooth.BluetoothService;
 import ntu.mdp.grp42.bluetooth.Constants;
 import ntu.mdp.grp42.bluetooth.RaspberryPiProtocol;
 import ntu.mdp.grp42.fragment.ArenaFragment;
+import ntu.mdp.grp42.fragment.BlankFragment;
 import ntu.mdp.grp42.fragment.LeftFragment;
 import ntu.mdp.grp42.fragment.RightControlFragment;
 import ntu.mdp.grp42.fragment.StartTaskFragment;
+import ntu.mdp.grp42.fragment.TimerFragment;
 import ntu.mdp.grp42.fragment.control1Fragment;
 import ntu.mdp.grp42.fragment.control2Fragment;
 
@@ -89,6 +93,7 @@ public class TaskActivity extends AppCompatActivity
     private ViewPagerAdapter viewPagerAdapter, viewPagerAdapter2;
     private ViewPager viewPager, viewPager2;
     private TabLayout tabLayout, tabLayout2;
+    private Button BTNTask1, BTNTask2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,13 +102,43 @@ public class TaskActivity extends AppCompatActivity
 
         viewPager = findViewById(R.id.viewpager);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.add(new StartTaskFragment(), "Start Tasks");
+        viewPagerAdapter.add(new BlankFragment(), "Start Tasks");
         viewPagerAdapter.add(new control1Fragment(), "Controllers");
         viewPager.setAdapter(viewPagerAdapter);
 
         tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager,true);
 
+        viewPager2 = findViewById(R.id.viewpager2);
+        viewPagerAdapter2 = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter2.add(new TimerFragment(), "Start Tasks");
+        viewPagerAdapter2.add(new control2Fragment(), "Controllers");
+        viewPager2.setAdapter(viewPagerAdapter2);
+
+        tabLayout2 = findViewById(R.id.tab_layout2);
+        tabLayout2.setupWithViewPager(viewPager2,true);
+
+        tabLayout2.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (viewPager2.getCurrentItem() == 0) {
+                    TabLayout.Tab tab1 = tabLayout.getTabAt(1);
+                    tab1.select();
+                }
+                if (viewPager2.getCurrentItem() == 1) {
+                    TabLayout.Tab tab1 = tabLayout.getTabAt(0);
+                    tab1.select();
+                }
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+
+        });
 
         getSupportActionBar().hide();
 
@@ -121,10 +156,38 @@ public class TaskActivity extends AppCompatActivity
         handler = new Handler();
 
         arenaFragment.setBluetoothService(bluetoothService);
-        control1Fragment.setBluetoothService(bluetoothService);
-        control2Fragment.setBluetoothService(bluetoothService);
+        //control1Fragment.setBluetoothService(bluetoothService);
+        //control2Fragment.setBluetoothService(bluetoothService);
 
         getSelectedDevice();
+    }
+    protected void onResume() {
+
+        super.onResume();
+        BTNTask1 = StartTaskFragment.getBTNtask1();
+        BTNTask2 = StartTaskFragment.getBTNtask2();
+        checkTask1();
+        checkTask2();
+        }
+
+    private void checkTask1() {
+
+        View.OnClickListener task1Handle = new View.OnClickListener() {
+
+            public void onClick(View v) {
+                    TimerFragment.setStopBTN();
+            }};
+        BTNTask1.setOnClickListener(task1Handle);
+    }
+
+    private void checkTask2() {
+        View.OnClickListener task2Handle = new View.OnClickListener() {
+
+            public void onClick(View v) {
+                TimerFragment.setStopBTN();
+            }};
+
+        BTNTask2.setOnClickListener(task2Handle);
     }
 
     @SuppressLint("MissingPermission")

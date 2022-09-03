@@ -94,7 +94,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         arenaTable = view.findViewById(R.id.arenaTable);
         robotIV = view.findViewById(R.id.robotIV);
-        arenaAxis = view.findViewById(R.id.arenaAxis);
+        //arenaAxis = view.findViewById(R.id.arenaAxis);
 
         arenaTable.getViewTreeObserver().addOnPreDrawListener( () -> {
             if (!arenaDrawn) {

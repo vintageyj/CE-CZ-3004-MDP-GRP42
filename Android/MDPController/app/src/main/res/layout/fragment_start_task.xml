@@ -9,78 +9,33 @@ tools:context=".fragment.StartTaskFragment">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/task1"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:layout_margin="20dp"
-            android:enabled="true"
-            android:text="Task 1" />
-
-        <Button
-            android:id="@+id/task2"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:layout_margin="20dp"
-            android:enabled="true"
-            android:text="Task 2" />
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="406dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/task1"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:padding="5dp"
-                android:text="Timer:"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="20dp"
-                android:textStyle="bold" />
+                android:layout_gravity="center_horizontal"
+                android:enabled="true"
+                android:text="Task 1" />
 
-            <TextView
-                android:id="@+id/timer"
-                android:layout_width="200dp"
+            <Button
+                android:id="@+id/task2"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/rectangle_border"
-                android:padding="10dp"
-                android:text="00:00:00"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="20dp" />
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:enabled="true"
+                android:text="Task 2" />
 
         </LinearLayout>
 
 
-
-        <Button
-            android:id="@+id/stop_buttonn"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="20dp"
-            android:enabled="false"
-            android:text="STOP" />
-
-        <Button
-            android:id="@+id/reset_buttonn"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:enabled="false"
-            android:text="reset" />
-
     </LinearLayout>
+
 </RelativeLayout>

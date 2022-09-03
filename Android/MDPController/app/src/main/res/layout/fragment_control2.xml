@@ -20,7 +20,7 @@ tools:context=".fragment.control2Fragment">
             android:layout_height="200dp"
             android:layout_gravity="center"
             android:orientation="horizontal"
-            android:layout_marginTop="0dp">
+            android:layout_marginTop="50dp">
 
             <ImageButton
                 android:id="@+id/leftBtn"

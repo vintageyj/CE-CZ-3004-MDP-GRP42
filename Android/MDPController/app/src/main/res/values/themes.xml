@@ -22,4 +22,8 @@
     <style name="Theme.MDPController.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.MDPController.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="TabSize" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">10dp</item>
+    </style>
 </resources>

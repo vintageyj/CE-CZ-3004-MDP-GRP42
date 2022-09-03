@@ -18,22 +18,22 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:padding="3dp"
             android:text="Robot Status:"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="10dp"
+            android:textSize="15dp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/robotStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:padding="3dp"
             android:text="None"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="10dp" />
+            android:textSize="15dp" />
 
         <View
             android:layout_width="match_parent"
@@ -45,22 +45,22 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:padding="3dp"
             android:text="Robot Direction:"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="10dp"
+            android:textSize="15dp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/robotDirection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:padding="3dp"
             android:text="North"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="10dp" />
+            android:textSize="15dp" />
 
 
         <View
@@ -73,22 +73,22 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="Current coordinates (x,y):"
+            android:padding="3dp"
+            android:text="Current coordinates:"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="10dp"
+            android:textSize="15dp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/robotCoordinates"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:padding="3dp"
             android:text="( x , y )"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="10dp" />
+            android:textSize="15dp" />
 
         <View
             android:layout_width="match_parent"
@@ -100,22 +100,28 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:padding="3dp"
             android:text="Last Message Received:"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="10dp"
+            android:textSize="15dp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/debugWindow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:padding="3dp"
             android:text="None"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="10dp" />
+            android:textSize="15dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="5dp"
+            android:background="@color/black" />
 
     </LinearLayout>
 </RelativeLayout>
