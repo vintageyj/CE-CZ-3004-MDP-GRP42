@@ -14,7 +14,8 @@ tools:context=".fragment.StartTaskFragment">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginTop="50dp">
 
             <Button
                 android:id="@+id/task1"
@@ -29,7 +30,7 @@ tools:context=".fragment.StartTaskFragment">
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="15dp"
                 android:enabled="true"
                 android:text="Task 2" />
 

@@ -93,7 +93,7 @@ public class TaskActivity extends AppCompatActivity
     private ViewPagerAdapter viewPagerAdapter, viewPagerAdapter2;
     private ViewPager viewPager, viewPager2;
     private TabLayout tabLayout, tabLayout2;
-    private Button BTNTask1, BTNTask2;
+    private Button BTNTask1, BTNTask2, BTNreset, BTNstop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +102,7 @@ public class TaskActivity extends AppCompatActivity
 
         viewPager = findViewById(R.id.viewpager);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.add(new BlankFragment(), "Start Tasks");
+        viewPagerAdapter.add(new StartTaskFragment(), "Start Tasks");
         viewPagerAdapter.add(new control1Fragment(), "Controllers");
         viewPager.setAdapter(viewPagerAdapter);
 
@@ -117,6 +117,82 @@ public class TaskActivity extends AppCompatActivity
 
         tabLayout2 = findViewById(R.id.tab_layout2);
         tabLayout2.setupWithViewPager(viewPager2,true);
+
+
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+                BTNTask1 = StartTaskFragment.getBTNtask1();
+                BTNTask2 = StartTaskFragment.getBTNtask2();
+                BTNstop = TimerFragment.getBTNstop();
+                BTNreset = TimerFragment.getBTNreset();
+
+                System.out.println("on page scrolled");
+                View.OnClickListener task1Handle = new View.OnClickListener() {
+
+                    public void onClick(View v) {
+                        BTNTask2.setEnabled(false);
+                        BTNreset.setEnabled(false);
+                        TimerFragment.resetBTNeffect();
+                        TimerFragment.taskEffect();
+                    }};
+                BTNTask1.setOnClickListener(task1Handle);
+
+                View.OnClickListener task2Handle = new View.OnClickListener() {
+
+                    public void onClick(View v) {
+                        BTNTask1.setEnabled(false);
+                        BTNreset.setEnabled(false);
+                        TimerFragment.resetBTNeffect();
+                        TimerFragment.taskEffect();
+                    }};
+                BTNTask2.setOnClickListener(task2Handle);
+
+                View.OnClickListener stopHandle = new View.OnClickListener() {
+
+                    public void onClick(View v) {
+                        BTNreset.setEnabled(true);
+                        TimerFragment.stopBTNeffect();
+                    }};
+                BTNstop.setOnClickListener(stopHandle);
+
+                View.OnClickListener resetHandle = new View.OnClickListener() {
+
+                    public void onClick(View v) {
+                        TimerFragment.resetBTNeffect();
+                        BTNstop.setEnabled(false);
+                        boolean stopped = TimerFragment.getStopStatus();
+                        if (stopped) {
+                            StartTaskFragment.resetTaskBTN();
+                        } else {
+                            TimerFragment.stopBTNeffect();
+                            StartTaskFragment.resetTaskBTN();
+                        }
+                        BTNreset.setEnabled(false);
+
+                    }};
+                BTNreset.setOnClickListener(resetHandle);
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                switch (i) {
+                    case 0:
+                        // init for first fragment
+
+                        break;
+                    case 1:
+                        System.out.println("in controllers view");
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
 
         tabLayout2.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -160,34 +236,6 @@ public class TaskActivity extends AppCompatActivity
         //control2Fragment.setBluetoothService(bluetoothService);
 
         getSelectedDevice();
-    }
-    protected void onResume() {
-
-        super.onResume();
-        BTNTask1 = StartTaskFragment.getBTNtask1();
-        BTNTask2 = StartTaskFragment.getBTNtask2();
-        checkTask1();
-        checkTask2();
-        }
-
-    private void checkTask1() {
-
-        View.OnClickListener task1Handle = new View.OnClickListener() {
-
-            public void onClick(View v) {
-                    TimerFragment.setStopBTN();
-            }};
-        BTNTask1.setOnClickListener(task1Handle);
-    }
-
-    private void checkTask2() {
-        View.OnClickListener task2Handle = new View.OnClickListener() {
-
-            public void onClick(View v) {
-                TimerFragment.setStopBTN();
-            }};
-
-        BTNTask2.setOnClickListener(task2Handle);
     }
 
     @SuppressLint("MissingPermission")
