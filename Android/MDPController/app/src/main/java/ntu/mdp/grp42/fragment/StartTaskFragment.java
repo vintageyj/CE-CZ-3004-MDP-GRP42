@@ -24,6 +24,7 @@ public class StartTaskFragment extends Fragment {
         // Required empty public constructor
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,11 @@ public class StartTaskFragment extends Fragment {
 
     public static Button getBTNtask2() {
         return BTNtask2;
+    }
+
+    public static void resetTaskBTN() {
+        BTNtask1.setEnabled(true);
+        BTNtask2.setEnabled(true);
     }
 
 }

@@ -53,6 +53,10 @@ public class TimerFragment extends Fragment {
         return BTNreset;
     }
 
+    public static boolean getStopStatus(){
+        return stopped;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,16 +70,6 @@ public class TimerFragment extends Fragment {
         BTNstop =  (Button)v.findViewById(R.id.stop_button);
         BTNreset = (Button)v.findViewById(R.id.reset_button);
 
-        View.OnClickListener stopHandle = new View.OnClickListener() {
-
-            public void onClick(View v) {
-                stopBTNeffect();
-
-                mHandler.removeCallbacks(startTimer);
-                stopped = true;
-            }
-        };
-        BTNstop.setOnClickListener(stopHandle);
 
         View.OnClickListener resetHandle = new View.OnClickListener() {
 
@@ -89,19 +83,25 @@ public class TimerFragment extends Fragment {
         return v;
     }
 
-    private void stopBTNeffect() {
-        ((Button)v.findViewById(R.id.reset_button)).setEnabled(true);
+    public static void stopBTNeffect() {
+        mHandler.removeCallbacks(startTimer);
+        stopped = true;
+
     }
 
-    private void resetBTNeffect(){
-        ((Button)v.findViewById(R.id.stop_button)).setEnabled(false);
+    public static void resetBTNeffect(){
+        stopped = false;
+        resetTimer();
     }
 
     public static void resetTimer(){
+
         ((TextView)v.findViewById(R.id.timer)).setText("00:00:00");
+        secs = 0;
+        mins = 0;
     }
 
-    public static void setStopBTN(){
+    public static void taskEffect(){
         BTNstop.setEnabled(true);
         if(stopped){
             resetTimer();
