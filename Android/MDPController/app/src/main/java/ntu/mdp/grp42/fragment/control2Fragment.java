@@ -47,14 +47,15 @@ public class control2Fragment extends Fragment implements RaspberryPiProtocol, V
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.leftBtn:
-                bluetoothService.write(LEFT_TURN.getBytes(StandardCharsets.UTF_8));
-                break;
-            case R.id.rightBtn:
-                bluetoothService.write(RIGHT_TURN.getBytes(StandardCharsets.UTF_8));
-                break;
-        }
+        if (bluetoothService != null)
+            switch (v.getId()) {
+                case R.id.leftBtn:
+                    bluetoothService.write(LEFT_TURN.getBytes(StandardCharsets.UTF_8));
+                    break;
+                case R.id.rightBtn:
+                    bluetoothService.write(RIGHT_TURN.getBytes(StandardCharsets.UTF_8));
+                    break;
+            }
     }
 
     public void setBluetoothService(BluetoothService bluetoothService) {

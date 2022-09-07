@@ -47,14 +47,15 @@ public class control1Fragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.upBtn:
-                bluetoothService.write(FORWARD.getBytes(StandardCharsets.UTF_8));
-                break;
-            case R.id.downBtn:
-                bluetoothService.write(REVERSE.getBytes(StandardCharsets.UTF_8));
-                break;
-        }
+        if (bluetoothService != null)
+            switch (v.getId()) {
+                case R.id.upBtn:
+                    bluetoothService.write(FORWARD.getBytes(StandardCharsets.UTF_8));
+                    break;
+                case R.id.downBtn:
+                    bluetoothService.write(REVERSE.getBytes(StandardCharsets.UTF_8));
+                    break;
+            }
     }
 
     public void setBluetoothService(BluetoothService bluetoothService) {
