@@ -43,8 +43,8 @@
 
     <ImageView
         android:id="@+id/robotIV"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:elevation="4dp"
         android:visibility="invisible"
         app:srcCompat="@drawable/ic_baseline_keyboard_double_arrow_up_24"/>

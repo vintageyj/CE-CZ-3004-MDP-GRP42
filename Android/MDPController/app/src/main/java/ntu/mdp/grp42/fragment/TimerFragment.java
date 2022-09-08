@@ -99,6 +99,7 @@ public class TimerFragment extends Fragment {
         ((TextView)v.findViewById(R.id.timer)).setText("00:00:00");
         secs = 0;
         mins = 0;
+        elapsedTime = 0;
     }
 
     public static void taskEffect(){
@@ -122,6 +123,11 @@ public class TimerFragment extends Fragment {
             mHandler.postDelayed(this,REFRESH_RATE);
         }
     };
+
+    private String formatTime(int minutes, int seconds, int milliseconds) {
+        return String.format("%02d", minutes) + ":" + String.format("%02d", seconds) + ":" +String.format("%02d", milliseconds);
+    }
+
 
     private static void updateTimer (float time){
         secs = (long)(time/1000);
@@ -173,9 +179,10 @@ public class TimerFragment extends Fragment {
             milliseconds = "00";
         }
 
-        milliseconds = milliseconds.substring(milliseconds.length()-3, milliseconds.length()-2);
+//        milliseconds = milliseconds.substring(milliseconds.length()-3, milliseconds.length()-2);
 
         /* Setting the timer text to the elapsed time */
-        ((TextView)v.findViewById(R.id.timer)).setText( minutes + ":" + seconds+"." + milliseconds);
+        String currentTime = String.format("%02d", (int) mins) + ":" + String.format("%02d", (int) secs) + ":" + String.format("%2d", ((int)time / 10) % 100);
+        ((TextView)v.findViewById(R.id.timer)).setText(currentTime);
     }//end Update Timer
 }

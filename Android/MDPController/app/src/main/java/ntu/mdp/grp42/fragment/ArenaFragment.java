@@ -172,7 +172,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
     public void rotateRobotLeft() {
         if (robotIV != null) {
-            robotIV.setRotation((robotIV.getRotation() - 90) % 360);
+            robotIV.setRotation((robotIV.getRotation() + 270) % 360);
             leftStatusFragment.setRobotDirection((int) robotIV.getRotation() / 90);
         }
         else
@@ -314,7 +314,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         int[] cellPos = new int[2];
         arenaCell.getLocationInWindow(cellPos);
         robotIV.setVisibility(View.VISIBLE);
-        robotIV.setX(arenaCell.getX());
+        robotIV.setX(arenaCell.getX() - dpToPixels(25));
         robotIV.setY(cellPos[1] -
 //                dpToPixels(24) -
                 dpToPixels(50));
@@ -322,7 +322,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
         spawnBox.setVisibility(View.VISIBLE);
         spawnBox.setX(arenaCell.getX() - dpToPixels(25));
-        spawnBox.setY(cellPos[1] - dpToPixels(26) - dpToPixels(50));
+        spawnBox.setY(cellPos[1] - dpToPixels(31) - dpToPixels(50));
 
         leftStatusFragment.setRobotCoordinates(arenaCell.x, arenaCell.y);
     }
