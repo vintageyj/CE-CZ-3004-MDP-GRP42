@@ -16,6 +16,8 @@ import ntu.mdp.grp42.bluetooth.BluetoothService;
 import ntu.mdp.grp42.bluetooth.RaspberryPiProtocol;
 
 public class control2Fragment extends Fragment implements RaspberryPiProtocol, View.OnClickListener {
+    private ArenaFragment arenaFragment;
+
     private BluetoothService bluetoothService;
 
     private ImageButton leftTurnButton, rightTurnButton;
@@ -43,19 +45,24 @@ public class control2Fragment extends Fragment implements RaspberryPiProtocol, V
 
         leftTurnButton.setOnClickListener(this);
         rightTurnButton.setOnClickListener(this);
+
+        arenaFragment = (ArenaFragment) getFragmentManager().findFragmentById(R.id.arenaFragment);
     }
 
     @Override
     public void onClick(View v) {
-        if (bluetoothService != null)
-            switch (v.getId()) {
-                case R.id.leftBtn:
+        switch (v.getId()) {
+            case R.id.leftBtn:
+                arenaFragment.rotateRobotLeft();
+                if (bluetoothService != null)
                     bluetoothService.write(LEFT_TURN.getBytes(StandardCharsets.UTF_8));
-                    break;
-                case R.id.rightBtn:
+                break;
+            case R.id.rightBtn:
+                arenaFragment.rotateRobotRight();
+                if (bluetoothService != null)
                     bluetoothService.write(RIGHT_TURN.getBytes(StandardCharsets.UTF_8));
-                    break;
-            }
+                break;
+        }
     }
 
     public void setBluetoothService(BluetoothService bluetoothService) {

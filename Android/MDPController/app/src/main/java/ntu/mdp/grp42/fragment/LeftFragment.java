@@ -14,6 +14,7 @@ import ntu.mdp.grp42.bluetooth.Constants;
 
 public class LeftFragment extends Fragment implements Constants {
     private TextView robotStatus, robotDirection, robotCoordinates, debugWindow;
+    private int x, y;
 
     public LeftFragment() {
         // Required empty public constructor
@@ -62,8 +63,30 @@ public class LeftFragment extends Fragment implements Constants {
         }
     }
 
+    public void incrementCoordinates(boolean x, boolean y) {
+        if (x)
+            this.x++;
+        if (y)
+            this.y--;
+        setRobotCoordinates();
+    }
+
+    public void decrementCoordinates(boolean x, boolean y) {
+        if (x)
+            this.x--;
+        if (y)
+            this.y++;
+        setRobotCoordinates();
+    }
+
+    public void setRobotCoordinates() {
+        robotCoordinates.setText(String.format("( %d , %d )", x, y));
+    }
+
     public void setRobotCoordinates(int x, int y) {
-        robotDirection.setText(String.format("( %d , %d ", x, y));
+        this.x = x;
+        this.y = y;
+        setRobotCoordinates();
     }
 
     public void setDebugWindow(String message){

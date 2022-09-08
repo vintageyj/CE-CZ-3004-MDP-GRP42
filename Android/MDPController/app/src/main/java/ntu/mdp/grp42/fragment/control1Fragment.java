@@ -12,11 +12,12 @@ import android.widget.ImageButton;
 import java.nio.charset.StandardCharsets;
 
 import ntu.mdp.grp42.R;
-import ntu.mdp.grp42.bluetooth.BluetoothListener;
 import ntu.mdp.grp42.bluetooth.BluetoothService;
 import ntu.mdp.grp42.bluetooth.RaspberryPiProtocol;
 
 public class control1Fragment extends Fragment implements View.OnClickListener, RaspberryPiProtocol {
+
+    ArenaFragment arenaFragment;
     BluetoothService bluetoothService;
     ImageButton forwardButton, reverseButton;
 
@@ -43,22 +44,31 @@ public class control1Fragment extends Fragment implements View.OnClickListener, 
 
         forwardButton.setOnClickListener(this);
         reverseButton.setOnClickListener(this);
+
+        arenaFragment = (ArenaFragment) getFragmentManager().findFragmentById(R.id.arenaFragment);
     }
 
     @Override
     public void onClick(View v) {
-        if (bluetoothService != null)
-            switch (v.getId()) {
-                case R.id.upBtn:
+        switch (v.getId()) {
+            case R.id.upBtn:
+                arenaFragment.forwardRobot();
+                if (bluetoothService != null)
                     bluetoothService.write(FORWARD.getBytes(StandardCharsets.UTF_8));
-                    break;
-                case R.id.downBtn:
+                break;
+            case R.id.downBtn:
+                arenaFragment.reverseRobot();
+                if (bluetoothService != null)
                     bluetoothService.write(REVERSE.getBytes(StandardCharsets.UTF_8));
-                    break;
-            }
+                break;
+        }
     }
 
     public void setBluetoothService(BluetoothService bluetoothService) {
         this.bluetoothService = bluetoothService;
+    }
+
+    public void setArenaFragment(ArenaFragment arenaFragment) {
+        this.arenaFragment = arenaFragment;
     }
 }

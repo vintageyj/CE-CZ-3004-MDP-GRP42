@@ -37,6 +37,38 @@ public class ArenaCell extends androidx.appcompat.widget.AppCompatButton {
                 return R.drawable.id_18;
             case 19:
                 return R.drawable.id_19;
+            case 20:
+                return R.drawable.id_20;
+            case 21:
+                return R.drawable.id_21;
+            case 22:
+                return R.drawable.id_22;
+            case 23:
+                return R.drawable.id_23;
+            case 24:
+                return R.drawable.id_24;
+            case 25:
+                return R.drawable.id_25;
+            case 26:
+                return R.drawable.id_26;
+            case 27:
+                return R.drawable.id_27;
+            case 28:
+                return R.drawable.id_28;
+            case 29:
+                return R.drawable.id_29;
+            case 30:
+                return R.drawable.id_30;
+            case 31:
+                return R.drawable.id_31;
+            case 32:
+                return R.drawable.id_32;
+            case 33:
+                return R.drawable.id_33;
+            case 34:
+                return R.drawable.id_34;
+            case 35:
+                return R.drawable.id_35;
             case 36:
                 return R.drawable.id_36;
             case 37:

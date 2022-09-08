@@ -274,10 +274,12 @@ public class TaskActivity extends AppCompatActivity
         arenaFragment = (ArenaFragment) fragmentManager.findFragmentById(R.id.arenaFragment);
         leftStatusFragment = (LeftFragment) fragmentManager.findFragmentById(R.id.leftControlFragment);
         rightControlFragment = (RightControlFragment) fragmentManager.findFragmentById(R.id.rightControlFragment);
-        rightControlFragment.setArenaFragment(arenaFragment);
-
         control1Fragment = (control1Fragment) fragmentManager.findFragmentById(R.id.control1Fragment);
         control2Fragment = (control2Fragment) fragmentManager.findFragmentById(R.id.control2Fragment);
+
+        rightControlFragment.setArenaFragment(arenaFragment);
+        control1Fragment.setArenaFragment(arenaFragment);
+
 
         LinearLayout mainLayout = findViewById(R.id.main_layout);
         mainLayout.setOnDragListener(this);

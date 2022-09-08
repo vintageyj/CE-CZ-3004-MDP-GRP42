@@ -67,9 +67,12 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     TableLayout arenaTable;
     ArrayList<ArrayList<ArenaCell>> arenaCellList = new ArrayList<ArrayList<ArenaCell>>();
     ArenaCell lastCell;
-    private ImageView robotIV, arenaAxis;
+    private ImageView robotIV, arenaAxis, spawnBox;
     static RadioGroup spawnRG;
     Drawable arenaCellBG;
+
+    // Status window
+    LeftFragment leftStatusFragment;
 
     private BluetoothService bluetoothService;
 
@@ -95,6 +98,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         arenaTable = view.findViewById(R.id.arenaTable);
         robotIV = view.findViewById(R.id.robotIV);
         //arenaAxis = view.findViewById(R.id.arenaAxis);
+        spawnBox = view.findViewById(R.id.robotSpawnIV);
 
         arenaTable.getViewTreeObserver().addOnPreDrawListener( () -> {
             if (!arenaDrawn) {
@@ -105,6 +109,8 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         });
 
         robotIV.setOnClickListener(this);
+
+        leftStatusFragment = (LeftFragment) getFragmentManager().findFragmentById(R.id.leftControlFragment);
     }
 
     protected void initArena(TableLayout arenaTable) {
@@ -149,19 +155,87 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.robotIV:
-                rotateRobot();
+                rotateRobotRight();
                 sendBTCommand(ROTATE_ROBOT,String.valueOf(robotIV.getRotation()));
                 break;
         }
     }
 
-    private void rotateRobot() {
-        robotIV.setRotation((robotIV.getRotation() + 90) % 360);
+    public void rotateRobotRight() {
+        if (robotIV != null) {
+            robotIV.setRotation((robotIV.getRotation() + 90) % 360);
+            leftStatusFragment.setRobotDirection((int) robotIV.getRotation() / 90);
+        }
+        else
+            setRobotWarning();
     }
 
-    public void moveRobot() {
-
+    public void rotateRobotLeft() {
+        if (robotIV != null) {
+            robotIV.setRotation((robotIV.getRotation() - 90) % 360);
+            leftStatusFragment.setRobotDirection((int) robotIV.getRotation() / 90);
+        }
+        else
+            setRobotWarning();
     }
+
+    public void forwardRobot() {
+        if (robotIV != null) {
+            switch ((int) robotIV.getRotation() % 360) {
+                case 0:
+                    robotIV.setY(robotIV.getY() - dpToPixels(25));
+                    leftStatusFragment.incrementCoordinates(false, true);
+                    break;
+                case 90:
+                    robotIV.setX(robotIV.getX() + dpToPixels(25));
+                    leftStatusFragment.incrementCoordinates(true, false);
+                    break;
+                case 180:
+                    robotIV.setY(robotIV.getY() + dpToPixels(25));
+                    leftStatusFragment.decrementCoordinates(false, true);
+                    break;
+                case 270:
+                    robotIV.setX(robotIV.getX() - dpToPixels(25));
+                    leftStatusFragment.decrementCoordinates(true, false);
+                    break;
+
+            }
+        } else {
+            setRobotWarning();
+        }
+    }
+
+    public void reverseRobot() {
+        if (robotIV != null) {
+            switch ((int) robotIV.getRotation() % 360) {
+                case 0:
+                    robotIV.setY(robotIV.getY() + dpToPixels(25));
+                    leftStatusFragment.decrementCoordinates(false, true);
+                    break;
+                case 90:
+                    robotIV.setX(robotIV.getX() - dpToPixels(25));
+                    leftStatusFragment.decrementCoordinates(true, false);
+                    break;
+                case 180:
+                    robotIV.setY(robotIV.getY() - dpToPixels(25));
+                    leftStatusFragment.incrementCoordinates(false, true);
+                    break;
+                case 270:
+                    robotIV.setX(robotIV.getX() + dpToPixels(25));
+                    leftStatusFragment.incrementCoordinates(true, false);
+                    break;
+
+            }
+        } else {
+            setRobotWarning();
+        }
+    }
+
+    private void setRobotWarning() {
+        Toast.makeText(getContext(), "Set the robot onto the arena first!", Toast.LENGTH_SHORT).show();
+    }
+
+
 
     public ArenaCell getLastCell() {
         return lastCell;
@@ -199,6 +273,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                 spawnRobot(arenaCell);
                 String data = arenaCell.x + "," + arenaCell.y + ",North";
                 sendBTCommand(SPAWN_ROBOT, data);
+
             }
             else {
                 int totalObstacle = ArenaFragment.arenaCoord.length * ArenaFragment.arenaCoord[0].length;
@@ -240,8 +315,16 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         arenaCell.getLocationInWindow(cellPos);
         robotIV.setVisibility(View.VISIBLE);
         robotIV.setX(arenaCell.getX());
-        robotIV.setY(cellPos[1] - dpToPixels(24) - dpToPixels(50));
+        robotIV.setY(cellPos[1] -
+//                dpToPixels(24) -
+                dpToPixels(50));
         robotIV.setRotation((0 * 90) % 360);
+
+        spawnBox.setVisibility(View.VISIBLE);
+        spawnBox.setX(arenaCell.getX() - dpToPixels(25));
+        spawnBox.setY(cellPos[1] - dpToPixels(26) - dpToPixels(50));
+
+        leftStatusFragment.setRobotCoordinates(arenaCell.x, arenaCell.y);
     }
 
     private int dpToPixels(int dp) {
@@ -392,14 +475,20 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                         originalCell = (ArenaCell) event.getLocalState();
 
                         // stops if dropped cell is same as original cell
-                        if (originalCell.getId() == newCell.getId())
+                        if (originalCell.getId() == newCell.getId()) {
+                            // removes all the highlights
+                            removeAdjacentCellHighlights(newArenaCell);
                             return true;
+                        }
 
                         // stops if dropped cell is on a populated cell
                         newArenaCell = newCell.findViewById(newCell.getId());
                         if (newArenaCell.obstacleID != -1) {
                             Toast.makeText(getContext(), "Remove Obstacle " + newArenaCell.obstacleID +
                                     " first!", Toast.LENGTH_SHORT).show();
+
+                            // removes all the highlights
+                            removeAdjacentCellHighlights(newArenaCell);
                             return true;
                         }
 
