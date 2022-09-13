@@ -57,7 +57,8 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
     // Arena Configs
     public static int[][] arenaCoord = new int[20][20];
-    int x, y, btnHeight, btnWidth;
+    int btnHeight, btnWidth;
+    int x, y;
     boolean arenaDrawn = false;
     HashMap<Integer, Obstacle> obstacleList = new HashMap<>();
     HashMap<Integer, Obstacle> dummyObstacleList = new HashMap<>();
@@ -391,8 +392,10 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
 
         ArenaCell arenaCell = arenaTable.findViewById(cellID);
-        if (direction >= UP && direction <= LEFT)
+        if (direction >= UP && direction <= LEFT) {
             arenaCell.setText(String.valueOf(obstacleID));
+            arenaCell.setTextSize(10);
+        }
         else
             arenaCell.setText(" ");
         arenaCell.obstacleID = obstacleID;
@@ -437,7 +440,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
             }
             return true;
         });
-
+        leftStatusFragment.initResultTable(obstacleList.size());
     }
 
     private class ArenaCellDragListener implements View.OnDragListener {
@@ -519,15 +522,19 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
         obstacleList.remove(obstacleID);
         arenaCell.setText("");
+        arenaCell.setTextSize(15);
         arenaCell.obstacleID = -1;
         arenaCell.setBackground(arenaCellBG);
+
+        leftStatusFragment.initResultTable(obstacleList.size());
     }
 
     public void updateCellImage(int cellID, int imageID) {
         Log.d(ARENA_FRAGMENT_TAG, "Cell ID: " + cellID + " Image ID: " + imageID);
         ArenaCell arenaCell = arenaTable.findViewById(cellID);
-        arenaCell.setText(" ");
-        arenaCell.setBackground(ResourcesCompat.getDrawable(getResources(), arenaCell.getImageID(imageID), null));
+        arenaCell.setTextSize(15);
+        arenaCell.setText(String.valueOf(imageID));
+//        arenaCell.setBackground(ResourcesCompat.getDrawable(getResources(), arenaCell.getImageID(imageID), null));
     }
 
     public void highlightAdjacentCells(ArenaCell arenaCell) {

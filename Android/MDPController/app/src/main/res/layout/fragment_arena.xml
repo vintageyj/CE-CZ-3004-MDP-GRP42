@@ -6,23 +6,43 @@
     android:layout_height="match_parent"
     tools:context=".fragment.ArenaFragment">
 
+<!--    <ImageView-->
+<!--    android:id="@+id/x_axis"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="50dp"-->
+<!--    android:layout_alignTop="@+id/arenaTable"-->
+<!--    android:layout_marginLeft="75dp"-->
+<!--    android:layout_marginRight="75dp"-->
+<!--    app:srcCompat="@drawable/x_axis"/>-->
+
+<!--    <ImageView-->
+<!--        android:id="@+id/y_axis"-->
+<!--        android:layout_width="50dp"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_alignLeft="@+id/arenaTable"-->
+<!--        android:layout_marginLeft="25dp"-->
+<!--        android:layout_marginTop="50dp"-->
+<!--        android:layout_marginBottom="50dp"-->
+<!--        app:srcCompat="@drawable/y_axis"/>-->
+
     <ImageView
-    android:id="@+id/x_axis"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:layout_alignTop="@+id/arenaTable"
-    android:layout_marginLeft="75dp"
-    android:layout_marginRight="75dp"
-    app:srcCompat="@drawable/x_axis"/>
+        android:id="@+id/x_axis"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignTop="@+id/arenaTable"
+        android:layout_marginTop="-20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="23dp"
+        app:srcCompat="@drawable/x_axis"/>
 
     <ImageView
         android:id="@+id/y_axis"
         android:layout_width="50dp"
         android:layout_height="match_parent"
         android:layout_alignLeft="@+id/arenaTable"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="-15dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="20dp"
         app:srcCompat="@drawable/y_axis"/>
 
 <!--    <ImageView-->
