@@ -40,6 +40,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -137,6 +138,7 @@ public class TaskActivity extends AppCompatActivity
                         BTNreset.setEnabled(false);
                         TimerFragment.resetBTNeffect();
                         TimerFragment.taskEffect();
+                        bluetoothService.write(START_TASK1.getBytes(StandardCharsets.UTF_8));
                     }};
                 BTNTask1.setOnClickListener(task1Handle);
 
@@ -147,6 +149,7 @@ public class TaskActivity extends AppCompatActivity
                         BTNreset.setEnabled(false);
                         TimerFragment.resetBTNeffect();
                         TimerFragment.taskEffect();
+                        bluetoothService.write(START_TASK2.getBytes(StandardCharsets.UTF_8));
                     }};
                 BTNTask2.setOnClickListener(task2Handle);
 
@@ -155,6 +158,7 @@ public class TaskActivity extends AppCompatActivity
                     public void onClick(View v) {
                         BTNreset.setEnabled(true);
                         TimerFragment.stopBTNeffect();
+                        bluetoothService.write(STOP_TASK.getBytes(StandardCharsets.UTF_8));
                     }};
                 BTNstop.setOnClickListener(stopHandle);
 
@@ -233,8 +237,8 @@ public class TaskActivity extends AppCompatActivity
         handler = new Handler();
 
         arenaFragment.setBluetoothService(bluetoothService);
-        //control1Fragment.setBluetoothService(bluetoothService);
-        //control2Fragment.setBluetoothService(bluetoothService);
+        control1Fragment.setBluetoothService(bluetoothService);
+        control2Fragment.setBluetoothService(bluetoothService);
 
         getSelectedDevice();
     }
@@ -371,6 +375,20 @@ public class TaskActivity extends AppCompatActivity
                 case UPDATE_OBSTACLE:
                     arenaFragment.updateCellImage(Integer.parseInt(strMessage[1]), Integer.parseInt(strMessage[2]));
                     break;
+                case FORWARD:
+                    arenaFragment.forwardRobot();
+                    break;
+                case REVERSE:
+                    arenaFragment.reverseRobot();
+                    break;
+                case LEFT_TURN:
+                    arenaFragment.rotateRobotLeft();
+                    break;
+                case RIGHT_TURN:
+                    arenaFragment.rotateRobotRight();
+                    break;
+                case STOP_TASK:
+                    BTNstop.performClick();
             }
         } catch (Exception e) {
             Log.e("receiveMessage", "Can't receive message" + e);

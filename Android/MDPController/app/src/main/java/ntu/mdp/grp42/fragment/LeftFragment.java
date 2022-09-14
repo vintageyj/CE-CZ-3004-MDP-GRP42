@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.TypedValue;
@@ -18,9 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import ntu.mdp.grp42.R;
 import ntu.mdp.grp42.arena.ArenaCell;
+import ntu.mdp.grp42.arena.Obstacle;
 import ntu.mdp.grp42.bluetooth.Constants;
 
 public class LeftFragment extends Fragment implements Constants {
@@ -64,6 +68,8 @@ public class LeftFragment extends Fragment implements Constants {
     }
 
     public void initResultTable(int obstacleNum) {
+        if (obstacleNum > 8 || obstacleNum < 0)
+            return;
         resultTable.removeAllViews();
         int btnSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25, getResources().getDisplayMetrics());
         Drawable cellBG = AppCompatResources.getDrawable(this.requireContext(), R.drawable.cell_background);
@@ -71,16 +77,33 @@ public class LeftFragment extends Fragment implements Constants {
         TableRow row = new TableRow(this.getContext());
         row.setHorizontalGravity(Gravity.CENTER_HORIZONTAL);
         for (int x = 0; x < obstacleNum; x++) {
+            // The original arena obstacle cell list might not be sorted in ascending order,
+            // after moving the arena cells around or adding or removing. So we have to sort the list first
+            Collections.sort(ArenaFragment.obstacleCells, new ObstacleIdComparator());
+
+            // Query for the xth obstacle cell
+            ArenaCell obstacleCell = ArenaFragment.obstacleCells.get(x);
+
+            // We can't directly assign the original obstacle cell into the new results table,
+            // so we'll need to create a copy of it instead
             ArenaCell arenaCell = new ArenaCell(this.getContext(), x, 0);
-            arenaCell.setId(View.generateViewId());
+            arenaCell.setId(x);
             arenaCell.setPadding(1,1,1,1);
-            arenaCell.setBackground(cellBG);
+            arenaCell.setBackground(obstacleCell.getBackground());
             arenaCell.setLayoutParams(new TableRow.LayoutParams(btnSize, btnSize));
             arenaCell.setTextColor(Color.rgb(255, 255, 255));
+//            arenaCell.setTextSize(obstacleCell.getTextSize());
+            arenaCell.setText(obstacleCell.getText());
             resultList[x] = arenaCell.getId();
             row.addView(arenaCell);
         }
         resultTable.addView(row);
+    }
+
+    public void updateResultTable(int obstacleID, int imageID) {
+        ArenaCell arenaCell = resultTable.findViewById(obstacleID - 1);
+        arenaCell.setText(" ");
+        arenaCell.setBackground(ResourcesCompat.getDrawable(getResources(), arenaCell.getImageID(imageID), null));
     }
 
     public void setRobotStatus(String robotStatus) {
@@ -134,5 +157,19 @@ public class LeftFragment extends Fragment implements Constants {
 
     public void setDebugWindow(String message){
         debugWindow.setText(message);
+    }
+}
+
+// Comparator Class for sorting of obstacle cells in the status window
+class ObstacleIdComparator implements Comparator<ArenaCell> {
+    // override the compare() method
+    public int compare(ArenaCell arenaCell1, ArenaCell arenaCell2)
+    {
+        if (arenaCell1.obstacleID == arenaCell2.obstacleID)
+            return 0;
+        else if (arenaCell1.obstacleID > arenaCell2.obstacleID)
+            return 1;
+        else
+            return -1;
     }
 }

@@ -14,6 +14,11 @@ public interface RaspberryPiProtocol {
     String SPAWN_ROBOT = "spawn_robot";
     String ROTATE_ROBOT = "rotate_robot";
 
+    // Task Controls
+    String START_TASK1 = "start_task_1";
+    String START_TASK2 = "start_task_2";
+    String STOP_TASK = "stop_task";
+
     // Update Status Window
     String STATUS = "status";
 }

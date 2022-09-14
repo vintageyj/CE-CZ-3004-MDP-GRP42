@@ -62,6 +62,8 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     boolean arenaDrawn = false;
     HashMap<Integer, Obstacle> obstacleList = new HashMap<>();
     HashMap<Integer, Obstacle> dummyObstacleList = new HashMap<>();
+    public static ArrayList<ArenaCell> obstacleCells = new ArrayList<>();
+
 
     final String[] directions = {"Up", "Right", "Down", "Left"};
 
@@ -440,6 +442,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
             }
             return true;
         });
+        obstacleCells.add(arenaCell);
         leftStatusFragment.initResultTable(obstacleList.size());
     }
 
@@ -526,14 +529,17 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         arenaCell.obstacleID = -1;
         arenaCell.setBackground(arenaCellBG);
 
+        obstacleCells.remove(arenaCell);
         leftStatusFragment.initResultTable(obstacleList.size());
     }
 
-    public void updateCellImage(int cellID, int imageID) {
-        Log.d(ARENA_FRAGMENT_TAG, "Cell ID: " + cellID + " Image ID: " + imageID);
-        ArenaCell arenaCell = arenaTable.findViewById(cellID);
+    public void updateCellImage(int obstacleID, int imageID) {
+        Log.d(ARENA_FRAGMENT_TAG, "Cell ID: " + obstacleID + " Image ID: " + imageID);
+        ArenaCell arenaCell = obstacleCells.get(obstacleID-1);
         arenaCell.setTextSize(15);
         arenaCell.setText(String.valueOf(imageID));
+
+        leftStatusFragment.updateResultTable(obstacleID, imageID);
 //        arenaCell.setBackground(ResourcesCompat.getDrawable(getResources(), arenaCell.getImageID(imageID), null));
     }
 
