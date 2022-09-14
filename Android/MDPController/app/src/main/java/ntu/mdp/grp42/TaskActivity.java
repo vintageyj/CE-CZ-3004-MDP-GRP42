@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.Button;
@@ -360,15 +361,18 @@ public class TaskActivity extends AppCompatActivity
 
     private void receiveMessage(String message) {
         leftStatusFragment.setDebugWindow(message);
-        String[] strMessage = message.split(" ");
-        Gson gson = new Gson();
-        switch (strMessage[0]) {
-            case STATUS:
-                leftStatusFragment.setRobotStatus(strMessage[1]);
-                break;
-            case UPDATE_OBSTACLE:
-                arenaFragment.updateCellImage(Integer.parseInt(strMessage[1]), Integer.parseInt(strMessage[2]));
-                break;
+        try {
+            String[] strMessage = message.split(" ");
+            Gson gson = new Gson();
+            switch (strMessage[0]) {
+                case STATUS:
+                    leftStatusFragment.setRobotStatus(strMessage[1]);
+                    break;
+                case UPDATE_OBSTACLE:
+                    break;
+            }
+        } catch (Exception e) {
+            Log.e("receiveMessage", "Can't receive message" + e);
         }
     }
 }
