@@ -201,7 +201,7 @@ public class BluetoothService {
             BluetoothSocket tmp = null;
 
             try {
-                tmp = bluetoothDevice.createRfcommSocketToServiceRecord(APP_UUID);
+                tmp = bluetoothDevice.createRfcommSocketToServiceRecord(APP_UUID); // was not insecure
             } catch (IOException e) {
                 Log.e(TAG, "Socket's create() method failed", e);
             }
@@ -214,7 +214,7 @@ public class BluetoothService {
             BluetoothSocket socket = null;
 
             try {
-                socket = bluetoothDevice.createRfcommSocketToServiceRecord(APP_UUID);
+                socket = bluetoothDevice.createRfcommSocketToServiceRecord(APP_UUID); // was not insecure
             } catch (IOException e) {
                 Log.e(TAG, "Socket's create() method failed", e);
             }

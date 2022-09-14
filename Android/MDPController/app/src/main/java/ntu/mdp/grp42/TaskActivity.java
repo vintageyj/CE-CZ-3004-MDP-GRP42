@@ -369,6 +369,7 @@ public class TaskActivity extends AppCompatActivity
                     leftStatusFragment.setRobotStatus(strMessage[1]);
                     break;
                 case UPDATE_OBSTACLE:
+                    arenaFragment.updateCellImage(Integer.parseInt(strMessage[1]), Integer.parseInt(strMessage[2]));
                     break;
             }
         } catch (Exception e) {
