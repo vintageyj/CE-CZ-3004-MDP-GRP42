@@ -8,15 +8,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import java.nio.charset.StandardCharsets;
 
 import ntu.mdp.grp42.R;
+import ntu.mdp.grp42.TaskActivity;
 import ntu.mdp.grp42.bluetooth.BluetoothService;
 import ntu.mdp.grp42.bluetooth.RaspberryPiProtocol;
 
 public class control1Fragment extends Fragment implements View.OnClickListener, RaspberryPiProtocol {
 
+    TaskActivity taskActivity;
     ArenaFragment arenaFragment;
     BluetoothService bluetoothService;
     ImageButton forwardButton, reverseButton;
@@ -39,6 +42,8 @@ public class control1Fragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        taskActivity = (TaskActivity) getActivity();
+
         forwardButton = view.findViewById(R.id.upBtn);
         reverseButton = view.findViewById(R.id.downBtn);
 
@@ -53,9 +58,13 @@ public class control1Fragment extends Fragment implements View.OnClickListener, 
         switch (v.getId()) {
             case R.id.upBtn:
                 arenaFragment.forwardRobot();
-                if (bluetoothService != null)
-                    bluetoothService.write(FORWARD.getBytes(StandardCharsets.UTF_8));
-                break;
+                try {
+                    taskActivity.send
+                    Toast.makeText(getContext(), "Pressed UP Btn", Toast.LENGTH_SHORT).show();
+                } finally {
+                    Toast.makeText(getContext(), "Bluetooth Service is null!", Toast.LENGTH_SHORT).show();
+                }
+                    break;
             case R.id.downBtn:
                 arenaFragment.reverseRobot();
                 if (bluetoothService != null)
@@ -65,6 +74,7 @@ public class control1Fragment extends Fragment implements View.OnClickListener, 
     }
 
     public void setBluetoothService(BluetoothService bluetoothService) {
+        Toast.makeText(getContext(), "Setting BTService", Toast.LENGTH_SHORT).show();
         this.bluetoothService = bluetoothService;
     }
 

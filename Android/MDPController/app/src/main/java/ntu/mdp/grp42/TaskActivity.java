@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -96,6 +97,9 @@ public class TaskActivity extends AppCompatActivity
     private ViewPager viewPager, viewPager2;
     private TabLayout tabLayout, tabLayout2;
     private Button BTNTask1, BTNTask2, BTNreset, BTNstop;
+
+    // D-Pad Controls
+    ImageButton forwardButton, reverseButton, leftTurnButton, rightTurnButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -285,6 +289,15 @@ public class TaskActivity extends AppCompatActivity
         rightControlFragment.setArenaFragment(arenaFragment);
         control1Fragment.setArenaFragment(arenaFragment);
 
+        forwardButton = control1Fragment.getForwardButton();
+        reverseButton = control1Fragment.getReverseButton();
+        leftTurnButton = control2Fragment.getLeftTurnButton();
+        rightTurnButton = control2Fragment.getRightTurnButton();
+
+        forwardButton.setOnClickListener(this);
+        reverseButton.setOnClickListener(this);
+        leftTurnButton.setOnClickListener(this);
+        rightTurnButton.setOnClickListener(this);
 
         LinearLayout mainLayout = findViewById(R.id.main_layout);
         mainLayout.setOnDragListener(this);
@@ -362,6 +375,25 @@ public class TaskActivity extends AppCompatActivity
         }
         return false;
     });
+
+    public void writeMessage(String message){
+        String[] strMessage = message.split(" ", 2);
+        String command = strMessage[0];
+        String data = strMessage[1];
+//        switch(command) {
+//            case SPAWN_ROBOT:
+//                message = SPAWN_ROBOT + "," + data;
+//                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
+//                break;
+//            case ROTATE_ROBOT:
+//                message = ROTATE_ROBOT + "," + data;
+//                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
+//            case ADD_OBSTACLE:
+//                break;
+//            case REMOVE_OBSTACLE:
+//                break;
+//        }
+    }
 
     private void receiveMessage(String message) {
         leftStatusFragment.setDebugWindow(message);

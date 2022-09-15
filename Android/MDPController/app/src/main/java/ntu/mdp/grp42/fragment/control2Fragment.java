@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import java.nio.charset.StandardCharsets;
 
@@ -56,6 +57,9 @@ public class control2Fragment extends Fragment implements RaspberryPiProtocol, V
                 arenaFragment.rotateRobotLeft();
                 if (bluetoothService != null)
                     bluetoothService.write(LEFT_TURN.getBytes(StandardCharsets.UTF_8));
+                else {
+                    Toast.makeText(getContext(), "BT Service is null", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.rightBtn:
                 arenaFragment.rotateRobotRight();
@@ -67,5 +71,13 @@ public class control2Fragment extends Fragment implements RaspberryPiProtocol, V
 
     public void setBluetoothService(BluetoothService bluetoothService) {
         this.bluetoothService = bluetoothService;
+    }
+
+    public ImageButton getLeftTurnButton() {
+        return leftTurnButton;
+    }
+
+    public ImageButton getRightTurnButton() {
+        return rightTurnButton;
     }
 }
