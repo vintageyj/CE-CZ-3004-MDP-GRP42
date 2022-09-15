@@ -12,7 +12,7 @@ public class Obstacle {
     }
 
     public String getObstacleData(){
-        String data = String.format("%d,%d,%d,%d,%d",
+        String data = String.format("%d %d %d %d %d",
                 obstacleID, cellID, x, y, direction);
         return data;
     }

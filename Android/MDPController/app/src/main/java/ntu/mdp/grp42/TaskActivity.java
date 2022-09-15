@@ -23,7 +23,6 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -42,18 +41,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import ntu.mdp.grp42.arena.ArenaCell;
+import ntu.mdp.grp42.arena.Obstacle;
 import ntu.mdp.grp42.bluetooth.BluetoothActivity;
 import ntu.mdp.grp42.bluetooth.BluetoothListener;
 import ntu.mdp.grp42.bluetooth.BluetoothService;
 import ntu.mdp.grp42.bluetooth.Constants;
 import ntu.mdp.grp42.bluetooth.RaspberryPiProtocol;
 import ntu.mdp.grp42.fragment.ArenaFragment;
-import ntu.mdp.grp42.fragment.BlankFragment;
 import ntu.mdp.grp42.fragment.LeftFragment;
 import ntu.mdp.grp42.fragment.RightControlFragment;
 import ntu.mdp.grp42.fragment.StartTaskFragment;
@@ -96,137 +94,16 @@ public class TaskActivity extends AppCompatActivity
     private ViewPagerAdapter viewPagerAdapter, viewPagerAdapter2;
     private ViewPager viewPager, viewPager2;
     private TabLayout tabLayout, tabLayout2;
-    private Button BTNTask1, BTNTask2, BTNreset, BTNstop;
-
-    // D-Pad Controls
-    ImageButton forwardButton, reverseButton, leftTurnButton, rightTurnButton;
+    private Button btnTask1, btnTask2, btnReset, btnStop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
 
-        viewPager = findViewById(R.id.viewpager);
-        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.add(new StartTaskFragment(), "Start Tasks");
-        viewPagerAdapter.add(new control1Fragment(), "Controllers");
-        viewPager.setAdapter(viewPagerAdapter);
-
-        tabLayout = findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager,true);
-
-        viewPager2 = findViewById(R.id.viewpager2);
-        viewPagerAdapter2 = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter2.add(new TimerFragment(), "Start Tasks");
-        viewPagerAdapter2.add(new control2Fragment(), "Controllers");
-        viewPager2.setAdapter(viewPagerAdapter2);
-
-        tabLayout2 = findViewById(R.id.tab_layout2);
-        tabLayout2.setupWithViewPager(viewPager2,true);
-
-
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-                BTNTask1 = StartTaskFragment.getBTNtask1();
-                BTNTask2 = StartTaskFragment.getBTNtask2();
-                BTNstop = TimerFragment.getBTNstop();
-                BTNreset = TimerFragment.getBTNreset();
-
-                System.out.println("on page scrolled");
-                View.OnClickListener task1Handle = new View.OnClickListener() {
-
-                    public void onClick(View v) {
-                        BTNTask2.setEnabled(false);
-                        BTNreset.setEnabled(false);
-                        TimerFragment.resetBTNeffect();
-                        TimerFragment.taskEffect();
-                        bluetoothService.write(START_TASK1.getBytes(StandardCharsets.UTF_8));
-                    }};
-                BTNTask1.setOnClickListener(task1Handle);
-
-                View.OnClickListener task2Handle = new View.OnClickListener() {
-
-                    public void onClick(View v) {
-                        BTNTask1.setEnabled(false);
-                        BTNreset.setEnabled(false);
-                        TimerFragment.resetBTNeffect();
-                        TimerFragment.taskEffect();
-                        bluetoothService.write(START_TASK2.getBytes(StandardCharsets.UTF_8));
-                    }};
-                BTNTask2.setOnClickListener(task2Handle);
-
-                View.OnClickListener stopHandle = new View.OnClickListener() {
-
-                    public void onClick(View v) {
-                        BTNreset.setEnabled(true);
-                        TimerFragment.stopBTNeffect();
-                        bluetoothService.write(STOP_TASK.getBytes(StandardCharsets.UTF_8));
-                    }};
-                BTNstop.setOnClickListener(stopHandle);
-
-                View.OnClickListener resetHandle = new View.OnClickListener() {
-
-                    public void onClick(View v) {
-                        TimerFragment.resetBTNeffect();
-                        BTNstop.setEnabled(false);
-                        boolean stopped = TimerFragment.getStopStatus();
-                        if (stopped) {
-                            StartTaskFragment.resetTaskBTN();
-                        } else {
-                            TimerFragment.stopBTNeffect();
-                            StartTaskFragment.resetTaskBTN();
-                        }
-                        BTNreset.setEnabled(false);
-
-                    }};
-                BTNreset.setOnClickListener(resetHandle);
-            }
-
-            @Override
-            public void onPageSelected(int i) {
-                switch (i) {
-                    case 0:
-                        // init for first fragment
-
-                        break;
-                    case 1:
-                        System.out.println("in controllers view");
-                        break;
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
-
-        tabLayout2.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if (viewPager2.getCurrentItem() == 0) {
-                    TabLayout.Tab tab1 = tabLayout.getTabAt(1);
-                    tab1.select();
-                }
-                if (viewPager2.getCurrentItem() == 1) {
-                    TabLayout.Tab tab1 = tabLayout.getTabAt(0);
-                    tab1.select();
-                }
-            }
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-
-        });
-
         getSupportActionBar().hide();
 
+        // Checks for app permissions and requests for missing ones
         if (!hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, 1);
         }
@@ -239,10 +116,6 @@ public class TaskActivity extends AppCompatActivity
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         bluetoothService.setOnBluetoothStatusChange(this);
         handler = new Handler();
-
-        arenaFragment.setBluetoothService(bluetoothService);
-        control1Fragment.setBluetoothService(bluetoothService);
-        control2Fragment.setBluetoothService(bluetoothService);
 
         getSelectedDevice();
     }
@@ -289,18 +162,128 @@ public class TaskActivity extends AppCompatActivity
         rightControlFragment.setArenaFragment(arenaFragment);
         control1Fragment.setArenaFragment(arenaFragment);
 
-        forwardButton = control1Fragment.getForwardButton();
-        reverseButton = control1Fragment.getReverseButton();
-        leftTurnButton = control2Fragment.getLeftTurnButton();
-        rightTurnButton = control2Fragment.getRightTurnButton();
-
-        forwardButton.setOnClickListener(this);
-        reverseButton.setOnClickListener(this);
-        leftTurnButton.setOnClickListener(this);
-        rightTurnButton.setOnClickListener(this);
-
         LinearLayout mainLayout = findViewById(R.id.main_layout);
         mainLayout.setOnDragListener(this);
+
+        initTabs();
+    }
+
+    private void initTabs() {
+        viewPager = findViewById(R.id.viewpager);
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.add(new StartTaskFragment(), "Start Tasks");
+        viewPagerAdapter.add(new control1Fragment(), "Controllers");
+        viewPager.setAdapter(viewPagerAdapter);
+
+        tabLayout = findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager,true);
+
+        viewPager2 = findViewById(R.id.viewpager2);
+        viewPagerAdapter2 = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter2.add(new TimerFragment(), "Start Tasks");
+        viewPagerAdapter2.add(new control2Fragment(), "Controllers");
+        viewPager2.setAdapter(viewPagerAdapter2);
+
+        tabLayout2 = findViewById(R.id.tab_layout2);
+        tabLayout2.setupWithViewPager(viewPager2,true);
+
+
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+                btnTask1 = StartTaskFragment.getBTNtask1();
+                btnTask2 = StartTaskFragment.getBTNtask2();
+                btnStop = TimerFragment.getBTNstop();
+                btnReset = TimerFragment.getBTNreset();
+
+                System.out.println("on page scrolled");
+                View.OnClickListener task1Handle = new View.OnClickListener() {
+
+                    public void onClick(View v) {
+                        btnTask2.setEnabled(false);
+                        btnReset.setEnabled(false);
+                        TimerFragment.resetBTNeffect();
+                        TimerFragment.taskEffect();
+                        bluetoothService.write(START_TASK1.getBytes(StandardCharsets.UTF_8));
+                    }};
+                btnTask1.setOnClickListener(task1Handle);
+
+                View.OnClickListener task2Handle = new View.OnClickListener() {
+
+                    public void onClick(View v) {
+                        btnTask1.setEnabled(false);
+                        btnReset.setEnabled(false);
+                        TimerFragment.resetBTNeffect();
+                        TimerFragment.taskEffect();
+                        bluetoothService.write(START_TASK2.getBytes(StandardCharsets.UTF_8));
+                    }};
+                btnTask2.setOnClickListener(task2Handle);
+
+                View.OnClickListener stopHandle = new View.OnClickListener() {
+
+                    public void onClick(View v) {
+                        btnReset.setEnabled(true);
+                        TimerFragment.stopBTNeffect();
+                        bluetoothService.write(STOP_TASK.getBytes(StandardCharsets.UTF_8));
+                    }};
+                btnStop.setOnClickListener(stopHandle);
+
+                View.OnClickListener resetHandle = new View.OnClickListener() {
+
+                    public void onClick(View v) {
+                        TimerFragment.resetBTNeffect();
+                        btnStop.setEnabled(false);
+                        boolean stopped = TimerFragment.getStopStatus();
+                        if (!stopped)
+                            TimerFragment.stopBTNeffect();
+                        StartTaskFragment.resetTaskBTN();
+                        btnReset.setEnabled(false);
+
+                    }};
+                btnReset.setOnClickListener(resetHandle);
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                switch (i) {
+                    case 0:
+                        // init for first fragment
+
+                        break;
+                    case 1:
+                        System.out.println("in controllers view");
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+
+        tabLayout2.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (viewPager2.getCurrentItem() == 0) {
+                    TabLayout.Tab tab1 = tabLayout.getTabAt(1);
+                    tab1.select();
+                }
+                if (viewPager2.getCurrentItem() == 1) {
+                    TabLayout.Tab tab1 = tabLayout.getTabAt(0);
+                    tab1.select();
+                }
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+
+        });
     }
 
     @Override
@@ -358,6 +341,8 @@ public class TaskActivity extends AppCompatActivity
                 bluetoothService.start();
                 activityResultLauncher.launch(new Intent(TaskActivity.this, BluetoothActivity.class));
                 break;
+            default:
+                break;
         }
     }
 
@@ -377,29 +362,14 @@ public class TaskActivity extends AppCompatActivity
     });
 
     public void writeMessage(String message){
-        String[] strMessage = message.split(" ", 2);
-        String command = strMessage[0];
-        String data = strMessage[1];
-//        switch(command) {
-//            case SPAWN_ROBOT:
-//                message = SPAWN_ROBOT + "," + data;
-//                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
-//                break;
-//            case ROTATE_ROBOT:
-//                message = ROTATE_ROBOT + "," + data;
-//                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
-//            case ADD_OBSTACLE:
-//                break;
-//            case REMOVE_OBSTACLE:
-//                break;
-//        }
+        bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
     }
 
     private void receiveMessage(String message) {
         leftStatusFragment.setDebugWindow(message);
         try {
             String[] strMessage = message.split(" ");
-            Gson gson = new Gson();
+//            Gson gson = new Gson();
             switch (strMessage[0]) {
                 case STATUS:
                     leftStatusFragment.setRobotStatus(strMessage[1]);
@@ -420,10 +390,47 @@ public class TaskActivity extends AppCompatActivity
                     arenaFragment.rotateRobotRight();
                     break;
                 case STOP_TASK:
-                    BTNstop.performClick();
+                    btnStop.performClick();
             }
         } catch (Exception e) {
             Log.e("receiveMessage", "Can't receive message" + e);
+        }
+    }
+
+    public void sendCommand(String message) {
+        String[] messages = message.split(" ", 2);
+        switch (messages[0]) {
+            case FORWARD:
+                writeMessage(FORWARD);
+                break;
+            case REVERSE:
+                writeMessage(REVERSE);
+                break;
+            case LEFT_TURN:
+                writeMessage(LEFT_TURN);
+                break;
+            case RIGHT_TURN:
+                writeMessage(RIGHT_TURN);
+                break;
+        }
+    }
+
+    public void sendCommand(String message, Object object) {
+        ArenaCell arenaCell;
+        Obstacle obstacle;
+        switch (message) {
+            case SPAWN_ROBOT:
+                arenaCell = (ArenaCell) object;
+                writeMessage(SPAWN_ROBOT + " " + arenaCell.x + " " + arenaCell.y + " N");
+                break;
+            case ADD_OBSTACLE:
+                obstacle = (Obstacle) object;
+                writeMessage(ADD_OBSTACLE + " " + obstacle.getObstacleData());
+                break;
+            case REMOVE_OBSTACLE:
+                obstacle = (Obstacle) object;
+                writeMessage(REMOVE_OBSTACLE + " " + obstacle.getObstacleData());
+                break;
         }
     }
 }

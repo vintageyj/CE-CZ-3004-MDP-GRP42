@@ -13,14 +13,13 @@ import android.widget.Toast;
 import java.nio.charset.StandardCharsets;
 
 import ntu.mdp.grp42.R;
+import ntu.mdp.grp42.TaskActivity;
 import ntu.mdp.grp42.bluetooth.BluetoothService;
 import ntu.mdp.grp42.bluetooth.RaspberryPiProtocol;
 
 public class control2Fragment extends Fragment implements RaspberryPiProtocol, View.OnClickListener {
+    private TaskActivity taskActivity;
     private ArenaFragment arenaFragment;
-
-    private BluetoothService bluetoothService;
-
     private ImageButton leftTurnButton, rightTurnButton;
 
     public control2Fragment() {
@@ -41,6 +40,8 @@ public class control2Fragment extends Fragment implements RaspberryPiProtocol, V
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        taskActivity = (TaskActivity) getActivity();
+
         leftTurnButton = view.findViewById(R.id.leftBtn);
         rightTurnButton = view.findViewById(R.id.rightBtn);
 
@@ -55,29 +56,12 @@ public class control2Fragment extends Fragment implements RaspberryPiProtocol, V
         switch (v.getId()) {
             case R.id.leftBtn:
                 arenaFragment.rotateRobotLeft();
-                if (bluetoothService != null)
-                    bluetoothService.write(LEFT_TURN.getBytes(StandardCharsets.UTF_8));
-                else {
-                    Toast.makeText(getContext(), "BT Service is null", Toast.LENGTH_SHORT).show();
-                }
+                taskActivity.sendCommand(LEFT_TURN);
                 break;
             case R.id.rightBtn:
                 arenaFragment.rotateRobotRight();
-                if (bluetoothService != null)
-                    bluetoothService.write(RIGHT_TURN.getBytes(StandardCharsets.UTF_8));
+                taskActivity.sendCommand(RIGHT_TURN);
                 break;
         }
-    }
-
-    public void setBluetoothService(BluetoothService bluetoothService) {
-        this.bluetoothService = bluetoothService;
-    }
-
-    public ImageButton getLeftTurnButton() {
-        return leftTurnButton;
-    }
-
-    public ImageButton getRightTurnButton() {
-        return rightTurnButton;
     }
 }

@@ -55,6 +55,8 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
     private String ARENA_FRAGMENT_TAG = "ARENA FRAGMENT";
 
+    private TaskActivity taskActivity;
+
     // Arena Configs
     public static int[][] arenaCoord = new int[20][20];
     int btnHeight, btnWidth;
@@ -77,7 +79,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     // Status window
     LeftFragment leftStatusFragment;
 
-    private BluetoothService bluetoothService;
+//    private BluetoothService bluetoothService;
 
 
     public ArenaFragment() {
@@ -98,6 +100,8 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        taskActivity = (TaskActivity) getActivity();
+
         arenaTable = view.findViewById(R.id.arenaTable);
         robotIV = view.findViewById(R.id.robotIV);
         //arenaAxis = view.findViewById(R.id.arenaAxis);
@@ -150,16 +154,12 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void setBluetoothService(BluetoothService bluetoothService) {
-        this.bluetoothService = bluetoothService;
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.robotIV:
                 rotateRobotRight();
-                sendBTCommand(ROTATE_ROBOT,String.valueOf(robotIV.getRotation()));
+                taskActivity.sendCommand(ROTATE_ROBOT + " " + robotIV.getRotation());
                 break;
         }
     }
@@ -274,9 +274,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
             if (spawnType.equals(getResources().getString(R.string.robot_cell))) {
                 spawnRobot(arenaCell);
-                String data = arenaCell.x + "," + arenaCell.y + ",North";
-                sendBTCommand(SPAWN_ROBOT, data);
-
+                taskActivity.sendCommand(SPAWN_ROBOT, arenaCell);
             }
             else {
                 int totalObstacle = ArenaFragment.arenaCoord.length * ArenaFragment.arenaCoord[0].length;
@@ -295,23 +293,23 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void sendBTCommand(String command, String data) {
-        String message = command + " " + data;
-        bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
-//        switch(command) {
-//            case SPAWN_ROBOT:
-//                message = SPAWN_ROBOT + "," + data;
-//                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
-//                break;
-//            case ROTATE_ROBOT:
-//                message = ROTATE_ROBOT + "," + data;
-//                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
-//            case ADD_OBSTACLE:
-//                break;
-//            case REMOVE_OBSTACLE:
-//                break;
-//        }
-    }
+//    private void sendBTCommand(String command, String data) {
+//        String message = command + " " + data;
+//        bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
+////        switch(command) {
+////            case SPAWN_ROBOT:
+////                message = SPAWN_ROBOT + "," + data;
+////                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
+////                break;
+////            case ROTATE_ROBOT:
+////                message = ROTATE_ROBOT + "," + data;
+////                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
+////            case ADD_OBSTACLE:
+////                break;
+////            case REMOVE_OBSTACLE:
+////                break;
+////        }
+//    }
 
     private void spawnRobot(ArenaCell arenaCell) {
         int[] cellPos = new int[2];
@@ -404,13 +402,15 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
         // keeps track of obstacle in memory
         Obstacle obstacle = new Obstacle(obstacleID, cellID, arenaCell.x, arenaCell.y, direction);
-        obstacleList.put(obstacleID, obstacle);
-        dummyObstacleList.put(obstacleID, obstacle);
+        if (direction == -1)
+            dummyObstacleList.put(obstacleID, obstacle);
+        else
+            obstacleList.put(obstacleID, obstacle);
 //
         // sends addition of obstacle over to robot
-        sendBTCommand(ADD_OBSTACLE, obstacle.getObstacleData());
-        Gson gson = new Gson();
-        sendBTCommand(ADD_OBSTACLE, gson.toJson(obstacle));
+        taskActivity.sendCommand(ADD_OBSTACLE, obstacle);
+//        Gson gson = new Gson();
+//        sendBTCommand(ADD_OBSTACLE, gson.toJson(obstacle));
 
         // draws direction of image onto cell
         Drawable cellFace = AppCompatResources.getDrawable(this.requireContext(), facingID);
@@ -442,7 +442,8 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
             }
             return true;
         });
-        obstacleCells.add(arenaCell);
+        if (direction != -1)
+            obstacleCells.add(arenaCell);
         leftStatusFragment.initResultTable(obstacleList.size());
     }
 
@@ -521,7 +522,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         int obstacleID = arenaCell.obstacleID;
 
         Obstacle obstacle = obstacleList.get(obstacleID);
-        sendBTCommand(REMOVE_OBSTACLE, obstacle.getObstacleData());
+        taskActivity.sendCommand(REMOVE_OBSTACLE, obstacle);
 
         obstacleList.remove(obstacleID);
         arenaCell.setText("");

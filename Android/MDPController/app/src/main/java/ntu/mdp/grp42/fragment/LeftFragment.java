@@ -94,6 +94,11 @@ public class LeftFragment extends Fragment implements Constants {
             arenaCell.setTextColor(Color.rgb(255, 255, 255));
 //            arenaCell.setTextSize(obstacleCell.getTextSize());
             arenaCell.setText(obstacleCell.getText());
+            int obstacleID = Integer.parseInt(arenaCell.getText().toString());
+            if (obstacleID >= 11 && obstacleID <= 40) {
+                arenaCell.setBackground(ResourcesCompat.getDrawable(getResources(), arenaCell.getImageID(obstacleID), null));
+                arenaCell.setText(" ");
+            }
             resultList[x] = arenaCell.getId();
             row.addView(arenaCell);
         }

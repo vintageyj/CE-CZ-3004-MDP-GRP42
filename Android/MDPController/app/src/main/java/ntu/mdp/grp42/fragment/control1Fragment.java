@@ -21,7 +21,6 @@ public class control1Fragment extends Fragment implements View.OnClickListener, 
 
     TaskActivity taskActivity;
     ArenaFragment arenaFragment;
-    BluetoothService bluetoothService;
     ImageButton forwardButton, reverseButton;
 
     public control1Fragment() {
@@ -58,24 +57,13 @@ public class control1Fragment extends Fragment implements View.OnClickListener, 
         switch (v.getId()) {
             case R.id.upBtn:
                 arenaFragment.forwardRobot();
-                try {
-                    taskActivity.send
-                    Toast.makeText(getContext(), "Pressed UP Btn", Toast.LENGTH_SHORT).show();
-                } finally {
-                    Toast.makeText(getContext(), "Bluetooth Service is null!", Toast.LENGTH_SHORT).show();
-                }
-                    break;
+                taskActivity.sendCommand(FORWARD);
+                break;
             case R.id.downBtn:
                 arenaFragment.reverseRobot();
-                if (bluetoothService != null)
-                    bluetoothService.write(REVERSE.getBytes(StandardCharsets.UTF_8));
+                taskActivity.sendCommand(REVERSE);
                 break;
         }
-    }
-
-    public void setBluetoothService(BluetoothService bluetoothService) {
-        Toast.makeText(getContext(), "Setting BTService", Toast.LENGTH_SHORT).show();
-        this.bluetoothService = bluetoothService;
     }
 
     public void setArenaFragment(ArenaFragment arenaFragment) {
