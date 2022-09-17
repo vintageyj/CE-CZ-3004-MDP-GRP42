@@ -54,9 +54,9 @@ public class BluetoothActivity extends AppCompatActivity
     BluetoothService bluetoothService;
 
 
-    private EditText messageBox;
-    private Button sendButton;
-    private static TextView messageList;
+//    private EditText messageBox;
+//    private Button sendButton;
+//    private static TextView messageList;
 
 
 
@@ -69,7 +69,7 @@ public class BluetoothActivity extends AppCompatActivity
         if (message.what == Constants.MESSAGE_READ) {
             byte[] readBuf = (byte[]) message.obj;
             String strMessage = new String(readBuf, 0, message.arg1);
-            messageList.setText(strMessage);
+//            messageList.setText(strMessage);
 
             try {
                 JSONObject json = new JSONObject(strMessage);
@@ -94,11 +94,11 @@ public class BluetoothActivity extends AppCompatActivity
         pairTextView = findViewById(R.id.pairedTextView);
         scanTextView = findViewById(R.id.scannedTextView);
 
-        messageBox = findViewById(R.id.message_box);
-        sendButton = findViewById(R.id.send_button);
-        messageList = findViewById(R.id.communicate_messages);
-
-        sendButton.setOnClickListener(this);
+//        messageBox = findViewById(R.id.message_box);
+//        sendButton = findViewById(R.id.send_button);
+//        messageList = findViewById(R.id.communicate_messages);
+//
+//        sendButton.setOnClickListener(this);
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
@@ -221,12 +221,12 @@ public class BluetoothActivity extends AppCompatActivity
                     Toast.makeText(BluetoothActivity.this, "Turn on Bluetooth first!", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.send_button:
-                String message = messageBox.getText().toString();
-                if (!message.equals(""))
-                    bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
-                messageBox.setText("");
-                break;
+//            case R.id.send_button:
+//                String message = messageBox.getText().toString();
+//                if (!message.equals(""))
+//                    bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
+//                messageBox.setText("");
+//                break;
         }
     }
 

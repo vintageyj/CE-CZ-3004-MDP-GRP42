@@ -105,8 +105,9 @@ public class TaskActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
 
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        // Hides the status and action bars
+//        View decorView = getWindow().getDecorView();
+//        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getSupportActionBar().hide();
 
         // Checks for app permissions and requests for missing ones
@@ -125,12 +126,13 @@ public class TaskActivity extends AppCompatActivity
         getSelectedDevice();
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-    }
+    // For removing the status bar
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        super.onWindowFocusChanged(hasFocus);
+//        View decorView = getWindow().getDecorView();
+//        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+//    }
 
 
     @SuppressLint("MissingPermission")
