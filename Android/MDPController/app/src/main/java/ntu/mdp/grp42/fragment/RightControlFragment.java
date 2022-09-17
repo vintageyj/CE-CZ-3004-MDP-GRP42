@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 
 import ntu.mdp.grp42.TaskActivity;
@@ -20,6 +21,7 @@ public class RightControlFragment extends Fragment
     RadioGroup spawnRG;
     Button bluetoothBtn;
     private ArenaFragment arenaFragment;
+    public ProgressBar spinner;
 
     public RightControlFragment() {
         // Required empty public constructor
@@ -42,6 +44,8 @@ public class RightControlFragment extends Fragment
         spawnRG = view.findViewById(R.id.spawnRG);
         bluetoothBtn = view.findViewById(R.id.bluetoothBtn);
         bluetoothBtn.setOnClickListener(this);
+        spinner = (ProgressBar) view.findViewById(R.id.progressBarBT);
+        spinner.setVisibility(View.INVISIBLE);
     }
 
     public RadioGroup getSpawnGroup() {

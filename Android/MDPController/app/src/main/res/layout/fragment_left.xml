@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.LeftFragment">
@@ -11,6 +12,38 @@
         android:orientation="vertical">
 
         <!-- Robot Status -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/rpi"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_margin="5dp"
+                android:layout_toLeftOf="@id/computer"
+                app:srcCompat="@drawable/raspberry_pi_red" />
+
+            <ImageView
+                android:id="@+id/computer"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerInParent="true"
+                android:layout_margin="5dp"
+                app:srcCompat="@drawable/computer"
+                app:tint="@color/red" />
+
+            <ImageView
+                android:id="@+id/stm"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_margin="5dp"
+                android:layout_toRightOf="@id/computer"
+                app:srcCompat="@drawable/car_surveillance"
+                app:tint="@color/red" />
+
+        </RelativeLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -122,7 +155,7 @@
         <TableLayout
             android:id="@+id/resultTable"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </RelativeLayout>

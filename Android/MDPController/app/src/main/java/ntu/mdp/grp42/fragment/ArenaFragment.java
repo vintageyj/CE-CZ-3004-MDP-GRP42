@@ -519,10 +519,10 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     }
 
     public void removeCell(ArenaCell arenaCell) {
+        Obstacle obstacle;
         int obstacleID = arenaCell.obstacleID;
 
-        Obstacle obstacle = obstacleList.get(obstacleID);
-        taskActivity.sendCommand(REMOVE_OBSTACLE, obstacle);
+        taskActivity.sendCommand(REMOVE_OBSTACLE, arenaCell);
 
         obstacleList.remove(obstacleID);
         arenaCell.setText("");

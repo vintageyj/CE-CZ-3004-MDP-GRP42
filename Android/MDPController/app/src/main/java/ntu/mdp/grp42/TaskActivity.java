@@ -35,7 +35,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,8 +79,13 @@ public class TaskActivity extends AppCompatActivity
     BluetoothAdapter bluetoothAdapter;
     public static BluetoothService bluetoothService;
     private BluetoothDevice targetDevice;
+    ArrayList<String> connectionStatus = new ArrayList<>(Arrays.asList(NOT_CONNECTED, "",CONNECTING, CONNECTED));
+    ArrayList<String> connectionStatusColor = new ArrayList<>(Arrays.asList("#FF0000", "", "#FEC20C", "#00FF00"));
     private AlertDialog alertDialog;
     private Handler handler;
+    private boolean disconnected = false;
+    private boolean reconnecting = false;
+    private int reconnectAttempt = 0;
 
     public static Vibrator vibrator;
 
@@ -101,6 +105,8 @@ public class TaskActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
 
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getSupportActionBar().hide();
 
         // Checks for app permissions and requests for missing ones
@@ -108,8 +114,7 @@ public class TaskActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this, PERMISSIONS, 1);
         }
 
-        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-
+        vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
         initViews();
 
         bluetoothService = new BluetoothService(bluetoothMessageHandler);
@@ -119,6 +124,14 @@ public class TaskActivity extends AppCompatActivity
 
         getSelectedDevice();
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+    }
+
 
     @SuppressLint("MissingPermission")
     private void getSelectedDevice() {
@@ -302,30 +315,93 @@ public class TaskActivity extends AppCompatActivity
     }
 
     public void onBluetoothStatusChange(int status) {
-        ArrayList<String> connectionStatus = new ArrayList<>(Arrays.asList(NOT_CONNECTED, "",CONNECTING, CONNECTED));
-        ArrayList<String> connectionStatusColor = new ArrayList<>(Arrays.asList("#B11226", "", "#FEC20C", "#00FF00"));
+        if (status == 0) {
+            disconnected = true;
+            if (reconnecting == false) {
+                reconnecting = true;
+                reconnectAttempt = 0;
+            }
+        } else if (status == 2) {
+            if (disconnected) {
+                updateBluetoothStatus(status);
+            }
+        } else if (status == 3) {
+            disconnected = false;
+            reconnectAttempt = 0;
+            reconnecting = false;
+        }
         runOnUiThread(() -> {
-            rightControlFragment.getBluetoothBtn().setText(connectionStatus.get(status));
-            rightControlFragment.getBluetoothBtn().setTextColor(Color.parseColor(connectionStatusColor.get(status)));
             if (bluetoothService.state == BluetoothService.STATE_NONE) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Reconnect to Bluetooth Device");
-                builder.setPositiveButton("Yes", (dialogInterface, i) -> {
+                if (reconnectAttempt < RECONNECTION_LIMIT && reconnecting == true) {
                     handler.postDelayed(() -> {
                         try {
                             bluetoothService.connect(targetDevice);
+//                            Toast.makeText(TaskActivity.this, "Reconnecting " + reconnectAttempt, Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
                             Toast.makeText(TaskActivity.this, "Failed to reconnect due to " + e, Toast.LENGTH_SHORT).show();
+                        } finally {
+                            handler.postDelayed(() -> {
+                                reconnectAttempt++;
+                            }, 1000);
                         }
                     }, 1000);
-                });
-                builder.setNegativeButton("No", null);
-                alertDialog = builder.show();
+                } else {
+                    reconnecting = false;
+                }
+
+                // AlertDialog for manual input on reconnection
+//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//                builder.setTitle("Reconnect to Bluetooth Device");
+//                builder.setPositiveButton("Yes", (dialogInterface, i) -> {
+//                    handler.postDelayed(() -> {
+//                        try {
+//                            bluetoothService.connect(targetDevice);
+//                        } catch (Exception e) {
+//                            Toast.makeText(TaskActivity.this, "Failed to reconnect due to " + e, Toast.LENGTH_SHORT).show();
+//                        }
+//                    }, 5000);
+//                });
+//                builder.setNegativeButton("No", null);
+//                alertDialog = builder.show();
+
             } else {
                 if (alertDialog != null)
                     alertDialog.dismiss();
             }
+            if (reconnecting && (bluetoothService.state != 0 || bluetoothService.state != 3))
+                return;
+            else {
+                updateBluetoothStatus(status);
+            }
         });
+    }
+
+    private void updateBluetoothStatus(int status) {
+        switch (status) {
+            case 0:
+                leftStatusFragment.setRedAll();
+                break;
+            case 2:
+                leftStatusFragment.setRpiColor(2);
+                leftStatusFragment.setPcColor(0);
+                leftStatusFragment.setStmColor(0);
+                break;
+            case 3:
+                leftStatusFragment.setYellowAll();
+                break;
+        }
+
+
+        if (status == 2) {
+            rightControlFragment.spinner.setVisibility(View.VISIBLE);
+        } else {
+            rightControlFragment.spinner.setVisibility(View.INVISIBLE);
+        }
+        if (disconnected && status == 2)
+            rightControlFragment.getBluetoothBtn().setText("Re" + connectionStatus.get(status));
+        else
+            rightControlFragment.getBluetoothBtn().setText(connectionStatus.get(status));
+        rightControlFragment.getBluetoothBtn().setTextColor(Color.parseColor(connectionStatusColor.get(status)));
     }
 
     @Override
@@ -371,6 +447,14 @@ public class TaskActivity extends AppCompatActivity
             String[] strMessage = message.split(" ");
 //            Gson gson = new Gson();
             switch (strMessage[0]) {
+                case CONNECTION:
+                    if (strMessage[1].equals(RPI))
+                        leftStatusFragment.setRpiColor(3);
+                    else if (strMessage[1].equals(PC))
+                        leftStatusFragment.setPcColor(3);
+                    else if (strMessage[1].equals(STM))
+                        leftStatusFragment.setStmColor(3);
+                    break;
                 case STATUS:
                     leftStatusFragment.setRobotStatus(strMessage[1]);
                     break;
@@ -421,15 +505,15 @@ public class TaskActivity extends AppCompatActivity
         switch (message) {
             case SPAWN_ROBOT:
                 arenaCell = (ArenaCell) object;
-                writeMessage(SPAWN_ROBOT + " " + arenaCell.x + " " + arenaCell.y + " N");
+                writeMessage(String.format("%s %d %d %s", SPAWN_ROBOT, arenaCell.x, arenaCell.y, "N"));
                 break;
             case ADD_OBSTACLE:
                 obstacle = (Obstacle) object;
-                writeMessage(ADD_OBSTACLE + " " + obstacle.getObstacleData());
+                writeMessage(String.format("%s %d %d %d", ADD_OBSTACLE, obstacle.x, obstacle.y, obstacle.direction));
                 break;
             case REMOVE_OBSTACLE:
-                obstacle = (Obstacle) object;
-                writeMessage(REMOVE_OBSTACLE + " " + obstacle.getObstacleData());
+                arenaCell = (ArenaCell) object;
+                writeMessage(String.format("%s %d %d", REMOVE_OBSTACLE, arenaCell.x, arenaCell.y));
                 break;
         }
     }

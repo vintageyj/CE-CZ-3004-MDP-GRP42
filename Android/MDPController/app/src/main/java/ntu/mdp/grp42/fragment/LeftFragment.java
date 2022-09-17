@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
@@ -13,6 +14,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -28,6 +30,7 @@ import ntu.mdp.grp42.arena.Obstacle;
 import ntu.mdp.grp42.bluetooth.Constants;
 
 public class LeftFragment extends Fragment implements Constants {
+    private ImageView rpi, pc, stm;
     private TextView robotStatus, robotDirection, robotCoordinates, debugWindow;
     private int x, y;
     private TableLayout resultTable;
@@ -52,6 +55,10 @@ public class LeftFragment extends Fragment implements Constants {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        rpi = view.findViewById(R.id.rpi);
+        pc = view.findViewById(R.id.computer);
+        stm = view.findViewById(R.id.stm);
+
         robotStatus = view.findViewById(R.id.robotStatus);
         robotDirection = view.findViewById(R.id.robotDirection);
         robotCoordinates = view.findViewById(R.id.robotCoordinates);
@@ -162,6 +169,60 @@ public class LeftFragment extends Fragment implements Constants {
 
     public void setDebugWindow(String message){
         debugWindow.setText(message);
+    }
+
+    public void setRpiColor(int color) {
+        switch (color) {
+            case 0:
+                rpi.setImageDrawable(AppCompatResources.getDrawable(this.requireContext(), R.drawable.raspberry_pi_red));
+                break;
+            case 2:
+                rpi.setImageDrawable(AppCompatResources.getDrawable(this.requireContext(), R.drawable.raspberry_pi_yellow));
+                break;
+            case 3:
+                rpi.setImageDrawable(AppCompatResources.getDrawable(this.requireContext(), R.drawable.raspberry_pi_green));
+                break;
+        }
+    }
+
+    public void setPcColor(int color) {
+        switch (color) {
+            case 0:
+                pc.setColorFilter(ContextCompat.getColor(getContext(), R.color.red));
+                break;
+            case 2:
+                pc.setColorFilter(ContextCompat.getColor(getContext(), R.color.honey_yellow));
+                break;
+            case 3:
+                pc.setColorFilter(ContextCompat.getColor(getContext(), R.color.green));
+                break;
+        }
+    }
+
+    public void setStmColor(int color) {
+        switch (color) {
+            case 0:
+                stm.setColorFilter(ContextCompat.getColor(getContext(), R.color.red));
+                break;
+            case 2:
+                stm.setColorFilter(ContextCompat.getColor(getContext(), R.color.honey_yellow));
+                break;
+            case 3:
+                stm.setColorFilter(ContextCompat.getColor(getContext(), R.color.green));
+                break;
+        }
+    }
+
+    public void setRedAll() {
+        setRpiColor(0);
+        setPcColor(0);
+        setStmColor(0);
+    }
+
+    public void setYellowAll() {
+        setRpiColor(2);
+        setPcColor(2);
+        setStmColor(2);
     }
 }
 

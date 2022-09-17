@@ -135,8 +135,19 @@ public class BluetoothActivity extends AppCompatActivity
                 if (!pairedDevices.contains(device) && !scanList.contains(device) && device.getName() != null) {
                     scanList.add(device);
                 }
+
+                // Save index and top position
+                int index = scanListView.getFirstVisiblePosition();
+                View view = scanListView.getChildAt(0);
+                int top = (view == null) ? 0 : view.getTop();
+
                 scanAdapter = new DeviceAdapter(getApplicationContext(), R.layout.device_adapter_view_layout, scanList);
                 scanListView.setAdapter(scanAdapter);
+
+                // Restore index and top position
+                scanListView.setSelectionFromTop(index, top);
+
+
 //                if (ActivityCompat.checkSelfPermission(BluetoothActivity.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
 //                    String deviceName = device.getName();
 //                    String deviceHardwareAddress = device.getAddress(); // MAC address

@@ -24,4 +24,6 @@ public interface Constants {
     String DEVICE_NAME = "device_name";
     String TOAST = "toast";
 
+    // Bluetooth Reconnection Window
+    int RECONNECTION_LIMIT = 30; // In seconds
 }

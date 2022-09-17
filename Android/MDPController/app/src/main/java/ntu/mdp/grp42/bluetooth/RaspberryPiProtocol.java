@@ -21,4 +21,8 @@ public interface RaspberryPiProtocol {
 
     // Update Status Window
     String STATUS = "status";
+    String CONNECTION = "connection_ok";
+    String RPI = "rpi";
+    String PC = "pc";
+    String STM = "stm";
 }
