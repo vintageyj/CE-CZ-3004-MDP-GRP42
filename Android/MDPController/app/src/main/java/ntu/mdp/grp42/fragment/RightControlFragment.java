@@ -9,15 +9,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import ntu.mdp.grp42.TaskActivity;
 import ntu.mdp.grp42.bluetooth.BluetoothActivity;
 import ntu.mdp.grp42.R;
 
 public class RightControlFragment extends Fragment
-    implements View.OnClickListener{
+        implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+    private Switch predictedPathSwitch;
+    private Switch takenPathSwitch;
+
     RadioGroup spawnRG;
     Button bluetoothBtn;
     private ArenaFragment arenaFragment;
@@ -41,6 +47,10 @@ public class RightControlFragment extends Fragment
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        predictedPathSwitch = view.findViewById(R.id.predictedPathSwitch);
+        predictedPathSwitch.setOnCheckedChangeListener(this);
+        takenPathSwitch = view.findViewById(R.id.takenPathSwitch);
+        takenPathSwitch.setOnCheckedChangeListener(this);
         spawnRG = view.findViewById(R.id.spawnRG);
         bluetoothBtn = view.findViewById(R.id.bluetoothBtn);
         bluetoothBtn.setOnClickListener(this);
@@ -67,5 +77,24 @@ public class RightControlFragment extends Fragment
 
     public Button getBluetoothBtn() {
         return bluetoothBtn;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        if (compoundButton == predictedPathSwitch) {
+            if (predictedPathSwitch.isChecked()) {
+                arenaFragment.showPredictedCells();
+                arenaFragment.predictedPathShown = true;
+            } else {
+                arenaFragment.removePredictedCells();
+                arenaFragment.predictedPathShown = false;
+            }
+        } else if (compoundButton == takenPathSwitch) {
+            if (takenPathSwitch.isChecked()) {
+                arenaFragment.showTakenCells();
+            } else {
+                arenaFragment.removeTakenCells();
+            }
+        }
     }
 }

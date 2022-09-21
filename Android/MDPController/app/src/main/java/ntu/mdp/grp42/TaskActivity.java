@@ -35,6 +35,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -447,8 +448,12 @@ public class TaskActivity extends AppCompatActivity
         leftStatusFragment.setDebugWindow(message);
         try {
             String[] strMessage = message.split(" ");
-//            Gson gson = new Gson();
+            Gson gson = new Gson();
             switch (strMessage[0]) {
+                case PREDICTED_PATH:
+                    int[][] path = gson.fromJson(strMessage[1], int[][].class);
+                    updatePredictedPath(path);
+                    break;
                 case CONNECTION:
                     if (strMessage[1].equals(RPI))
                         leftStatusFragment.setRpiColor(3);
@@ -483,20 +488,24 @@ public class TaskActivity extends AppCompatActivity
         }
     }
 
+    private void updatePredictedPath(int[][] path) {
+        arenaFragment.predictedPath = path;
+    }
+
     public void sendCommand(String message) {
         String[] messages = message.split(" ", 2);
         switch (messages[0]) {
             case FORWARD:
-                writeMessage(FORWARD);
+                writeMessage(STM + " " + FORWARD);
                 break;
             case REVERSE:
                 writeMessage(REVERSE);
                 break;
             case LEFT_TURN:
-                writeMessage(LEFT_TURN);
+                writeMessage(STM + " " + LEFT_TURN);
                 break;
             case RIGHT_TURN:
-                writeMessage(RIGHT_TURN);
+                writeMessage(STM + " " + RIGHT_TURN);
                 break;
         }
     }
@@ -511,7 +520,7 @@ public class TaskActivity extends AppCompatActivity
                 break;
             case ADD_OBSTACLE:
                 obstacle = (Obstacle) object;
-                writeMessage(String.format("%s %d %d %d", ADD_OBSTACLE, obstacle.x, obstacle.y, obstacle.direction));
+                writeMessage(String.format("%s %s|%d,%d,%d,%d", PC, ADD_OBSTACLE, obstacle.obstacleID,obstacle.x, obstacle.y, obstacle.direction));
                 break;
             case REMOVE_OBSTACLE:
                 arenaCell = (ArenaCell) object;

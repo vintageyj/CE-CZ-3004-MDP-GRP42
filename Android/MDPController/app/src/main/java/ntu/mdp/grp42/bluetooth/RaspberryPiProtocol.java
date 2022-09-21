@@ -2,13 +2,13 @@ package ntu.mdp.grp42.bluetooth;
 
 public interface RaspberryPiProtocol {
     // Robot Movement Controls
-    String FORWARD = "forward";
+    String FORWARD = "w";
     String REVERSE = "reverse";
-    String LEFT_TURN = "left_turn";
-    String RIGHT_TURN = "right_turn";
+    String LEFT_TURN = "q";
+    String RIGHT_TURN = "e";
 
     // Spawn Arena Objects
-    String ADD_OBSTACLE = "add_obstacle";
+    String ADD_OBSTACLE = "POS";
     String REMOVE_OBSTACLE = "remove_obstacle";
     String UPDATE_OBSTACLE = "update_obstacle";
     String SPAWN_ROBOT = "spawn_robot";
@@ -20,9 +20,10 @@ public interface RaspberryPiProtocol {
     String STOP_TASK = "stop_task";
 
     // Update Status Window
+    String PREDICTED_PATH = "predicted_path";
     String STATUS = "status";
-    String CONNECTION = "connection_ok";
-    String RPI = "rpi";
-    String PC = "pc";
-    String STM = "stm";
+    String CONNECTION = "C";
+    String RPI = "R";
+    String PC = "A";
+    String STM = "S";
 }

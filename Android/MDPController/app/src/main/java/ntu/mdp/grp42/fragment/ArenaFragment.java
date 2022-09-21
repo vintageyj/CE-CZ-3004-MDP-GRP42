@@ -17,6 +17,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
@@ -66,12 +67,18 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     HashMap<Integer, Obstacle> dummyObstacleList = new HashMap<>();
     public static ArrayList<ArenaCell> obstacleCells = new ArrayList<>();
 
+    // setText = " " (1 space for dummy obstacle, 2 spaces for predictedPath, 3 spaces for pathTaken
+    ArrayList<ArrayList<ArenaCell>> arenaCellList = new ArrayList<ArrayList<ArenaCell>>();
+    ArenaCell lastCell;
+
+    public static int[][] predictedPath = new int[20][20];
+    public static int[][] takenPath = new int[20][20];
+
+    public boolean predictedPathShown = false;
 
     final String[] directions = {"Up", "Right", "Down", "Left"};
 
     TableLayout arenaTable;
-    ArrayList<ArrayList<ArenaCell>> arenaCellList = new ArrayList<ArrayList<ArenaCell>>();
-    ArenaCell lastCell;
     private ImageView robotIV, arenaAxis, spawnBox;
     static RadioGroup spawnRG;
     Drawable arenaCellBG;
@@ -118,6 +125,21 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         robotIV.setOnClickListener(this);
 
         leftStatusFragment = (LeftFragment) getFragmentManager().findFragmentById(R.id.leftControlFragment);
+
+        initPaths();
+
+        takenPath[17][10] = 1;
+        predictedPath[16][3] = 1;
+        takenPath[16][3] = 1;
+    }
+
+    private void initPaths() {
+        for (int i = 0; i < predictedPath.length; i++) {
+            for (int j = 0; j < predictedPath.length; j++) {
+                predictedPath[i][j] = 0;
+                takenPath[i][j] = 0;
+            }
+        }
     }
 
     protected void initArena(TableLayout arenaTable) {
@@ -578,8 +600,68 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    public void showPredictedCells() {
+        for (int i = 0; i < predictedPath.length; i++) {
+            for (int j = 0; j < predictedPath.length; j ++) {
+                if (predictedPath[i][j] == 1) {
+                    ArenaCell arenaCell = arenaCellList.get(i).get(j);
+                    if (arenaCell.getText().toString().equals("")) {
+                        arenaCell.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.cell_predicted_path_background));
+                        arenaCell.setText("  ");
+                    }
+                }
+            }
+        }
+    }
 
-    public static String getSpawnType(){
+    public void removePredictedCells() {
+        for (int i = 0; i < predictedPath.length; i++) {
+            for (int j = 0; j < predictedPath.length; j ++) {
+                if (predictedPath[i][j] == 1) {
+                    ArenaCell arenaCell = arenaCellList.get(i).get(j);
+                    if (arenaCell.getText().toString().equals("  ")) {
+                        arenaCell.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.cell_background));
+                        arenaCell.setText("");
+                    }
+                }
+            }
+        }
+    }
+
+    public void showTakenCells() {
+        for (int i = 0; i < takenPath.length; i++) {
+            for (int j = 0; j < takenPath.length; j ++) {
+                if (takenPath[i][j] == 1) {
+                    ArenaCell arenaCell = arenaCellList.get(i).get(j);
+                    if (arenaCell.getText().toString().equals("") || arenaCell.getText().toString().equals("  ")) {
+                        arenaCell.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.cell_taken_path_background));
+                        arenaCell.setText("   ");
+                    }
+                }
+            }
+        }
+    }
+
+    public void removeTakenCells() {
+        for (int i = 0; i < takenPath.length; i++) {
+            for (int j = 0; j < takenPath.length; j ++) {
+                if (takenPath[i][j] == 1) {
+                    ArenaCell arenaCell = arenaCellList.get(i).get(j);
+                    if (predictedPath[i][j] == 1 && predictedPathShown) {
+                        arenaCell.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.cell_predicted_path_background));
+                        arenaCell.setText("  ");
+                    } else if (arenaCell.obstacleID > 0) {
+                        return;
+                    } else {
+                        arenaCell.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.cell_background));
+                        arenaCell.setText("");
+                    }
+                }
+            }
+        }
+    }
+
+    public static String getSpawnType() {
         RadioButton radioBtn = spawnRG.findViewById(spawnRG.getCheckedRadioButtonId());
         return radioBtn.getText().toString();
     }

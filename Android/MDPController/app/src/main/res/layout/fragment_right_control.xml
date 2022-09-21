@@ -10,6 +10,20 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <Switch
+            android:id="@+id/predictedPathSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Predicted Path"
+            android:checked="false"/>
+
+        <Switch
+            android:id="@+id/takenPathSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Taken Path"
+            android:checked="false"/>
+
         <RadioGroup
             android:id="@+id/spawnRG"
             android:layout_width="match_parent"
