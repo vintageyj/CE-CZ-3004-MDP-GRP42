@@ -157,6 +157,13 @@ public class LeftFragment extends Fragment implements Constants {
         setRobotCoordinates();
     }
 
+    public int[] getRobotCoordinates() {
+        int[] results = new int[2];
+        results[0] = x;
+        results[1] = y;
+        return results;
+    }
+
     public void setRobotCoordinates() {
         robotCoordinates.setText(String.format("( %d , %d )", x, y));
     }

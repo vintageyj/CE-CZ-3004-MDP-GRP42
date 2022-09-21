@@ -11,7 +11,7 @@ public interface RaspberryPiProtocol {
     String ADD_OBSTACLE = "POS";
     String REMOVE_OBSTACLE = "remove_obstacle";
     String UPDATE_OBSTACLE = "update_obstacle";
-    String SPAWN_ROBOT = "spawn_robot";
+    String SPAWN_ROBOT = "SPAWN";
     String ROTATE_ROBOT = "rotate_robot";
 
     // Task Controls
@@ -23,6 +23,7 @@ public interface RaspberryPiProtocol {
     String PREDICTED_PATH = "predicted_path";
     String STATUS = "status";
     String CONNECTION = "C";
+    String HOW = "HOW";
     String RPI = "R";
     String PC = "A";
     String STM = "S";

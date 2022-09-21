@@ -84,6 +84,10 @@ public class TaskActivity extends AppCompatActivity
     ArrayList<String> connectionStatusColor = new ArrayList<>(Arrays.asList("#FF0000", "", "#FEC20C", "#00FF00"));
     private AlertDialog alertDialog;
     private Handler handler;
+
+    private boolean rpi_connected = false;
+    private boolean stm_connected = false;
+    private boolean pc_connected = false;
     private boolean disconnected = false;
     private boolean reconnecting = false;
     private int reconnectAttempt = 0;
@@ -324,6 +328,9 @@ public class TaskActivity extends AppCompatActivity
                 reconnecting = true;
                 reconnectAttempt = 0;
             }
+            rpi_connected = false;
+            stm_connected = false;
+            pc_connected = false;
         } else if (status == 2) {
             if (disconnected) {
                 updateBluetoothStatus(status);
@@ -332,6 +339,7 @@ public class TaskActivity extends AppCompatActivity
             disconnected = false;
             reconnectAttempt = 0;
             reconnecting = false;
+            query_connection();
         }
         runOnUiThread(() -> {
             if (bluetoothService.state == BluetoothService.STATE_NONE) {
@@ -377,6 +385,16 @@ public class TaskActivity extends AppCompatActivity
                 updateBluetoothStatus(status);
             }
         });
+    }
+
+    private void query_connection() {
+        if (!rpi_connected || !stm_connected || !pc_connected) {
+            writeMessage(CONNECTION + " " + HOW);
+            handler.postDelayed(() -> {
+                if (!rpi_connected || !stm_connected || !pc_connected)
+                    query_connection();
+            }, 3000);
+        }
     }
 
     private void updateBluetoothStatus(int status) {
@@ -455,12 +473,18 @@ public class TaskActivity extends AppCompatActivity
                     updatePredictedPath(path);
                     break;
                 case CONNECTION:
-                    if (strMessage[1].equals(RPI))
+                    if (strMessage[1].equals(RPI)) {
                         leftStatusFragment.setRpiColor(3);
-                    else if (strMessage[1].equals(PC))
+                        rpi_connected = true;
+                    }
+                    else if (strMessage[1].equals(PC)) {
                         leftStatusFragment.setPcColor(3);
-                    else if (strMessage[1].equals(STM))
+                        pc_connected = true;
+                    }
+                    else if (strMessage[1].equals(STM)) {
                         leftStatusFragment.setStmColor(3);
+                        stm_connected = true;
+                    }
                     break;
                 case STATUS:
                     leftStatusFragment.setRobotStatus(strMessage[1]);
@@ -516,16 +540,29 @@ public class TaskActivity extends AppCompatActivity
         switch (message) {
             case SPAWN_ROBOT:
                 arenaCell = (ArenaCell) object;
-                writeMessage(String.format("%s %d %d %s", SPAWN_ROBOT, arenaCell.x, arenaCell.y, "N"));
+                String prependMsg = getObstacles();
+                writeMessage(String.format("%s %s|%s|%d,%d,%s", PC, prependMsg, SPAWN_ROBOT, arenaCell.x, arenaCell.y, "N"));
                 break;
-            case ADD_OBSTACLE:
-                obstacle = (Obstacle) object;
-                writeMessage(String.format("%s %s|%d,%d,%d,%d", PC, ADD_OBSTACLE, obstacle.obstacleID,obstacle.x, obstacle.y, obstacle.direction));
-                break;
+//            case ADD_OBSTACLE:
+//                obstacle = (Obstacle) object;
+//                writeMessage(String.format("%s %s|%d,%d,%d,%d", PC, ADD_OBSTACLE, obstacle.obstacleID,obstacle.x, obstacle.y, obstacle.direction));
+//                break;
             case REMOVE_OBSTACLE:
                 arenaCell = (ArenaCell) object;
                 writeMessage(String.format("%s %d %d", REMOVE_OBSTACLE, arenaCell.x, arenaCell.y));
                 break;
         }
+    }
+
+    private String getObstacles() {
+        String result = "POS";
+        int totalObstacles = arenaFragment.arenaCoord.length * arenaFragment.arenaCoord[0].length;
+        for (int obstacleID = 1; obstacleID <= totalObstacles; obstacleID++) {
+            if (arenaFragment.obstacleList.containsKey(obstacleID)) {
+                Obstacle obstacle = arenaFragment.obstacleList.get(obstacleID);
+                result = result + String.format("|%d,%d,%d,%s", obstacle.obstacleID, obstacle.x, obstacle.y, arenaFragment.facings[obstacle.direction]);
+            }
+        }
+        return result;
     }
 }

@@ -63,7 +63,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     int btnHeight, btnWidth;
     int x, y;
     boolean arenaDrawn = false;
-    HashMap<Integer, Obstacle> obstacleList = new HashMap<>();
+    public HashMap<Integer, Obstacle> obstacleList = new HashMap<>();
     HashMap<Integer, Obstacle> dummyObstacleList = new HashMap<>();
     public static ArrayList<ArenaCell> obstacleCells = new ArrayList<>();
 
@@ -73,10 +73,13 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
     public static int[][] predictedPath = new int[20][20];
     public static int[][] takenPath = new int[20][20];
+    public boolean showTakenPath = false;
+    public int robotX, robotY;
 
     public boolean predictedPathShown = false;
 
     final String[] directions = {"Up", "Right", "Down", "Left"};
+    public final String[] facings = {"N", "E", "S", "W"};
 
     TableLayout arenaTable;
     private ImageView robotIV, arenaAxis, spawnBox;
@@ -128,9 +131,9 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
         initPaths();
 
-        takenPath[17][10] = 1;
+//        takenPath[17][10] = 1;
         predictedPath[16][3] = 1;
-        takenPath[16][3] = 1;
+//        takenPath[16][3] = 1;
     }
 
     private void initPaths() {
@@ -225,6 +228,9 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                     break;
 
             }
+            highlightSurroundingCells(leftStatusFragment.getRobotCoordinates());
+            if (showTakenPath)
+                showTakenCells();
         } else {
             setRobotWarning();
         }
@@ -251,6 +257,9 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                     break;
 
             }
+            highlightSurroundingCells(leftStatusFragment.getRobotCoordinates());
+            if (showTakenPath)
+                showTakenCells();
         } else {
             setRobotWarning();
         }
@@ -296,6 +305,11 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
             if (spawnType.equals(getResources().getString(R.string.robot_cell))) {
                 spawnRobot(arenaCell);
+                hideTakenCells();
+                removeTakenCells();
+                highlightSurroundingCells(leftStatusFragment.getRobotCoordinates());
+                if (showTakenPath)
+                    showTakenCells();
                 taskActivity.sendCommand(SPAWN_ROBOT, arenaCell);
             }
             else {
@@ -600,6 +614,19 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    public void highlightSurroundingCells(int[] robotCoordinates) {
+        int x = robotCoordinates[0];
+        int y = robotCoordinates[1];
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                try {
+                    takenPath[y + i][x + j] = 1;
+                } catch (IndexOutOfBoundsException e) {
+                }
+            }
+        }
+    }
+
     public void showPredictedCells() {
         for (int i = 0; i < predictedPath.length; i++) {
             for (int j = 0; j < predictedPath.length; j ++) {
@@ -614,7 +641,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void removePredictedCells() {
+    public void hidePredictedCells() {
         for (int i = 0; i < predictedPath.length; i++) {
             for (int j = 0; j < predictedPath.length; j ++) {
                 if (predictedPath[i][j] == 1) {
@@ -642,7 +669,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void removeTakenCells() {
+    public void hideTakenCells() {
         for (int i = 0; i < takenPath.length; i++) {
             for (int j = 0; j < takenPath.length; j ++) {
                 if (takenPath[i][j] == 1) {
@@ -657,6 +684,14 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                         arenaCell.setText("");
                     }
                 }
+            }
+        }
+    }
+
+    public void removeTakenCells() {
+        for (int i = 0; i < takenPath.length; i++) {
+            for (int j = 0; j < takenPath.length; j ++) {
+                takenPath[i][j] = 0;
             }
         }
     }

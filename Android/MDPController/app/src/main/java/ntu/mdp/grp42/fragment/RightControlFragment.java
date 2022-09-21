@@ -13,7 +13,6 @@ import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import ntu.mdp.grp42.TaskActivity;
 import ntu.mdp.grp42.bluetooth.BluetoothActivity;
@@ -86,14 +85,16 @@ public class RightControlFragment extends Fragment
                 arenaFragment.showPredictedCells();
                 arenaFragment.predictedPathShown = true;
             } else {
-                arenaFragment.removePredictedCells();
+                arenaFragment.hidePredictedCells();
                 arenaFragment.predictedPathShown = false;
             }
         } else if (compoundButton == takenPathSwitch) {
             if (takenPathSwitch.isChecked()) {
                 arenaFragment.showTakenCells();
+                arenaFragment.showTakenPath = true;
             } else {
-                arenaFragment.removeTakenCells();
+                arenaFragment.hideTakenCells();
+                arenaFragment.showTakenPath = false;
             }
         }
     }
