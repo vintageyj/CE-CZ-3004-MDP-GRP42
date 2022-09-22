@@ -26,7 +26,8 @@
                 android:layout_weight="1"
                 android:layout_margin="5dp"
                 android:layout_marginLeft="10dp"
-                android:text="On / Off Bluetooth" />
+                android:text="On / Off Bluetooth"
+                android:transitionName="bluetooth_transition"/>
 
             <Button
                 android:id="@+id/discoverableButton"

@@ -67,7 +67,7 @@
         android:layout_height="75dp"
         android:elevation="4dp"
         android:visibility="invisible"
-        app:srcCompat="@drawable/ic_baseline_keyboard_double_arrow_up_24"/>
+        app:srcCompat="@drawable/car"/>
 
     <ImageView
         android:id="@+id/robotSpawnIV"

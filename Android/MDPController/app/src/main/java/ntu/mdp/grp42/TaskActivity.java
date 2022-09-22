@@ -8,6 +8,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -22,6 +23,10 @@ import android.os.Vibrator;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -31,7 +36,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.view.ViewCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -56,6 +66,7 @@ import ntu.mdp.grp42.fragment.LeftFragment;
 import ntu.mdp.grp42.fragment.RightControlFragment;
 import ntu.mdp.grp42.fragment.StartTaskFragment;
 import ntu.mdp.grp42.fragment.TimerFragment;
+import ntu.mdp.grp42.fragment.VideoFragment;
 import ntu.mdp.grp42.fragment.control1Fragment;
 import ntu.mdp.grp42.fragment.control2Fragment;
 
@@ -94,16 +105,21 @@ public class TaskActivity extends AppCompatActivity
 
     public static Vibrator vibrator;
 
+    static FragmentManager fragmentManager;
     ArenaFragment arenaFragment;
     LeftFragment leftStatusFragment;
     RightControlFragment rightControlFragment;
     control1Fragment control1Fragment;
     control2Fragment control2Fragment;
+    VideoFragment videoFragment;
 
-    private ViewPagerAdapter viewPagerAdapter, viewPagerAdapter2;
-    private ViewPager viewPager, viewPager2;
-    private TabLayout tabLayout, tabLayout2;
+    private ViewPagerAdapter viewPagerAdapter, viewPagerAdapter2, viewPagerAdapter3;
+    private ViewPager viewPager, viewPager2, viewPager3;
+    private TabLayout tabLayout;
+    private TabLayout tabLayout2;
+    private static TabLayout tabLayout3;
     private Button btnTask1, btnTask2, btnReset, btnStop;
+    private Button photoBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +130,7 @@ public class TaskActivity extends AppCompatActivity
 //        View decorView = getWindow().getDecorView();
 //        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getSupportActionBar().hide();
+//        showSplash();
 
         // Checks for app permissions and requests for missing ones
         if (!hasPermissions(this, PERMISSIONS)) {
@@ -121,6 +138,7 @@ public class TaskActivity extends AppCompatActivity
         }
 
         vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+        fragmentManager = getSupportFragmentManager();
         initViews();
 
         bluetoothService = new BluetoothService(bluetoothMessageHandler);
@@ -129,6 +147,37 @@ public class TaskActivity extends AppCompatActivity
         handler = new Handler();
 
         getSelectedDevice();
+    }
+
+    public void showSplash() {
+
+        final Dialog dialog = new Dialog(TaskActivity.this, android.R.style.Theme_NoTitleBar_Fullscreen);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        int width = ViewGroup.LayoutParams.MATCH_PARENT;
+        int height = ViewGroup.LayoutParams.MATCH_PARENT;
+        dialog.getWindow().setLayout(width, height);
+        dialog.setContentView(R.layout.activity_main);
+        dialog.setCancelable(true);
+        dialog.show();
+
+        final Handler handler  = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                {
+                    dialog.dismiss();
+                }
+            }
+        };
+        handler.postDelayed(runnable, 4000);
+    }
+
+    public static void swapFragments(int index) {
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(R.id.centerLayout, fragment);
+//        fragmentTransaction.commit();
+        TabLayout.Tab tab = tabLayout3.getTabAt(index);
+        tab.select();
     }
 
     // For removing the status bar
@@ -172,25 +221,26 @@ public class TaskActivity extends AppCompatActivity
 
 
     private void initViews() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        arenaFragment = (ArenaFragment) fragmentManager.findFragmentById(R.id.arenaFragment);
+
+//        arenaFragment = (ArenaFragment) fragmentManager.findFragmentById(R.id.arenaFragment);
         leftStatusFragment = (LeftFragment) fragmentManager.findFragmentById(R.id.leftControlFragment);
         rightControlFragment = (RightControlFragment) fragmentManager.findFragmentById(R.id.rightControlFragment);
         control1Fragment = (control1Fragment) fragmentManager.findFragmentById(R.id.control1Fragment);
         control2Fragment = (control2Fragment) fragmentManager.findFragmentById(R.id.control2Fragment);
-
-        rightControlFragment.setArenaFragment(arenaFragment);
-        control1Fragment.setArenaFragment(arenaFragment);
+        videoFragment = (VideoFragment) fragmentManager.findFragmentById(R.id.videoFragment);
 
         LinearLayout mainLayout = findViewById(R.id.main_layout);
         mainLayout.setOnDragListener(this);
 
         initTabs();
+        arenaFragment = (ArenaFragment) viewPagerAdapter3.getItem(0);
+        rightControlFragment.setArenaFragment(arenaFragment);
+        rightControlFragment.setVideoFragment(videoFragment);
     }
 
     private void initTabs() {
         viewPager = findViewById(R.id.viewpager);
-        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter = new ViewPagerAdapter(fragmentManager);
         viewPagerAdapter.add(new StartTaskFragment(), "Start Tasks");
         viewPagerAdapter.add(new control1Fragment(), "Controllers");
         viewPager.setAdapter(viewPagerAdapter);
@@ -199,7 +249,7 @@ public class TaskActivity extends AppCompatActivity
         tabLayout.setupWithViewPager(viewPager,true);
 
         viewPager2 = findViewById(R.id.viewpager2);
-        viewPagerAdapter2 = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter2 = new ViewPagerAdapter(fragmentManager);
         viewPagerAdapter2.add(new TimerFragment(), "Start Tasks");
         viewPagerAdapter2.add(new control2Fragment(), "Controllers");
         viewPager2.setAdapter(viewPagerAdapter2);
@@ -207,7 +257,14 @@ public class TaskActivity extends AppCompatActivity
         tabLayout2 = findViewById(R.id.tab_layout2);
         tabLayout2.setupWithViewPager(viewPager2,true);
 
+        viewPager3 = findViewById(R.id.viewpager3);
+        viewPagerAdapter3 = new ViewPagerAdapter(fragmentManager);
+        viewPagerAdapter3.add(new ArenaFragment(), "Arena");
+        viewPagerAdapter3.add(new VideoFragment(), "Video");
+        viewPager3.setAdapter(viewPagerAdapter3);
 
+        tabLayout3 = findViewById(R.id.tab_layout3);
+        tabLayout3.setupWithViewPager(viewPager3, true);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -216,6 +273,14 @@ public class TaskActivity extends AppCompatActivity
                 btnTask2 = StartTaskFragment.getBTNtask2();
                 btnStop = TimerFragment.getBTNstop();
                 btnReset = TimerFragment.getBTNreset();
+                photoBtn = StartTaskFragment.getPhotoBtn();
+
+                photoBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bluetoothService.write(TAKE_PHOTO.getBytes(StandardCharsets.UTF_8));
+                    }
+                });
 
                 System.out.println("on page scrolled");
                 View.OnClickListener task1Handle = new View.OnClickListener() {
@@ -436,7 +501,11 @@ public class TaskActivity extends AppCompatActivity
         switch (v.getId()) {
             case R.id.bluetoothBtn:
                 bluetoothService.start();
-                activityResultLauncher.launch(new Intent(TaskActivity.this, BluetoothActivity.class));
+                Intent intent = new Intent(TaskActivity.this, BluetoothActivity.class);
+//                Button button = rightControlFragment.getBluetoothBtn();
+//                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(TaskActivity.this, button, ViewCompat.getTransitionName(button));
+                activityResultLauncher.launch(intent);
+
                 break;
             default:
                 break;
@@ -528,7 +597,7 @@ public class TaskActivity extends AppCompatActivity
                 writeMessage(STM + " " + FORWARD);
                 break;
             case REVERSE:
-                writeMessage(REVERSE);
+                writeMessage(STM + " " + REVERSE);
                 break;
             case LEFT_TURN:
                 writeMessage(STM + " " + LEFT_TURN);
@@ -569,5 +638,22 @@ public class TaskActivity extends AppCompatActivity
             }
         }
         return result;
+    }
+
+    public void moveRobot(int direction) {
+        switch (direction) {
+            case 0:
+                arenaFragment.forwardRobot();
+                break;
+            case 1:
+                arenaFragment.rotateRobotRight();
+                break;
+            case 2:
+                arenaFragment.reverseRobot();
+                break;
+            case 3:
+                arenaFragment.rotateRobotLeft();
+                break;
+        }
     }
 }

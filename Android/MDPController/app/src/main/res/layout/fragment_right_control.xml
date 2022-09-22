@@ -10,25 +10,56 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Switch
-            android:id="@+id/predictedPathSwitch"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Predicted Path"
-            android:checked="false"/>
+            android:layout_marginTop="15dp"
+            android:text="Toggle Robot Paths" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Switch
+                android:id="@+id/predictedPathSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="30dp"
+                android:checked="false"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Predicted Path"
+                android:textColor="@android:color/black"/>
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <Switch
             android:id="@+id/takenPathSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Taken Path"
+            android:minHeight="30dp"
             android:checked="false"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Taken Path"
+            android:textColor="@android:color/black"/>
+    </LinearLayout>
+
+
 
         <RadioGroup
             android:id="@+id/spawnRG"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:checkedButton="@id/obstacleRGBtn">
 
             <TextView
@@ -40,14 +71,14 @@
                 android:id="@+id/robotRGBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="30dp"
                 android:text="@string/robot_cell" />
 
             <RadioButton
                 android:id="@+id/obstacleRGBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="30dp"
                 android:text="@string/obstacle_cell" />
 
             <RadioButton
@@ -70,7 +101,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:text="Bluetooth"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:transitionName="bluetooth_transition"/>
 
             <ProgressBar
                 android:id="@+id/progressBarBT"
@@ -88,5 +120,28 @@
 
         </RelativeLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/arenaButton"
+                android:text="arena"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_weight="0.5"/>
+
+            <Button
+                android:id="@+id/videoButton"
+                android:text="video"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"/>
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

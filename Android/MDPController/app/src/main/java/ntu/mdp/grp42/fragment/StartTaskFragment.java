@@ -18,6 +18,7 @@ import ntu.mdp.grp42.R;
 public class StartTaskFragment extends Fragment {
 
     private static Button BTNtask1, BTNtask2;
+    private static Button photoBtn;
     public View v;
 
     public StartTaskFragment() {
@@ -39,6 +40,7 @@ public class StartTaskFragment extends Fragment {
 
         BTNtask1 =  (Button)v.findViewById(R.id.task1);
         BTNtask2 =  (Button)v.findViewById(R.id.task2);
+        photoBtn = (Button) v.findViewById(R.id.photoBtn);
 
         return v;
     }
@@ -48,6 +50,10 @@ public class StartTaskFragment extends Fragment {
 
     public static Button getBTNtask2() {
         return BTNtask2;
+    }
+
+    public static Button getPhotoBtn() {
+        return photoBtn;
     }
 
     public static void resetTaskBTN() {

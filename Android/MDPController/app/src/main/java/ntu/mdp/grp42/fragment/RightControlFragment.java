@@ -24,8 +24,9 @@ public class RightControlFragment extends Fragment
     private Switch takenPathSwitch;
 
     RadioGroup spawnRG;
-    Button bluetoothBtn;
+    Button bluetoothBtn, arenaButton, videoButton;
     private ArenaFragment arenaFragment;
+    private VideoFragment videoFragment;
     public ProgressBar spinner;
 
     public RightControlFragment() {
@@ -55,6 +56,10 @@ public class RightControlFragment extends Fragment
         bluetoothBtn.setOnClickListener(this);
         spinner = (ProgressBar) view.findViewById(R.id.progressBarBT);
         spinner.setVisibility(View.INVISIBLE);
+        arenaButton = view.findViewById(R.id.arenaButton);
+        videoButton = view.findViewById(R.id.videoButton);
+        arenaButton.setOnClickListener(this);
+        videoButton.setOnClickListener(this);
     }
 
     public RadioGroup getSpawnGroup() {
@@ -64,12 +69,23 @@ public class RightControlFragment extends Fragment
         this.arenaFragment = arenaFragment;
     }
 
+    public void setVideoFragment(VideoFragment videoFragment) {
+        this.videoFragment = videoFragment;
+    }
+
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.bluetoothBtn:
                 TaskActivity.bluetoothService.start();
                 TaskActivity.activityResultLauncher.launch(new Intent(getActivity(), BluetoothActivity.class));
+                break;
+            case R.id.arenaButton:
+                TaskActivity.swapFragments(0);
+
+                break;
+            case R.id.videoButton:
+                TaskActivity.swapFragments(1);
                 break;
         }
     }

@@ -34,6 +34,15 @@ tools:context=".fragment.StartTaskFragment">
                 android:enabled="true"
                 android:text="Task 2" />
 
+            <Button
+                android:id="@+id/photoBtn"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
+                android:enabled="true"
+                android:text="Photo" />
+
         </LinearLayout>
 
 

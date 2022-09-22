@@ -351,6 +351,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         robotIV.setX(arenaCell.getX() - dpToPixels(25));
         robotIV.setY(cellPos[1] -
 //                dpToPixels(24) -
+                dpToPixels(6) -
                 dpToPixels(50));
         robotIV.setRotation((0 * 90) % 360);
 
@@ -624,7 +625,10 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                 }
             }
         } else {
-            takenPath[y][x] = 1;
+            try {
+                takenPath[y][x] = 1;
+            } catch (IndexOutOfBoundsException e) {
+            }
         }
     }
 

@@ -3,7 +3,7 @@ package ntu.mdp.grp42.bluetooth;
 public interface RaspberryPiProtocol {
     // Robot Movement Controls
     String FORWARD = "w";
-    String REVERSE = "reverse";
+    String REVERSE = "t";
     String LEFT_TURN = "q";
     String RIGHT_TURN = "e";
 
@@ -18,6 +18,7 @@ public interface RaspberryPiProtocol {
     String START_TASK1 = "start_task_1";
     String START_TASK2 = "start_task_2";
     String STOP_TASK = "stop_task";
+    String TAKE_PHOTO = "take_image";
 
     // Update Status Window
     String PREDICTED_PATH = "predicted_path";
@@ -27,4 +28,7 @@ public interface RaspberryPiProtocol {
     String RPI = "R";
     String PC = "A";
     String STM = "S";
+
+    // RTSP Stream Link
+    String RTSP_LINK = "rtsp://192.168.42.42:8554/stream";
 }
