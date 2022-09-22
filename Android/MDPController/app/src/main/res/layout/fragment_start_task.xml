@@ -50,6 +50,7 @@ tools:context=".fragment.StartTaskFragment">
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 android:enabled="true"
+                android:visibility="gone"
                 android:text="Clear Map" />
 
         </LinearLayout>
