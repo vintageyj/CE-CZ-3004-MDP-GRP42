@@ -30,7 +30,7 @@ tools:context=".fragment.StartTaskFragment">
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:enabled="true"
                 android:text="Task 2" />
 
@@ -42,6 +42,15 @@ tools:context=".fragment.StartTaskFragment">
                 android:layout_marginTop="15dp"
                 android:enabled="true"
                 android:text="Photo" />
+
+            <Button
+                android:id="@+id/clear_map"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:enabled="true"
+                android:text="Clear Map" />
 
         </LinearLayout>
 
