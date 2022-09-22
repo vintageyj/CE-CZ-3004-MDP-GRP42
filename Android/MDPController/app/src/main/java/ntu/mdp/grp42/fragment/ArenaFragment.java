@@ -77,6 +77,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     public int robotX, robotY;
 
     public boolean predictedPathShown = false;
+    private boolean highlight3x3Path = false;
 
     final String[] directions = {"Up", "Right", "Down", "Left"};
     public final String[] facings = {"N", "E", "S", "W"};
@@ -130,10 +131,6 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         leftStatusFragment = (LeftFragment) getFragmentManager().findFragmentById(R.id.leftControlFragment);
 
         initPaths();
-
-//        takenPath[17][10] = 1;
-        predictedPath[16][3] = 1;
-//        takenPath[16][3] = 1;
     }
 
     private void initPaths() {
@@ -617,13 +614,17 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     public void highlightSurroundingCells(int[] robotCoordinates) {
         int x = robotCoordinates[0];
         int y = robotCoordinates[1];
-        for (int i = -1; i < 2; i++) {
-            for (int j = -1; j < 2; j++) {
-                try {
-                    takenPath[y + i][x + j] = 1;
-                } catch (IndexOutOfBoundsException e) {
+        if (highlight3x3Path) {
+            for (int i = -1; i < 2; i++) {
+                for (int j = -1; j < 2; j++) {
+                    try {
+                        takenPath[y + i][x + j] = 1;
+                    } catch (IndexOutOfBoundsException e) {
+                    }
                 }
             }
+        } else {
+            takenPath[y][x] = 1;
         }
     }
 
@@ -651,6 +652,14 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                         arenaCell.setText("");
                     }
                 }
+            }
+        }
+    }
+
+    public void removePredictedCells() {
+        for (int i = 0; i < predictedPath.length; i++) {
+            for (int j = 0; j < predictedPath.length; j ++) {
+                predictedPath[i][j] = 0;
             }
         }
     }

@@ -513,7 +513,12 @@ public class TaskActivity extends AppCompatActivity
     }
 
     private void updatePredictedPath(int[][] path) {
+        arenaFragment.hidePredictedCells();
+        arenaFragment.removePredictedCells();
         arenaFragment.predictedPath = path;
+        if (arenaFragment.predictedPathShown) {
+            arenaFragment.showPredictedCells();
+        }
     }
 
     public void sendCommand(String message) {
