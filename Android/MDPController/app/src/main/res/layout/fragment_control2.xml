@@ -23,24 +23,24 @@ tools:context=".fragment.control2Fragment">
 
             <ImageButton
                 android:id="@+id/leftBtn"
-                android:layout_width="70dp"
-                android:layout_height="50dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="10dp"
                 android:background="@android:color/transparent"
                 android:scaleType="fitCenter"
-                android:src="@drawable/arrow_left3d" />
+                android:src="@drawable/curvearrow_left" />
 
             <ImageButton
                 android:id="@+id/rightBtn"
-                android:layout_width="70dp"
-                android:layout_height="50dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="10dp"
                 android:background="@android:color/transparent"
                 android:scaleType="fitCenter"
-                android:src="@drawable/arrow_right3d" />
+                android:src="@drawable/curvearrow_right" />
 
 
         </LinearLayout>
