@@ -203,12 +203,6 @@ public class TaskActivity extends AppCompatActivity
         });
     }
 
-    @Override
-    protected void onStart(){
-        super.onStart();
-        arenaFragment.setSpawnRG(rightControlFragment.getSpawnGroup());
-    }
-
     protected static boolean hasPermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && context != null && permissions != null) {
             for (String permission : permissions) {
@@ -393,13 +387,16 @@ public class TaskActivity extends AppCompatActivity
                 reconnecting = true;
                 reconnectAttempt = 0;
             }
+            leftStatusFragment.setRobotStatus("Offline");
             rpi_connected = false;
             stm_connected = false;
             pc_connected = false;
+//            rightControlFragment.setArenaSettingsVisibility(View.INVISIBLE);
         } else if (status == 2) {
             if (disconnected) {
                 updateBluetoothStatus(status);
             }
+            leftStatusFragment.setRobotStatus("Connecting...");
         } else if (status == 3) {
             disconnected = false;
             reconnectAttempt = 0;
@@ -453,10 +450,10 @@ public class TaskActivity extends AppCompatActivity
     }
 
     private void query_connection() {
-        if (!rpi_connected || !stm_connected || !pc_connected) {
+        if (!checkFullConnections()) {
             writeMessage(CONNECTION + " " + HOW);
             handler.postDelayed(() -> {
-                if (!rpi_connected || !stm_connected || !pc_connected)
+                if (!checkFullConnections())
                     query_connection();
             }, 3000);
         }
@@ -554,6 +551,7 @@ public class TaskActivity extends AppCompatActivity
                         leftStatusFragment.setStmColor(3);
                         stm_connected = true;
                     }
+                    checkFullConnections();
                     break;
                 case STATUS:
                     leftStatusFragment.setRobotStatus(strMessage[1]);
@@ -578,6 +576,18 @@ public class TaskActivity extends AppCompatActivity
             }
         } catch (Exception e) {
             Log.e("receiveMessage", "Can't receive message" + e);
+        }
+    }
+
+    private boolean checkFullConnections() {
+        if (!rpi_connected || !stm_connected || !pc_connected) {
+//            rightControlFragment.setArenaSettingsVisibility(View.INVISIBLE);
+            return false;
+        } else {
+//            rightControlFragment.setArenaSettingsVisibility(View.VISIBLE);
+            leftStatusFragment.setRobotStatus("Online! Robot Idling");
+            Toast.makeText(this, "Full Connection Established with Robot!", Toast.LENGTH_SHORT).show();
+            return true;
         }
     }
 

@@ -3,92 +3,91 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.RightControlFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Toggle Robot Paths" />
-
         <LinearLayout
+            android:id="@+id/arenaSettingsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Switch
-                android:id="@+id/predictedPathSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="30dp"
-                android:checked="false"/>
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Predicted Path"
-                android:textColor="@android:color/black"/>
-        </LinearLayout>
+                android:layout_marginTop="15dp"
+                android:text="Toggle Robot Paths" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/pathToggleBtnGrp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp">
 
-        <Switch
-            android:id="@+id/takenPathSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="30dp"
-            android:checked="false"/>
+                <Button
+                    android:id="@+id/predictedPathBtn"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:text="Predict"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Taken Path"
-            android:textColor="@android:color/black"/>
-    </LinearLayout>
+                <Button
+                    android:id="@+id/takenPathBtn"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:text="Taken"/>
 
-
-
-        <RadioGroup
-            android:id="@+id/spawnRG"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checkedButton="@id/obstacleRGBtn">
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:text="@string/title_radiogroup" />
 
-            <RadioButton
-                android:id="@+id/robotRGBtn"
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/spawnToggleBtnGrp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="30dp"
-                android:text="@string/robot_cell" />
+                android:layout_marginRight="5dp"
+                app:singleSelection="true">
 
-            <RadioButton
-                android:id="@+id/obstacleRGBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="30dp"
-                android:text="@string/obstacle_cell" />
+                <Button
+                    android:id="@+id/spawnRobotBtn"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:text="@string/robot_cell"/>
 
-            <RadioButton
-                android:id="@+id/dummyObstacleRGBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:text="@string/dummy_cell"
-                android:visibility="gone"/>
-        </RadioGroup>
+                <Button
+                    android:id="@+id/spawnObstacleBtn"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:text="@string/obstacle_cell"/>
+
+                <Button
+                    android:id="@+id/spawnDummyObstacleBtn"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:text="@string/dummy_cell"
+                    android:visibility="gone"/>
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -102,7 +101,7 @@
                 android:layout_marginRight="5dp"
                 android:text="Bluetooth"
                 android:textStyle="bold"
-                android:transitionName="bluetooth_transition"/>
+                android:transitionName="bluetooth_transition" />
 
             <ProgressBar
                 android:id="@+id/progressBarBT"
@@ -112,7 +111,7 @@
                 android:layout_height="30dp"
                 android:layout_gravity="right"
                 android:layout_marginTop="8dp"
-                android:layout_marginRight="25dp"
+                android:layout_marginRight="8dp"
                 android:elevation="3dp"
                 android:layout_alignTop="@+id/bluetoothBtn"
                 android:layout_alignRight="@+id/bluetoothBtn"

@@ -9,6 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical">
 
         <!-- Robot Status -->
@@ -18,16 +19,16 @@
 
             <ImageView
                 android:id="@+id/rpi"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_margin="5dp"
                 android:layout_toLeftOf="@id/computer"
                 app:srcCompat="@drawable/raspberry_pi_red" />
 
             <ImageView
                 android:id="@+id/computer"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_centerInParent="true"
                 android:layout_margin="5dp"
                 app:srcCompat="@drawable/computer"
@@ -35,8 +36,8 @@
 
             <ImageView
                 android:id="@+id/stm"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_margin="5dp"
                 android:layout_toRightOf="@id/computer"
                 app:srcCompat="@drawable/car_surveillance"
@@ -47,7 +48,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="2dp"
             android:text="Robot Status:"
             android:textAlignment="center"
             android:textColor="@color/black"
@@ -58,7 +59,7 @@
             android:id="@+id/robotStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="2dp"
             android:text="None"
             android:textAlignment="center"
             android:textColor="@color/black"
@@ -67,14 +68,14 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_margin="5dp"
+            android:layout_margin="2dp"
             android:background="@color/black" />
 
         <!-- Robot Direction -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="2dp"
             android:text="Robot Direction:"
             android:textAlignment="center"
             android:textColor="@color/black"
@@ -85,7 +86,7 @@
             android:id="@+id/robotDirection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="2dp"
             android:text="North"
             android:textAlignment="center"
             android:textColor="@color/black"
@@ -95,14 +96,14 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_margin="5dp"
+            android:layout_margin="2dp"
             android:background="@color/black" />
 
         <!-- Coordinates -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="2dp"
             android:text="Current coordinates:"
             android:textAlignment="center"
             android:textColor="@color/black"
@@ -113,7 +114,7 @@
             android:id="@+id/robotCoordinates"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="2dp"
             android:text="( x , y )"
             android:textAlignment="center"
             android:textColor="@color/black"
@@ -122,14 +123,14 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_margin="5dp"
+            android:layout_margin="2dp"
             android:background="@color/black" />
 
         <!-- Debug Window -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="2dp"
             android:text="Last Message Received:"
             android:textAlignment="center"
             android:textColor="@color/black"
@@ -140,7 +141,7 @@
             android:id="@+id/debugWindow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="2dp"
             android:text="None"
             android:textAlignment="center"
             android:textColor="@color/black"
@@ -149,7 +150,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_margin="5dp"
+            android:layout_margin="2dp"
             android:background="@color/black" />
 
         <TableLayout

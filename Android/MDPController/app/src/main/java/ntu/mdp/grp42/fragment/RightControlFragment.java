@@ -1,5 +1,7 @@
 package ntu.mdp.grp42.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -8,26 +10,29 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
-import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Switch;
+
+import com.google.android.material.button.MaterialButtonToggleGroup;
 
 import ntu.mdp.grp42.TaskActivity;
 import ntu.mdp.grp42.bluetooth.BluetoothActivity;
 import ntu.mdp.grp42.R;
 
 public class RightControlFragment extends Fragment
-        implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
-    private Switch predictedPathSwitch;
-    private Switch takenPathSwitch;
+        implements View.OnClickListener, MaterialButtonToggleGroup.OnButtonCheckedListener {
 
-    RadioGroup spawnRG;
     Button bluetoothBtn, arenaButton, videoButton;
     private ArenaFragment arenaFragment;
     private VideoFragment videoFragment;
     public ProgressBar spinner;
+
+    private LinearLayout arenaSettingsLayout;
+    private MaterialButtonToggleGroup pathToggleGroup, spawnToggleGroup;
 
     public RightControlFragment() {
         // Required empty public constructor
@@ -47,11 +52,11 @@ public class RightControlFragment extends Fragment
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        predictedPathSwitch = view.findViewById(R.id.predictedPathSwitch);
-        predictedPathSwitch.setOnCheckedChangeListener(this);
-        takenPathSwitch = view.findViewById(R.id.takenPathSwitch);
-        takenPathSwitch.setOnCheckedChangeListener(this);
-        spawnRG = view.findViewById(R.id.spawnRG);
+        pathToggleGroup = view.findViewById(R.id.pathToggleBtnGrp);
+        pathToggleGroup.addOnButtonCheckedListener(this);
+        spawnToggleGroup = view.findViewById(R.id.spawnToggleBtnGrp);
+        spawnToggleGroup.addOnButtonCheckedListener(this);
+
         bluetoothBtn = view.findViewById(R.id.bluetoothBtn);
         bluetoothBtn.setOnClickListener(this);
         spinner = (ProgressBar) view.findViewById(R.id.progressBarBT);
@@ -60,11 +65,11 @@ public class RightControlFragment extends Fragment
         videoButton = view.findViewById(R.id.videoButton);
         arenaButton.setOnClickListener(this);
         videoButton.setOnClickListener(this);
+
+        arenaSettingsLayout = view.findViewById(R.id.arenaSettingsLayout);
+//        arenaSettingsLayout.setVisibility(View.VISIBLE);
     }
 
-    public RadioGroup getSpawnGroup() {
-        return spawnRG;
-    }
     public void setArenaFragment(ArenaFragment arenaFragment) {
         this.arenaFragment = arenaFragment;
     }
@@ -95,23 +100,85 @@ public class RightControlFragment extends Fragment
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        if (compoundButton == predictedPathSwitch) {
-            if (predictedPathSwitch.isChecked()) {
-                arenaFragment.showPredictedCells();
-                arenaFragment.predictedPathShown = true;
-            } else {
-                arenaFragment.hidePredictedCells();
-                arenaFragment.predictedPathShown = false;
-            }
-        } else if (compoundButton == takenPathSwitch) {
-            if (takenPathSwitch.isChecked()) {
-                arenaFragment.showTakenCells();
-                arenaFragment.showTakenPath = true;
-            } else {
-                arenaFragment.hideTakenCells();
-                arenaFragment.showTakenPath = false;
-            }
+    public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
+        switch (group.getId()) {
+            case R.id.pathToggleBtnGrp:
+                switch (checkedId) {
+                    case R.id.predictedPathBtn:
+                        if (isChecked) {
+                            arenaFragment.showPredictedCells();
+                            arenaFragment.predictedPathShown = true;
+                        } else {
+                            arenaFragment.hidePredictedCells();
+                            arenaFragment.predictedPathShown = false;
+                        }
+                        break;
+                    case R.id.takenPathBtn:
+                        if (isChecked) {
+                            arenaFragment.showTakenCells();
+                            arenaFragment.showTakenPath = true;
+                        } else {
+                            arenaFragment.hideTakenCells();
+                            arenaFragment.showTakenPath = false;
+                        }
+                        break;
+                }
+                break;
+
+            case R.id.spawnToggleBtnGrp:
+                switch (checkedId) {
+                    case R.id.spawnRobotBtn:
+                        if (isChecked) {
+                            arenaFragment.spawnType = getResources().getString(R.string.robot_cell);
+                        } else {
+                            arenaFragment.spawnType = "";
+                        }
+                        break;
+                    case R.id.spawnObstacleBtn:
+                        if (isChecked) {
+                            arenaFragment.spawnType = getResources().getString(R.string.obstacle_cell);
+                        } else {
+                            if (arenaFragment.spawnType.equals(getResources().getString(R.string.obstacle_cell)))
+                                arenaFragment.spawnType = "";
+                        }
+                        break;
+                    case R.id.spawnDummyObstacleBtn:
+                        if (isChecked) {
+                            arenaFragment.spawnType = getResources().getString(R.string.dummy_cell);
+                        } else {
+                            if (arenaFragment.spawnType.equals(getResources().getString(R.string.dummy_cell)))
+                                arenaFragment.spawnType = "";
+                        }
+                        break;
+                }
+                break;
         }
     }
+
+//    public void setArenaSettingsVisibility(int visibility) {
+//        if (visibility == View.VISIBLE) {
+//            // Prepare the View for the animation
+//            arenaSettingsLayout.setVisibility(View.VISIBLE);
+//            arenaSettingsLayout.setAlpha(1.0f);
+//
+//            // Start the animation
+//            arenaSettingsLayout.setY(-arenaSettingsLayout.getHeight());
+//            arenaSettingsLayout.animate()
+//                    .translationY(0)
+//                    .alpha(1.0f)
+//                    .setDuration(500)
+//                    .setListener(null);
+//        } else {
+//            arenaSettingsLayout.animate()
+//                    .translationY(0)
+//                    .alpha(0.0f)
+//                    .setListener(new AnimatorListenerAdapter() {
+//                        @Override
+//                        public void onAnimationEnd(Animator animation) {
+//                            super.onAnimationEnd(animation);
+//                            arenaSettingsLayout.setVisibility(View.INVISIBLE);
+//                        }
+//                    });
+//        }
+//    }
 }

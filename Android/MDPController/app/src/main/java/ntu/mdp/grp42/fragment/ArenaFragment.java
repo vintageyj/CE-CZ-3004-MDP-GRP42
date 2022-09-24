@@ -11,7 +11,9 @@ import static ntu.mdp.grp42.bluetooth.RaspberryPiProtocol.ROTATE_ROBOT;
 import static ntu.mdp.grp42.bluetooth.RaspberryPiProtocol.SPAWN_ROBOT;
 
 import android.content.ClipData;
+import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -33,6 +35,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -60,12 +63,14 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
     // Arena Configs
     public static int[][] arenaCoord = new int[20][20];
-    int btnHeight, btnWidth;
     int x, y;
     boolean arenaDrawn = false;
     public HashMap<Integer, Obstacle> obstacleList = new HashMap<>();
     HashMap<Integer, Obstacle> dummyObstacleList = new HashMap<>();
     public static ArrayList<ArenaCell> obstacleCells = new ArrayList<>();
+
+    // Set the arena cells' height and width
+    int btnHeight, btnWidth;
 
     // setText = " " (1 space for dummy obstacle, 2 spaces for predictedPath, 3 spaces for pathTaken
     ArrayList<ArrayList<ArenaCell>> arenaCellList = new ArrayList<ArrayList<ArenaCell>>();
@@ -82,16 +87,13 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     final String[] directions = {"Up", "Right", "Down", "Left"};
     public final String[] facings = {"N", "E", "S", "W"};
 
-    TableLayout arenaTable;
-    private ImageView robotIV, arenaAxis, spawnBox;
-    static RadioGroup spawnRG;
+    private TableLayout arenaTable;
+    private ImageView robotIV, spawnBox;
+    public String spawnType = "";
     Drawable arenaCellBG;
 
     // Status window
     LeftFragment leftStatusFragment;
-
-//    private BluetoothService bluetoothService;
-
 
     public ArenaFragment() {
         // Required empty public constructor
@@ -115,16 +117,9 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
         arenaTable = view.findViewById(R.id.arenaTable);
         robotIV = view.findViewById(R.id.robotIV);
-        //arenaAxis = view.findViewById(R.id.arenaAxis);
         spawnBox = view.findViewById(R.id.robotSpawnIV);
 
-        arenaTable.getViewTreeObserver().addOnPreDrawListener( () -> {
-            if (!arenaDrawn) {
-                initArena(arenaTable);
-                arenaDrawn = true;
-            }
-            return true;
-        });
+        initTable();
 
         robotIV.setOnClickListener(this);
 
@@ -133,46 +128,85 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         initPaths();
     }
 
+    private void initTable() {
+        btnWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25, getResources().getDisplayMetrics());
+        btnHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25, getResources().getDisplayMetrics());
+
+        arenaTable.getViewTreeObserver().addOnPreDrawListener( () -> {
+            if (!arenaDrawn) {
+                initArena(arenaTable);
+                arenaDrawn = true;
+            }
+            return true;
+        });
+    }
+
+    protected void initArena(TableLayout arenaTable) {
+        // default background for cell
+        arenaCellBG = AppCompatResources.getDrawable(this.requireContext(), R.drawable.cell_background);
+
+        // get activity background
+        TypedArray array = getContext().getTheme().obtainStyledAttributes(new int[] {
+                android.R.attr.windowBackground});
+        int backgroundColor = array.getColor(0, 0xFF00FF);
+        array.recycle();
+
+        // 20x20 map
+        for (y = -1; y < 20; y++) {
+            TableRow row = new TableRow(this.getContext());
+            row.setHorizontalGravity(Gravity.CENTER_HORIZONTAL);
+            ArrayList<ArenaCell> arenaCells = new ArrayList<ArenaCell>();
+            if (y == -1) {
+                for (x = -1; x < 20; x++) {
+                    TextView textView = new TextView(this.getContext());
+                    textView.setBackgroundColor(backgroundColor);
+                    textView.setLayoutParams(new TableRow.LayoutParams(btnWidth, btnHeight));
+                    textView.setTextColor(Color.rgb(0, 0, 0));
+                    if (x != -1)
+                        textView.setText(String.valueOf(x));
+                    textView.setTypeface(null, Typeface.BOLD);
+                    textView.setGravity(Gravity.CENTER);
+                    row.addView(textView);
+                }
+            } else {
+                for (x = -1; x < 20; x++) {
+                    if (x == -1) {
+                        TextView textView = new TextView(this.getContext());
+                        textView.setBackgroundColor(backgroundColor);
+                        textView.setLayoutParams(new TableRow.LayoutParams(btnWidth, btnHeight));
+                        textView.setTextColor(Color.rgb(0, 0, 0));
+                        textView.setText(String.valueOf(y));
+                        textView.setTypeface(null, Typeface.BOLD);
+                        textView.setGravity(Gravity.CENTER);
+                        row.addView(textView);
+                    } else {
+                        ArenaCell arenaCell = new ArenaCell(this.getContext(), x, y);
+                        arenaCell.setId(View.generateViewId());
+                        arenaCell.setPadding(1, 1, 1, 1);
+                        arenaCell.setBackground(arenaCellBG);
+                        arenaCell.setLayoutParams(new TableRow.LayoutParams(btnWidth, btnHeight));
+                        arenaCell.setTextColor(Color.rgb(255, 255, 255));
+
+                        arenaCoord[x][y] = arenaCell.getId();
+
+                        arenaCell.setOnClickListener(new ArenaCellClickListener(x, y, arenaCell.getId()));
+                        arenaCell.setOnDragListener(new ArenaCellDragListener(x, y, arenaCell.getId()));
+                        row.addView(arenaCell);
+                        arenaCells.add(arenaCell);
+                    }
+                }
+                arenaCellList.add(arenaCells);
+            }
+            arenaTable.addView(row);
+        }
+    }
+
     private void initPaths() {
         for (int i = 0; i < predictedPath.length; i++) {
             for (int j = 0; j < predictedPath.length; j++) {
                 predictedPath[i][j] = 0;
                 takenPath[i][j] = 0;
             }
-        }
-    }
-
-    protected void initArena(TableLayout arenaTable) {
-        // Set the arena cells' height and width
-        btnHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25, getResources().getDisplayMetrics());
-        btnWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25, getResources().getDisplayMetrics());
-
-        // default background for cell
-        arenaCellBG = AppCompatResources.getDrawable(this.requireContext(), R.drawable.cell_background);
-
-        // 20x20 map
-        for (y = 0; y < 20; y++) {
-            TableRow row = new TableRow(this.getContext());
-            row.setHorizontalGravity(Gravity.CENTER_HORIZONTAL);
-            ArrayList<ArenaCell> arenaCells = new ArrayList<ArenaCell>();
-
-            for (x = 0; x < 20; x++) {
-                ArenaCell arenaCell = new ArenaCell(this.getContext(), x, y);
-                arenaCell.setId(View.generateViewId());
-                arenaCell.setPadding(1, 1, 1, 1);
-                arenaCell.setBackground(arenaCellBG);
-                arenaCell.setLayoutParams(new TableRow.LayoutParams(btnWidth, btnHeight));
-                arenaCell.setTextColor(Color.rgb(255, 255, 255));
-
-                arenaCoord[x][y] = arenaCell.getId();
-
-                arenaCell.setOnClickListener(new ArenaCellClickListener(x, y, arenaCell.getId()));
-                arenaCell.setOnDragListener(new ArenaCellDragListener(x, y, arenaCell.getId()));
-                row.addView(arenaCell);
-                arenaCells.add(arenaCell);
-            }
-            arenaTable.addView(row);
-            arenaCellList.add(arenaCells);
         }
     }
 
@@ -284,10 +318,15 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             ArenaCell arenaCell = v.findViewById(id);
-            Log.d(ARENA_FRAGMENT_TAG, "Clicked outer " + x + " " + y + " " + id);
+            Log.d(ARENA_FRAGMENT_TAG, String.format("Clicked outer x: %d, y: %d, id: %d", x, y, id));
 
-            String spawnType = ArenaFragment.getSpawnType();
             Log.d(ARENA_FRAGMENT_TAG, "Spawning " + spawnType);
+
+            if (spawnType.equals("")) {
+                Toast.makeText(getContext(),
+                        String.format("Clicked %d, %d!", x, y), Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             if (arenaCell.getText().equals(" ") && spawnType.equals(getResources().getString(R.string.dummy_cell))){
                 removeCell(arenaCell);
@@ -295,8 +334,8 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
             }
 
             if (!arenaCell.getText().equals("")){
-                Toast.makeText(getContext(), "Obstacle " + arenaCell.obstacleID +
-                        " at " + x + ", " + y, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),
+                        String.format("Obstacle %d at %d, %d", arenaCell.obstacleID, x, y), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -326,24 +365,6 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-//    private void sendBTCommand(String command, String data) {
-//        String message = command + " " + data;
-//        bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
-////        switch(command) {
-////            case SPAWN_ROBOT:
-////                message = SPAWN_ROBOT + "," + data;
-////                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
-////                break;
-////            case ROTATE_ROBOT:
-////                message = ROTATE_ROBOT + "," + data;
-////                bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
-////            case ADD_OBSTACLE:
-////                break;
-////            case REMOVE_OBSTACLE:
-////                break;
-////        }
-//    }
-
     private void spawnRobot(ArenaCell arenaCell) {
         int[] cellPos = new int[2];
         arenaCell.getLocationInWindow(cellPos);
@@ -357,7 +378,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
         spawnBox.setVisibility(View.VISIBLE);
         spawnBox.setX(arenaCell.getX() - dpToPixels(25));
-        spawnBox.setY(cellPos[1] - dpToPixels(31) - dpToPixels(50));
+        spawnBox.setY(cellPos[1] - dpToPixels(30) - dpToPixels(50));
 
         leftStatusFragment.setRobotCoordinates(arenaCell.x, arenaCell.y);
     }
@@ -525,8 +546,8 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                         // stops if dropped cell is on a populated cell
                         newArenaCell = newCell.findViewById(newCell.getId());
                         if (newArenaCell.obstacleID != -1) {
-                            Toast.makeText(getContext(), "Remove Obstacle " + newArenaCell.obstacleID +
-                                    " first!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(),
+                                    String.format("Remove Obstacle %d first!", newArenaCell.obstacleID), Toast.LENGTH_SHORT).show();
 
                             // removes all the highlights
                             removeAdjacentCellHighlights(newArenaCell);
@@ -707,14 +728,5 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                 takenPath[i][j] = 0;
             }
         }
-    }
-
-    public static String getSpawnType() {
-        RadioButton radioBtn = spawnRG.findViewById(spawnRG.getCheckedRadioButtonId());
-        return radioBtn.getText().toString();
-    }
-
-    public void setSpawnRG(RadioGroup spawnRG) {
-        this.spawnRG = spawnRG;
     }
 }

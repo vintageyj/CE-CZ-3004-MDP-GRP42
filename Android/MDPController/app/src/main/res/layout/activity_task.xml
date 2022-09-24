@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="597dp"
+        android:layout_height="match_parent"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
@@ -99,11 +99,10 @@
                 android:id="@+id/viewpager3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                android:elevation="3dp"
+                android:layout_marginLeft="5dp"
                 android:layout_marginTop="3dp"
-                android:layout_marginLeft="5dp">
-            </androidx.viewpager.widget.ViewPager>
+                android:elevation="3dp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"></androidx.viewpager.widget.ViewPager>
 
         </RelativeLayout>
 
