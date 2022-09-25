@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import ntu.mdp.grp42.R;
@@ -20,7 +21,7 @@ import ntu.mdp.grp42.R;
  */
 public class TimerFragment extends Fragment {
 
-    private static Button BTNstop, BTNreset;
+    private static Button BTNstop, BTNreset, BTNtask2, BTNtask1;
     private static View v;
     private static TextView timerview;
     private static Handler mHandler = new Handler();
@@ -69,6 +70,8 @@ public class TimerFragment extends Fragment {
         v = inflater.inflate(R.layout.fragment_timer, container, false);
         BTNstop =  (Button)v.findViewById(R.id.stop_button);
         BTNreset = (Button)v.findViewById(R.id.reset_button);
+        BTNtask1 =  (Button)v.findViewById(R.id.task1);
+        BTNtask2 =  (Button)v.findViewById(R.id.task2);
 
 
         View.OnClickListener resetHandle = new View.OnClickListener() {
@@ -92,6 +95,19 @@ public class TimerFragment extends Fragment {
     public static void resetBTNeffect(){
         stopped = false;
         resetTimer();
+    }
+
+    public static void resetTaskBTN() {
+        BTNtask1.setEnabled(true);
+        BTNtask2.setEnabled(true);
+    }
+
+    public static Button getBTNtask1() {
+        return BTNtask1;
+    }
+
+    public static Button getBTNtask2() {
+        return BTNtask2;
     }
 
     public static void resetTimer(){

@@ -17,22 +17,6 @@ tools:context=".fragment.StartTaskFragment">
             android:orientation="vertical"
             android:layout_marginTop="50dp">
 
-            <Button
-                android:id="@+id/task1"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:enabled="true"
-                android:text="Task 1" />
-
-            <Button
-                android:id="@+id/task2"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:enabled="true"
-                android:text="Task 2" />
 
             <Button
                 android:id="@+id/photoBtn"

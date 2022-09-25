@@ -62,6 +62,7 @@ import ntu.mdp.grp42.bluetooth.BluetoothService;
 import ntu.mdp.grp42.bluetooth.Constants;
 import ntu.mdp.grp42.bluetooth.RaspberryPiProtocol;
 import ntu.mdp.grp42.fragment.ArenaFragment;
+import ntu.mdp.grp42.fragment.BlankFragment;
 import ntu.mdp.grp42.fragment.LeftFragment;
 import ntu.mdp.grp42.fragment.RightControlFragment;
 import ntu.mdp.grp42.fragment.StartTaskFragment;
@@ -113,10 +114,9 @@ public class TaskActivity extends AppCompatActivity
     control2Fragment control2Fragment;
     VideoFragment videoFragment;
 
-    private ViewPagerAdapter viewPagerAdapter, viewPagerAdapter2, viewPagerAdapter3;
-    private ViewPager viewPager, viewPager2, viewPager3;
-    private TabLayout tabLayout;
-    private TabLayout tabLayout2;
+    private ViewPagerAdapter viewPagerAdapter, viewPagerAdapter2, viewPagerAdapter3, viewPagerAdapter4;
+    private ViewPager viewPager, viewPager2, viewPager3, viewPager_video;
+    private TabLayout tabLayout, tabLayout2, tabLayout_video;
     private static TabLayout tabLayout3;
     private Button btnTask1, btnTask2, btnReset, btnStop;
     private Button photoBtn;
@@ -236,7 +236,7 @@ public class TaskActivity extends AppCompatActivity
         viewPager = findViewById(R.id.viewpager);
         viewPagerAdapter = new ViewPagerAdapter(fragmentManager);
         viewPagerAdapter.add(new StartTaskFragment(), "Start Tasks");
-        viewPagerAdapter.add(new control1Fragment(), "Controllers");
+        viewPagerAdapter.add(new control2Fragment(), "Controllers");
         viewPager.setAdapter(viewPagerAdapter);
 
         tabLayout = findViewById(R.id.tab_layout);
@@ -245,7 +245,7 @@ public class TaskActivity extends AppCompatActivity
         viewPager2 = findViewById(R.id.viewpager2);
         viewPagerAdapter2 = new ViewPagerAdapter(fragmentManager);
         viewPagerAdapter2.add(new TimerFragment(), "Start Tasks");
-        viewPagerAdapter2.add(new control2Fragment(), "Controllers");
+        viewPagerAdapter2.add(new control1Fragment(), "Controllers");
         viewPager2.setAdapter(viewPagerAdapter2);
 
         tabLayout2 = findViewById(R.id.tab_layout2);
@@ -260,11 +260,20 @@ public class TaskActivity extends AppCompatActivity
         tabLayout3 = findViewById(R.id.tab_layout3);
         tabLayout3.setupWithViewPager(viewPager3, true);
 
+        viewPager_video = findViewById(R.id.viewpager_video);
+        viewPagerAdapter4 = new ViewPagerAdapter(fragmentManager);
+        viewPagerAdapter4.add(new VideoFragment(), "Video");
+        viewPagerAdapter4.add(new BlankFragment(), "Blank");
+        viewPager_video.setAdapter(viewPagerAdapter4);
+
+        tabLayout_video = findViewById(R.id.tab_layout_video);
+        tabLayout_video.setupWithViewPager(viewPager_video, true);
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
-                btnTask1 = StartTaskFragment.getBTNtask1();
-                btnTask2 = StartTaskFragment.getBTNtask2();
+                btnTask1 = TimerFragment.getBTNtask1();
+                btnTask2 = TimerFragment.getBTNtask2();
                 btnStop = TimerFragment.getBTNstop();
                 btnReset = TimerFragment.getBTNreset();
                 photoBtn = StartTaskFragment.getPhotoBtn();
@@ -276,7 +285,6 @@ public class TaskActivity extends AppCompatActivity
                     }
                 });
 
-                System.out.println("on page scrolled");
                 View.OnClickListener task1Handle = new View.OnClickListener() {
 
                     public void onClick(View v) {
@@ -316,7 +324,7 @@ public class TaskActivity extends AppCompatActivity
                         boolean stopped = TimerFragment.getStopStatus();
                         if (!stopped)
                             TimerFragment.stopBTNeffect();
-                        StartTaskFragment.resetTaskBTN();
+                        TimerFragment.resetTaskBTN();
                         btnReset.setEnabled(false);
 
                     }};
@@ -331,7 +339,6 @@ public class TaskActivity extends AppCompatActivity
 
                         break;
                     case 1:
-                        System.out.println("in controllers view");
                         break;
                 }
             }
@@ -363,6 +370,29 @@ public class TaskActivity extends AppCompatActivity
             }
 
         });
+
+        tabLayout3.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (viewPager3.getCurrentItem() == 0) {
+                    TabLayout.Tab tab1 = tabLayout_video.getTabAt(1);
+                    tab1.select();
+                }
+                if (viewPager3.getCurrentItem() == 1) {
+                    TabLayout.Tab tab1 = tabLayout_video.getTabAt(0);
+                    tab1.select();
+                }
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+
+        });
+
     }
 
     @Override

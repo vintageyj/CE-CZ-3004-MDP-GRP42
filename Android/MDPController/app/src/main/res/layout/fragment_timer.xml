@@ -15,10 +15,36 @@ tools:context=".fragment.TimerFragment">
         android:layout_marginBottom="10dp"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:id="@+id/task1"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="10dp"
+                android:enabled="true"
+                android:text="Task 1" />
+
+            <Button
+                android:id="@+id/task2"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="10dp"
+                android:enabled="true"
+                android:text="Task 2" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp"
             android:text="Timer:"
             android:textAlignment="center"
@@ -39,22 +65,36 @@ tools:context=".fragment.TimerFragment">
             android:textSize="18dp" />
 
 
-        <Button
-            android:id="@+id/stop_button"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:enabled="false"
-            android:layout_marginTop="5dp"
-            android:text="STOP" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="641dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="10dp">
 
-        <Button
-            android:id="@+id/reset_button"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:enabled="false"
-            android:text="reset" />
+
+
+            <Button
+                android:id="@+id/stop_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/stop_icon"
+                android:enabled="false" />
+
+            <Button
+                android:id="@+id/reset_button"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/reset_icon"
+                android:enabled="false" />
+
+        </LinearLayout>
 
 
     </LinearLayout>
