@@ -9,7 +9,7 @@ import time
 import os.path
 from os import path
 
-host = '10.27.150.156'
+host = '10.27.248.240'
 port = 54321
 
 def setupServer():
@@ -28,13 +28,11 @@ def setupServer():
         clientSocket, clientAddress = server.accept()
         print('[S] Client connected')
 
-        # filePath = r"C:\_receiveMDPimage\image" + str(counter) + ".jpg"
-        filePath = r"/objectDetection/_receiveMDPimage/image" + str(counter) + ".jpg"
-        # filePath = r"C:\_receiveMDPimage\testImage.jpg"
-        # filePath = r"/Users/sizzlingzf/Documents/y3s1/CZ3004 MDP/yolov5/data/images/image" + str(counter) + ".jpg"
+        # creating image file
+        filePath = r"/objectDetection/yolov5/images/image" + str(counter) + ".jpg"
         file = open(filePath, 'wb')
 
-        # Receive image from client in byte chunks and writing jpg image in file path
+        # receive image from client in byte chunks and writing to image file created
         imageChunk = clientSocket.recv(2048)
         while imageChunk:
             file.write(imageChunk)
@@ -45,27 +43,21 @@ def setupServer():
         print('[S] Image received')
         file.close()
 
-        # Calling command line to run detect.py
+        # calling command line to run detect.py for image detection
         os.chdir("/objectDetection/yolov5")
-        os.system('python detect.py --weights best.pt --img 416 --conf 0.1 --source images')
-        # os.chdir("/Users/sizzlingzf/Documents/y3s1/CZ3004 MDP/yolov5")
-        # os.system(
-        #     'python detect.py --source data/images/image' + str(
-        #         counter) + '.jpg --weights best2.pt --img 640 --device 0' +
-        #     '--save-conf --hide-conf --name results --exist-ok --save-txt')
+        os.system('python detect.py --weights best.pt --source images --img 416 --conf 0.3 --save-conf --hide-conf --name results --exist-ok --save-txt')
+
         # reconnecting client
         clientSocket, clientAddress = server.accept()
-        labelText = "/objectDetection/yolov5/runs/detect/results/labels/image" + str(
-            counter) + ".txt"
-        # labelText = "/Users/sizzlingzf/Documents/y3s1/CZ3004 MDP/yolov5/runs/detect/results/labels/image" + str(
-        #     counter) + ".txt"
-        
 
-        # Check if image saved has corresponding label file. If yes, send string message of label back to RPI. Else, send error message.
+        # check if image saved has corresponding label file
+        labelText = "/objectDetection/yolov5/runs/detect/results/labels/image" + str(counter) + ".txt"
+        # if yes, send string message of label back to RPI
+        # else, send error message.
         if path.exists(labelText) is True:
             with open(labelText, 'r') as f:
                 data = f.read()
-            result = str(data)				#result is the label of image
+            result = str(data)  
             label = int(result[:2].strip()) + 1
             message = str(label)
             print('[S] Sending: ' + message)

@@ -4,7 +4,7 @@
 # sends STM the info
 
 import socket
-# import picamera
+import picamera
 import time
 import sys
 
@@ -18,8 +18,8 @@ def captureImage():
     camera = picamera.PiCamera()
     camera.resolution = (2592, 1944)
     camera.framerate = 30
-    camera.vflip = True
-    camera.hflip = True
+    # camera.vflip = True
+    # camera.hflip = True
     camera.brightness = 55
     camera.start_preview()
 
@@ -27,7 +27,7 @@ def captureImage():
     print('[RPI_INFO] Camera warmed up and ready')
 
     picName = 'image.jpg'
-    picPath = "/home/pi/IR/yolov5/data/images/"
+    picPath = "/home/pi/MDP/sendImages/"
     completePath = picPath + picName
     camera.capture(completePath)
     print("We have taken a picture.")
@@ -42,7 +42,8 @@ def msgClient():
     print('Client 2 connected to server')
     message = newClient.recv(1024)
     message = message.decode('utf-8')
-    print('Received: ' + str(message))  # depending on the label; call for stm to do appropriate movements
+    print('Received: ' + str(message))  
+    # send to android
     newClient.close()
     print('Client 2 received message')
 
@@ -52,8 +53,7 @@ def imageClient():
     client.connect((host, port))
     print('Client 1 connected to server')
 
-    # path = captureImage()
-    path = "/objectDetection/_sendMDPimage/testImage.jpg"
+    path = captureImage()
     image = open(path, 'rb')
     imageData = image.read(2048)
     while imageData:
