@@ -3,9 +3,8 @@ import numpy as np
 from PIL import Image
 from os import path
 
-# adjust counter and x accordingly
-# coun
-def folder():
+
+def imagestiching():
     h_list1 = []
     h_list2 = []
     fontScale = 2
@@ -54,4 +53,4 @@ def folder():
 
 
 if __name__ == "__main__":
-    folder()
+    imagestiching()
