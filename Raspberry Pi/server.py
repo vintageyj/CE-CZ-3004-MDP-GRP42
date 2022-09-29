@@ -147,6 +147,15 @@ class Server():
             self.algo_clientSocket.send(result.encode('utf-8'))
 
     def listen_for_image(self):
+        def task2detection(labelText):
+            with open(labelText, 'r') as f:
+                result=[line.rstrip() for line in f] # each line is stored in the array
+
+            for lines in result:
+                parts = lines.split() # splits up each component within a line and stores in array
+                if (parts[0]=='27' or parts[0]=='28'):  # only return if arrow
+                    return(str(int(parts[0])+11))
+
         # function to listen for instructions for image processing
         counter = 1
 
@@ -162,7 +171,7 @@ class Server():
             if (len(message) == 0):
                 print("RECEIVED EMPTINESS")
                 continue
-
+            taskno=message
             # creating image file
             # filePath = r"C:\Users\acer\COMBINEDCODE\yolov5\images\image" + \
             #     str(counter) + ".jpg"
@@ -205,12 +214,18 @@ class Server():
             labelText = folder_name + "\\yolov5\\runs\\detect\\results\\labels\\image" + str(
                 counter) + ".txt"
             print("LabelText: " + labelText)
+            
             if path.exists(labelText) is True:
-                with open(labelText, 'r') as f:
-                    data = f.read()
-                result = str(data)
-                label = int(result[:2].strip()) + 11
-                message = str(label)
+                if (taskno=='I1'):
+                    with open(labelText, 'r') as f:
+                        data = f.read()
+                    result = str(data)
+                    label = int(result[:2].strip()) + 11
+                    message = str(label)
+                elif (taskno=='I2'):
+                    message = task2detection(labelText)
+                else:
+                    message = "invalid task number"
                 print('SENDING: ' + message)
                 self.clientSocket_image.send(message.encode('utf-8'))
                 print("===MESSAGE SENT===")
