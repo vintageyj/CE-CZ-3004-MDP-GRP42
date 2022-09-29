@@ -148,6 +148,30 @@ class Server():
             self.algo_clientSocket.send(result.encode('utf-8'))
 
     def listen_for_image(self):
+        def task1detection(labelText):
+            with open(labelText, 'r') as f:
+                result=[line.rstrip() for line in f] # each line is stored in the array
+
+            areaArray = []
+            confArray = []
+            for lines in result:
+                parts = lines.split() # splits up each component within a line and stores in array
+                confArray.append(parts[5]) # stores all confidence levels
+                areaArray.append(float(parts[3])*float(parts[4])) # stores all relative area of box
+            
+            # maxConf=max(confArray) # find max confidence
+            maxArea=max(areaArray) # find max area
+            largest = areaArray.index(maxArea) # find largest (nearest) label's index
+
+            # check if theres any other boxes of similar size
+            i=0
+            for area in areaArray:
+                if area > maxArea-0.003 and confArray[i]>confArray[largest]:
+                    return (str(int(result[i].split()[0])+11))
+                i+=1
+            
+            return (str(int(result[largest].split()[0])+11))
+
         def task2detection(labelText):
             with open(labelText, 'r') as f:
                 result=[line.rstrip() for line in f] # each line is stored in the array
