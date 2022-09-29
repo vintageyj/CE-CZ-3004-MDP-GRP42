@@ -21,6 +21,7 @@ public interface RaspberryPiProtocol {
     String TAKE_PHOTO = "take_image";
 
     // Update Status Window
+    String ALGO_INSTRUCTION = "algo";
     String PREDICTED_PATH = "predicted_path";
     String STATUS = "status";
     String CONNECTION = "C";

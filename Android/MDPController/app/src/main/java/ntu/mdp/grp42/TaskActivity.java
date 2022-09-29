@@ -53,6 +53,8 @@ import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import ntu.mdp.grp42.arena.ArenaCell;
 import ntu.mdp.grp42.arena.Obstacle;
@@ -103,6 +105,9 @@ public class TaskActivity extends AppCompatActivity
     private boolean disconnected = false;
     private boolean reconnecting = false;
     private int reconnectAttempt = 0;
+
+    Queue<String> instructions = new LinkedList<>();
+    private boolean playingBack = false;
 
     public static Vibrator vibrator;
 
@@ -564,6 +569,12 @@ public class TaskActivity extends AppCompatActivity
             String[] strMessage = message.split(" ");
             Gson gson = new Gson();
             switch (strMessage[0]) {
+                case ALGO_INSTRUCTION:
+                    instructions.offer(strMessage[1]);
+                    if (!playingBack)
+                        pathPlayback(instructions);
+                    break;
+
                 case PREDICTED_PATH:
                     int[][] path = gson.fromJson(strMessage[1], int[][].class);
                     updatePredictedPath(path);
@@ -607,6 +618,77 @@ public class TaskActivity extends AppCompatActivity
         } catch (Exception e) {
             Log.e("receiveMessage", "Can't receive message" + e);
         }
+    }
+
+    private void pathPlayback(Queue<String> instructions) {
+        String instruction = instructions.remove();
+        Handler handler = new Handler();
+        playingBack = true;
+        String command = instruction.substring(0,1);
+        String distance;
+        int delay = 300;
+        int totalDelay = delay;
+        switch (command) {
+            case "f":
+                distance = instruction.substring(1);
+                for (int i = 0; i < (int) (Float.valueOf(distance) / 10); i++) {
+                    handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * i);
+                    totalDelay += delay;
+                }
+                break;
+
+            case "b":
+                distance = instruction.substring(1);
+                for (int i = 0; i < (int) (Float.valueOf(distance) / 10); i++) {
+                    handler.postDelayed(() -> arenaFragment.reverseRobot(), delay * i);
+                    totalDelay += delay;
+                }
+                break;
+
+            case "q":
+                handler.postDelayed(() -> arenaFragment.forwardRobot(), 0);
+                handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 1);
+                handler.postDelayed(() -> arenaFragment.rotateRobotLeft(), delay * 2);
+                handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 3);
+                handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 4);
+                totalDelay += delay * 4;
+                break;
+
+            case "e":
+                handler.postDelayed(() -> arenaFragment.forwardRobot(), 0);
+                handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 1);
+                handler.postDelayed(() -> arenaFragment.rotateRobotRight(), delay * 2);
+                handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 3);
+                handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 4);
+                totalDelay += delay * 4;
+                break;
+
+            case "z":
+                handler.postDelayed(() -> arenaFragment.reverseRobot(), 0);
+                handler.postDelayed(() -> arenaFragment.reverseRobot(), delay * 1);
+                handler.postDelayed(() -> arenaFragment.rotateRobotRight(), delay * 2);
+                handler.postDelayed(() -> arenaFragment.reverseRobot(), delay * 3);
+                handler.postDelayed(() -> arenaFragment.reverseRobot(), delay * 4);
+                totalDelay += delay * 4;
+                break;
+
+            case "c":
+                handler.postDelayed(() -> arenaFragment.reverseRobot(), 0);
+                handler.postDelayed(() -> arenaFragment.reverseRobot(), delay * 1);
+                handler.postDelayed(() -> arenaFragment.rotateRobotLeft(), delay * 2);
+                handler.postDelayed(() -> arenaFragment.reverseRobot(), delay * 3);
+                handler.postDelayed(() -> arenaFragment.reverseRobot(), delay * 4);
+                totalDelay += delay * 4;
+                break;
+        }
+
+        handler.postDelayed(() -> {
+            if (!instructions.isEmpty()) {
+                pathPlayback(instructions);
+            } else {
+                playingBack = false;
+            }
+        }, totalDelay);
     }
 
     private boolean checkFullConnections() {

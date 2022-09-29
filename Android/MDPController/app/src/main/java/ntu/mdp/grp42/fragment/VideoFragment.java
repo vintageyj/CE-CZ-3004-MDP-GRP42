@@ -27,7 +27,7 @@ public class VideoFragment extends Fragment implements RaspberryPiProtocol, View
     Button playPauseBtn;
 
     private static final String url = RTSP_LINK;
-    private static final String testUrl = "rtsp://192.168.0.101:8554/";
+    private static final String testUrl = "rtsp://10.27.151.73:8554/";
 
     public VideoFragment() {
         // Required empty public constructor
@@ -52,6 +52,13 @@ public class VideoFragment extends Fragment implements RaspberryPiProtocol, View
         videoLayout = view.findViewById(R.id.videoLayout);
         playPauseBtn = view.findViewById(R.id.playPauseBtn);
         playPauseBtn.setOnClickListener(this);
+
+
+        mediaPlayer.attachViews(videoLayout, null, false, false);
+        Media media = new Media (libVLC, Uri.parse(testUrl));
+        media.setHWDecoderEnabled(true, false);
+        mediaPlayer.setMedia(media);
+        media.release();
     }
 
     @Override
@@ -72,10 +79,10 @@ public class VideoFragment extends Fragment implements RaspberryPiProtocol, View
     @Override
     public void onStart() {
         super.onStart();
-        mediaPlayer.attachViews(videoLayout, null, false, false);
-        Media media = new Media (libVLC, Uri.parse(testUrl));
-        media.setHWDecoderEnabled(true, false);
-        mediaPlayer.setMedia(media);
-        media.release();
+//        mediaPlayer.attachViews(videoLayout, null, false, false);
+//        Media media = new Media (libVLC, Uri.parse(testUrl));
+//        media.setHWDecoderEnabled(true, false);
+//        mediaPlayer.setMedia(media);
+//        media.release();
     }
 }
