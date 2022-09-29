@@ -70,8 +70,7 @@ public class TimerFragment extends Fragment {
         v = inflater.inflate(R.layout.fragment_timer, container, false);
         BTNstop =  (Button)v.findViewById(R.id.stop_button);
         BTNreset = (Button)v.findViewById(R.id.reset_button);
-        BTNtask1 =  (Button)v.findViewById(R.id.task1);
-        BTNtask2 =  (Button)v.findViewById(R.id.task2);
+
 
 
         View.OnClickListener resetHandle = new View.OnClickListener() {
@@ -86,29 +85,22 @@ public class TimerFragment extends Fragment {
         return v;
     }
 
+    //stop timer method
     public static void stopBTNeffect() {
         mHandler.removeCallbacks(startTimer);
         stopped = true;
 
     }
 
+    //reset timer method
     public static void resetBTNeffect(){
         stopped = false;
-        resetTimer();
+        ((TextView)v.findViewById(R.id.timer)).setText("00:00:00");
+        secs = 0;
+        mins = 0;
+        elapsedTime = 0;
     }
 
-    public static void resetTaskBTN() {
-        BTNtask1.setEnabled(true);
-        BTNtask2.setEnabled(true);
-    }
-
-    public static Button getBTNtask1() {
-        return BTNtask1;
-    }
-
-    public static Button getBTNtask2() {
-        return BTNtask2;
-    }
 
     public static void resetTimer(){
 
@@ -118,14 +110,14 @@ public class TimerFragment extends Fragment {
         elapsedTime = 0;
     }
 
-    public static void taskEffect(){
+    public static void setStartTime(){
         BTNstop.setEnabled(true);
         if(stopped){
-            resetTimer();
+            //resetTimer();
             startTime = System.currentTimeMillis() - elapsedTime;
         }
         else{
-            resetTimer();
+            //resetTimer();
             startTime = System.currentTimeMillis();
         }
         mHandler.removeCallbacks(startTimer);

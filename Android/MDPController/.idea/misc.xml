@@ -44,6 +44,7 @@
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_38.xml" value="0.243" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_39.xml" value="0.243" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_40.xml" value="0.243" />
+        <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/id_41.xml" value="0.105" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/north_facing_obstacle.xml" value="0.1" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/obs1.xml" value="0.243" />
         <entry key="..\:/GitHub/CE-CZ-3004-MDP-GRP42/Android/MDPController/app/src/main/res/drawable/rectangle_border.xml" value="0.196" />
@@ -113,5 +114,5 @@
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_16_PREVIEW" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>
