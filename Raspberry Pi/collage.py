@@ -4,7 +4,7 @@ from PIL import Image
 from os import path
 
 
-def imagestiching():
+def imagestiching(columns):
     h_list1 = []
     h_list2 = []
     fontScale = 2
@@ -14,17 +14,17 @@ def imagestiching():
     thickness = 4
 
     counter = 1 # to iterate through images
-    x = 1 # to separate into 2 rows
+    x = 1 # to separate into 2 rows of size 'columns'
     
     # stich images 1 to 10
-    while counter < 11:
+    while counter < columns*2+1:
         imagepath = r"C:\Users\acer\COMBINEDCODE\yolov5\images\image" + str(counter) + ".jpg"
 
         if path.exists(imagepath) is True:
             image = cv2.imread(imagepath)
             image = cv2.resize(image, (750, 750))
             image = cv2.putText(image, 'IMAGE ' + str(counter), org, font, fontScale, color, thickness, cv2.LINE_AA)
-            if x <= 5:
+            if x <= columns:
                 h_list1.append(image)
                 x += 1
             else:
@@ -34,7 +34,7 @@ def imagestiching():
             blankimage.save(imagepath)
             image = cv2.imread(imagepath)
             image = cv2.putText(image, 'IMAGE ' + str(counter), org, font, fontScale, color, thickness, cv2.LINE_AA)
-            if x <= 5:
+            if x <= columns:
                 h_list1.append(image)
             else:
                 h_list2.append(image)
@@ -53,4 +53,4 @@ def imagestiching():
 
 
 if __name__ == "__main__":
-    imagestiching()
+    imagestiching(4)
