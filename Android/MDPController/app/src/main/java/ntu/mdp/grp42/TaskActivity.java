@@ -120,6 +120,8 @@ public class TaskActivity extends AppCompatActivity
     private static TabLayout tabLayout3;
     private Button btnTask1, btnTask2, btnReset, btnStop;
     private Button photoBtn;
+    private boolean timer_ready;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -272,8 +274,8 @@ public class TaskActivity extends AppCompatActivity
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
-                btnTask1 = TimerFragment.getBTNtask1();
-                btnTask2 = TimerFragment.getBTNtask2();
+                btnTask1 = StartTaskFragment.getBTNtask1();
+                btnTask2 = StartTaskFragment.getBTNtask2();
                 btnStop = TimerFragment.getBTNstop();
                 btnReset = TimerFragment.getBTNreset();
                 photoBtn = StartTaskFragment.getPhotoBtn();
@@ -289,9 +291,8 @@ public class TaskActivity extends AppCompatActivity
 
                     public void onClick(View v) {
                         btnTask2.setEnabled(false);
-                        btnReset.setEnabled(false);
-                        TimerFragment.resetBTNeffect();
-                        TimerFragment.taskEffect();
+                        btnStop.setEnabled(true);
+                        timer_ready = true;
                         bluetoothService.write(START_TASK1.getBytes(StandardCharsets.UTF_8));
                     }};
                 btnTask1.setOnClickListener(task1Handle);
@@ -300,9 +301,8 @@ public class TaskActivity extends AppCompatActivity
 
                     public void onClick(View v) {
                         btnTask1.setEnabled(false);
-                        btnReset.setEnabled(false);
-                        TimerFragment.resetBTNeffect();
-                        TimerFragment.taskEffect();
+                        btnStop.setEnabled(true);
+                        timer_ready = true;
                         bluetoothService.write(START_TASK2.getBytes(StandardCharsets.UTF_8));
                     }};
                 btnTask2.setOnClickListener(task2Handle);
@@ -310,9 +310,18 @@ public class TaskActivity extends AppCompatActivity
                 View.OnClickListener stopHandle = new View.OnClickListener() {
 
                     public void onClick(View v) {
-                        btnReset.setEnabled(true);
-                        TimerFragment.stopBTNeffect();
-                        bluetoothService.write(STOP_TASK.getBytes(StandardCharsets.UTF_8));
+                        //check if task buttons are pressed
+                        if (timer_ready){
+                            //start timer
+                            TimerFragment.setStartTime();
+                            btnReset.setEnabled(true);
+                            timer_ready = false;
+                        } else {
+                            //stop timer
+                            TimerFragment.stopBTNeffect();
+                            bluetoothService.write(STOP_TASK.getBytes(StandardCharsets.UTF_8));
+                            timer_ready = true;
+                        }
                     }};
                 btnStop.setOnClickListener(stopHandle);
 
@@ -324,7 +333,7 @@ public class TaskActivity extends AppCompatActivity
                         boolean stopped = TimerFragment.getStopStatus();
                         if (!stopped)
                             TimerFragment.stopBTNeffect();
-                        TimerFragment.resetTaskBTN();
+                        StartTaskFragment.resetTaskBTN();
                         btnReset.setEnabled(false);
 
                     }};
