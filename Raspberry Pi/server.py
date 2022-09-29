@@ -87,6 +87,7 @@ import time
 import os.path
 from os import path
 import _thread
+import collage
 
 host = '192.168.42.12'
 port = 54321
@@ -214,7 +215,7 @@ class Server():
             labelText = folder_name + "\\yolov5\\runs\\detect\\results\\labels\\image" + str(
                 counter) + ".txt"
             print("LabelText: " + labelText)
-            
+
             if path.exists(labelText) is True:
                 if (taskno=='I1'):
                     with open(labelText, 'r') as f:
@@ -275,4 +276,6 @@ if __name__ == '__main__':
     image_thread = _thread.start_new_thread(server.listen_for_image, ())
     while True:
         pass
+
+    imagestiching(4)    # collage of all images
     print("Ended server")
