@@ -2,8 +2,8 @@ package ntu.mdp.grp42.bluetooth;
 
 public interface RaspberryPiProtocol {
     // Robot Movement Controls
-    String FORWARD = "w";
-    String REVERSE = "t";
+    String FORWARD = "f";
+    String REVERSE = "b";
     String LEFT_TURN = "q";
     String RIGHT_TURN = "e";
 

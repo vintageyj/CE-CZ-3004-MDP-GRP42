@@ -86,12 +86,12 @@ public class control1Fragment extends Fragment implements View.OnClickListener, 
                 break;
             case MotionEvent.ACTION_UP:
                 switch (v.getId()) {
-                    case R.id.upBtn:
-                        taskActivity.sendCommand(FORWARD);
-                        break;
-                    case R.id.downBtn:
-                        taskActivity.sendCommand(REVERSE);
-                        break;
+//                    case R.id.upBtn:
+//                        taskActivity.sendCommand(FORWARD);
+//                        break;
+//                    case R.id.downBtn:
+//                        taskActivity.sendCommand(REVERSE);
+//                        break;
                 }
                 break;
         }
