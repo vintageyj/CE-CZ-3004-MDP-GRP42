@@ -57,7 +57,7 @@
 #         if path.exists(labelText) is True:
 #             with open(labelText, 'r') as f:
 #                 data = f.read()
-#             result = str(data)  
+#             result = str(data)
 #             label = int(result[:2].strip()) + 1
 #             message = str(label)
 #             print('[S] Sending: ' + message)
@@ -89,11 +89,11 @@ from os import path
 import _thread
 import collage
 
-host = '192.168.42.12'
+host = '192.168.42.24'
 port = 54321
 port_image = 55555
-folder_name = "C:\\Users\\Dayou\\Documents\\MDP\\COMBINEDCODE"
-algo_folder_name = "C:\\Users\\Dayou\\IdeaProjects\\MDPALGO"
+folder_name = "C:\\Users\\Ashwin\\Downloads\\COMBINEDCODE\\COMBINEDCODE"
+algo_folder_name = "C:\\Users\\Ashwin\\IdeaProjects\\mdp2\\"
 
 
 class Server():
@@ -127,22 +127,19 @@ class Server():
 
             # write the obstacle path received from android to pathFromRPI
             self.send_path_txt_file_algo(instr[1])
-
             print("===READ FROM ALGO OUTPUT FILE FOR STM===")
             # update algo file
             #algoOutput = r"C:\Users\acer\COMBINEDCODE\CommandsForSTM.txt"
             algoOutput = algo_folder_name + "\CommandsForSTM.txt"
-            with open(algoOutput, 'r') as f:
-                data = f.read()
-            result = 'S ' + str(data)
+            data = self.get_algo_output(algoOutput)
+            result = 'S ' + data
             print('SENDING: ' + result)
             self.algo_clientSocket.send(result.encode('utf-8'))
 
             print("===READ FROM ALGO OUTPUT FILE FOR ANDROID===")
             #algoOutput = r"C:\Users\acer\COMBINEDCODE\PathForAndroid.txt"
             algoOutput = algo_folder_name + "\PathForAndroid.txt"
-            with open(algoOutput, 'r') as f:
-                data = f.read()
+            data = self.get_algo_output(algoOutput)
             result = "predicted_path "+str(data)
             print('SENDING: ' + result)
             self.algo_clientSocket.send(result.encode('utf-8'))
@@ -158,7 +155,7 @@ class Server():
                 parts = lines.split() # splits up each component within a line and stores in array
                 confArray.append(parts[5]) # stores all confidence levels
                 areaArray.append(float(parts[3])*float(parts[4])) # stores all relative area of box
-            
+
             # maxConf=max(confArray) # find max confidence
             maxArea=max(areaArray) # find max area
             largest = areaArray.index(maxArea) # find largest (nearest) label's index
@@ -169,7 +166,7 @@ class Server():
                 if area > maxArea-0.003 and confArray[i]>confArray[largest]:
                     return (str(int(result[i].split()[0])+11))
                 i+=1
-            
+
             return (str(int(result[largest].split()[0])+11))
 
         def task2detection(labelText):
@@ -228,7 +225,7 @@ class Server():
             os.chdir(folder_name + "\yolov5")
             # os.system(
             #     'python detect.py --weights best.pt --source images --img 416 --conf 0.3 --save-conf --hide-conf --name results --exist-ok --save-txt')
-            os.system('python detect.py --weights best.pt --img 416 --conf 0.3 --save-conf --hide-conf --name results --exist-ok --save-txt --device 0 --source images/image'+str(counter)+".jpg")
+            os.system('python detect.py --weights best.pt --img 416 --conf 0.3 --save-conf --hide-conf --name results --exist-ok --save-txt --source images/image'+str(counter)+".jpg")
 
             # reconnecting client
             #clientSocket_image, clientAddress = server_image.accept()
@@ -286,10 +283,20 @@ class Server():
             print(msg)
 
         print("===SOCKET BIND (IMAGE) COMPLETE===")
-    
+
         self.server_image.listen(2)
         self.clientSocket_image, self.clientAddress_image = self.server_image.accept()
         print("===IMAGE CLIENT CONNECTED===")
+
+    @staticmethod
+    def get_algo_output(algoOutput):
+        """wait for algo output then only send"""
+        data = ""
+        while not data:
+            with open(algoOutput, 'r') as f:
+                data = str(f.read())
+                time.sleep(0.3)
+        return data
 
 
 if __name__ == '__main__':
