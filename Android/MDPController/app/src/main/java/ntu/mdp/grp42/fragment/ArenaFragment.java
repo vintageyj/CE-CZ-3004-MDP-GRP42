@@ -483,7 +483,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
             obstacleList.put(obstacleID, obstacle);
 //
         // sends addition of obstacle over to robot
-        taskActivity.sendCommand(ADD_OBSTACLE, obstacle);
+//        taskActivity.sendCommand(ADD_OBSTACLE, obstacle);
 //        Gson gson = new Gson();
 //        sendBTCommand(ADD_OBSTACLE, gson.toJson(obstacle));
 

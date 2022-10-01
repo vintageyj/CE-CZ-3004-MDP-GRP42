@@ -1,5 +1,7 @@
 package ntu.mdp.grp42.fragment;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -14,19 +16,21 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 
 import ntu.mdp.grp42.R;
 import ntu.mdp.grp42.arena.ArenaCell;
-import ntu.mdp.grp42.arena.Obstacle;
 import ntu.mdp.grp42.bluetooth.Constants;
 
 public class LeftFragment extends Fragment implements Constants {
@@ -36,6 +40,10 @@ public class LeftFragment extends Fragment implements Constants {
     private TableLayout resultTable;
     private boolean resultTableDrawn = false;
     private int[] resultList = new int[8];
+
+    private ArrayAdapter<String> arrayAdapter;
+    private ArrayList<String> messages = new ArrayList<>();
+    private ListView listView;
 
     public LeftFragment() {
         // Required empty public constructor
@@ -64,6 +72,7 @@ public class LeftFragment extends Fragment implements Constants {
         robotCoordinates = view.findViewById(R.id.robotCoordinates);
         debugWindow = view.findViewById(R.id.debugWindow);
         resultTable = view.findViewById(R.id.resultTable);
+        debugWindow.setOnClickListener(this::displayLog);
 
         resultTable.getViewTreeObserver().addOnPreDrawListener( () -> {
             if (!resultTableDrawn) {
@@ -72,6 +81,28 @@ public class LeftFragment extends Fragment implements Constants {
             }
             return true;
         });
+    }
+
+    private void displayLog(View view) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//        builder.setTitle("Received Messages");
+//        builder.setNeutralButton("Done", (dialogInterface, i) -> {
+//            dialogInterface.dismiss();
+//        });
+//        builder.show();
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Received Messages");
+
+        listView = new ListView(getContext());
+        arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, android.R.id.text1, messages);
+        listView.setAdapter(arrayAdapter);
+
+        builder.setView(listView);
+        final Dialog dialog = builder.create();
+
+        dialog.show();
     }
 
     public void initResultTable(int obstacleNum) {
@@ -177,6 +208,12 @@ public class LeftFragment extends Fragment implements Constants {
 
     public void setDebugWindow(String message){
         debugWindow.setText(message);
+        Date currentTime = Calendar.getInstance().getTime();
+        messages.add(String.format("%02d:%02d:%02d : %s",currentTime.getHours(),currentTime.getMinutes(),currentTime.getSeconds(),message));
+        if (arrayAdapter != null) {
+            arrayAdapter.notifyDataSetChanged();
+            listView.smoothScrollToPosition(arrayAdapter.getCount()-1);
+        }
     }
 
     public void setRpiColor(int color) {

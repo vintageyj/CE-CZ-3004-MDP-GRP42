@@ -25,8 +25,6 @@ import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -36,12 +34,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.view.ViewCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -444,6 +437,11 @@ public class TaskActivity extends AppCompatActivity
             disconnected = false;
             reconnectAttempt = 0;
             reconnecting = false;
+            handler.postDelayed(() -> {
+                if (!stm_connected && !rpi_connected && !pc_connected) {
+                    bluetoothService.connect(targetDevice);
+                }
+            }, 5000);
             query_connection();
         }
         runOnUiThread(() -> {
