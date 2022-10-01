@@ -32,19 +32,19 @@
 
                 <Button
                     android:id="@+id/predictedPathBtn"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:text="Predict"/>
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Predict" />
 
                 <Button
                     android:id="@+id/takenPathBtn"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:text="Taken"/>
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Taken" />
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -63,28 +63,28 @@
 
                 <Button
                     android:id="@+id/spawnRobotBtn"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:text="@string/robot_cell"/>
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/robot_cell" />
 
                 <Button
                     android:id="@+id/spawnObstacleBtn"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:text="@string/obstacle_cell"/>
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/obstacle_cell" />
 
                 <Button
                     android:id="@+id/spawnDummyObstacleBtn"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="@string/dummy_cell"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
         </LinearLayout>
@@ -106,41 +106,72 @@
             <ProgressBar
                 android:id="@+id/progressBarBT"
                 style="?android:attr/progressBarStyleLarge"
-                android:indeterminateTint="@color/honey_yellow"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:layout_alignTop="@+id/bluetoothBtn"
+                android:layout_alignEnd="@+id/bluetoothBtn"
+                android:layout_alignRight="@+id/bluetoothBtn"
                 android:layout_gravity="right"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="8dp"
                 android:elevation="3dp"
-                android:layout_alignTop="@+id/bluetoothBtn"
-                android:layout_alignRight="@+id/bluetoothBtn"
-                android:layout_alignEnd="@+id/bluetoothBtn" />
+                android:indeterminateTint="@color/honey_yellow" />
 
         </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/videoButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="Video"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/videoTab"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignTop="@+id/videoButton"
+                android:layout_alignEnd="@+id/videoButton"
+                android:layout_alignRight="@+id/videoButton"
+                android:layout_gravity="right"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:elevation="3dp"
+                android:src="@drawable/ic_tab" />
+
+        </RelativeLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <Button
-                android:id="@+id/arenaButton"
-                android:text="arena"
-                android:textStyle="bold"
+                android:id="@+id/setArenaButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
-                android:layout_weight="0.5"/>
+                android:layout_weight="0.5"
+                android:text="Setup"
+                android:textStyle="bold" />
 
             <Button
-                android:id="@+id/videoButton"
-                android:text="video"
-                android:textStyle="bold"
+                android:id="@+id/resetArenaButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginRight="5dp"
+                android:layout_weight="0.5"
+                android:text="Reset"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

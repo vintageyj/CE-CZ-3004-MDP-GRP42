@@ -85,12 +85,12 @@ public class control2Fragment extends Fragment implements RaspberryPiProtocol, V
                 break;
             case MotionEvent.ACTION_UP:
                 switch (v.getId()) {
-                    case R.id.leftBtn:
-                        taskActivity.sendCommand(LEFT_TURN);
-                        break;
-                    case R.id.rightBtn:Btn:
-                        taskActivity.sendCommand(RIGHT_TURN);
-                        break;
+//                    case R.id.leftBtn:
+//                        taskActivity.sendCommand(LEFT_TURN);
+//                        break;
+//                    case R.id.rightBtn:Btn:
+//                        taskActivity.sendCommand(RIGHT_TURN);
+//                        break;
                 }
                 break;
         }

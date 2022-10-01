@@ -142,7 +142,8 @@
                 android:id="@+id/rightControlFragment"
                 android:name="ntu.mdp.grp42.fragment.RightControlFragment"
                 android:layout_width="match_parent"
-                android:layout_height="290dp" />
+                android:layout_height="0dp"
+                android:layout_weight="0.5"/>
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appbar3"
@@ -186,7 +187,8 @@
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/viewpager2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             </androidx.viewpager.widget.ViewPager>

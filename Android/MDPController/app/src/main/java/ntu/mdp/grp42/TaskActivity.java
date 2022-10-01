@@ -298,7 +298,6 @@ public class TaskActivity extends AppCompatActivity
                         btnTask2.setEnabled(false);
                         btnStop.setEnabled(true);
                         timer_ready = true;
-                        bluetoothService.write(START_TASK1.getBytes(StandardCharsets.UTF_8));
                     }};
                 btnTask1.setOnClickListener(task1Handle);
 
@@ -319,6 +318,7 @@ public class TaskActivity extends AppCompatActivity
                         if (timer_ready){
                             //start timer
                             TimerFragment.setStartTime();
+                            bluetoothService.write(START_TASK1.getBytes(StandardCharsets.UTF_8));
                             btnReset.setEnabled(true);
                             timer_ready = false;
                         } else {

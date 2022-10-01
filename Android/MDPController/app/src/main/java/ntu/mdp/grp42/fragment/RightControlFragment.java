@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -26,13 +27,16 @@ import ntu.mdp.grp42.R;
 public class RightControlFragment extends Fragment
         implements View.OnClickListener, MaterialButtonToggleGroup.OnButtonCheckedListener {
 
-    Button bluetoothBtn, arenaButton, videoButton;
+    Button bluetoothBtn, setArenaButton, resetArenaButton, videoButton;
+    private ImageView videoTab;
     private ArenaFragment arenaFragment;
     private VideoFragment videoFragment;
     public ProgressBar spinner;
 
     private LinearLayout arenaSettingsLayout;
     private MaterialButtonToggleGroup pathToggleGroup, spawnToggleGroup;
+
+    private boolean videoToggled = false;
 
     public RightControlFragment() {
         // Required empty public constructor
@@ -61,9 +65,12 @@ public class RightControlFragment extends Fragment
         bluetoothBtn.setOnClickListener(this);
         spinner = (ProgressBar) view.findViewById(R.id.progressBarBT);
         spinner.setVisibility(View.INVISIBLE);
-        arenaButton = view.findViewById(R.id.arenaButton);
+        setArenaButton = view.findViewById(R.id.setArenaButton);
+        resetArenaButton = view.findViewById(R.id.resetArenaButton);
         videoButton = view.findViewById(R.id.videoButton);
-        arenaButton.setOnClickListener(this);
+        videoTab = view.findViewById(R.id.videoTab);
+        setArenaButton.setOnClickListener(this);
+        resetArenaButton.setOnClickListener(this);
         videoButton.setOnClickListener(this);
 
         arenaSettingsLayout = view.findViewById(R.id.arenaSettingsLayout);
@@ -85,12 +92,23 @@ public class RightControlFragment extends Fragment
                 TaskActivity.bluetoothService.start();
                 TaskActivity.activityResultLauncher.launch(new Intent(getActivity(), BluetoothActivity.class));
                 break;
-            case R.id.arenaButton:
-                TaskActivity.swapFragments(0);
-
-                break;
             case R.id.videoButton:
-                TaskActivity.swapFragments(1);
+                if (!videoToggled) {
+                    TaskActivity.swapFragments(1);
+                    videoTab.setImageDrawable(getContext().getDrawable(R.drawable.ic_tab_unselected));
+                    videoToggled = true;
+                } else {
+                    TaskActivity.swapFragments(0);
+                    videoTab.setImageDrawable(getContext().getDrawable(R.drawable.ic_tab));
+                    videoToggled = false;
+                }
+                break;
+            case R.id.setArenaButton:
+//                TaskActivity.setCustomArena();
+                break;
+
+            case R.id.resetArenaButton:
+//                TaskActivity.resetArena();
                 break;
         }
     }
