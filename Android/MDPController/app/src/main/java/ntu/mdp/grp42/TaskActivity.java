@@ -127,7 +127,6 @@ public class TaskActivity extends AppCompatActivity
     private Button photoBtn;
     private boolean timer_ready;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

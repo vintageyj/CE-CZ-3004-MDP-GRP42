@@ -137,6 +137,7 @@ public class LeftFragment extends Fragment implements Constants {
                 robotDirection.setText("West");
                 break;
             default:
+                robotDirection.setText("None");
                 break;
         }
     }

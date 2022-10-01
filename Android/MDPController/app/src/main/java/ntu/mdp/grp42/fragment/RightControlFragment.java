@@ -104,11 +104,11 @@ public class RightControlFragment extends Fragment
                 }
                 break;
             case R.id.setArenaButton:
-//                TaskActivity.setCustomArena();
+                arenaFragment.setCustomArena();
                 break;
 
             case R.id.resetArenaButton:
-//                TaskActivity.resetArena();
+                arenaFragment.resetArena();
                 break;
         }
     }

@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -57,6 +58,7 @@ import ntu.mdp.grp42.bluetooth.BluetoothService;
 
 public class ArenaFragment extends Fragment implements View.OnClickListener {
 
+    private boolean TAB_A7 = false;
     private String ARENA_FRAGMENT_TAG = "ARENA FRAGMENT";
 
     private TaskActivity taskActivity;
@@ -91,6 +93,8 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     private ImageView robotIV, spawnBox;
     public String spawnType = "";
     Drawable arenaCellBG;
+
+    Toast toast;
 
     // Status window
     LeftFragment leftStatusFragment;
@@ -129,6 +133,15 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initTable() {
+        if (TAB_A7) {
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+            );
+            layoutParams.setMargins(0, 0, 0, 0);
+            arenaTable.setLayoutParams(layoutParams);
+            arenaTable.setGravity(Gravity.CENTER);
+        }
         btnWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25, getResources().getDisplayMetrics());
         btnHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25, getResources().getDisplayMetrics());
 
@@ -221,7 +234,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     }
 
     public void rotateRobotRight() {
-        if (robotIV != null) {
+        if (robotIV != null && robotIV.getVisibility() == View.VISIBLE) {
             robotIV.setRotation((robotIV.getRotation() + 90) % 360);
             leftStatusFragment.setRobotDirection((int) robotIV.getRotation() / 90);
         }
@@ -230,7 +243,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     }
 
     public void rotateRobotLeft() {
-        if (robotIV != null) {
+        if (robotIV != null && robotIV.getVisibility() == View.VISIBLE) {
             robotIV.setRotation((robotIV.getRotation() + 270) % 360);
             leftStatusFragment.setRobotDirection((int) robotIV.getRotation() / 90);
         }
@@ -239,7 +252,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     }
 
     public void forwardRobot() {
-        if (robotIV != null) {
+        if (robotIV != null && robotIV.getVisibility() == View.VISIBLE) {
             switch ((int) robotIV.getRotation() % 360) {
                 case 0:
                     robotIV.setY(robotIV.getY() - dpToPixels(25));
@@ -268,7 +281,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     }
 
     public void reverseRobot() {
-        if (robotIV != null) {
+        if (robotIV != null && robotIV.getVisibility() == View.VISIBLE) {
             switch ((int) robotIV.getRotation() % 360) {
                 case 0:
                     robotIV.setY(robotIV.getY() + dpToPixels(25));
@@ -297,10 +310,11 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setRobotWarning() {
-        Toast.makeText(getContext(), "Set the robot onto the arena first!", Toast.LENGTH_SHORT).show();
+        if (toast != null)
+            toast.cancel();
+        toast = Toast.makeText(getContext(), "Set the robot onto the arena first!", Toast.LENGTH_SHORT);
+        toast.show();
     }
-
-
 
     public ArenaCell getLastCell() {
         return lastCell;
@@ -323,8 +337,11 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
             Log.d(ARENA_FRAGMENT_TAG, "Spawning " + spawnType);
 
             if (spawnType.equals("")) {
-                Toast.makeText(getContext(),
-                        String.format("Clicked %d, %d!", x, y), Toast.LENGTH_SHORT).show();
+                if (toast != null)
+                    toast.cancel();
+                toast = Toast.makeText(getContext(), String.format("Clicked %d, %d!", x, y), Toast.LENGTH_SHORT);
+                toast.show();
+
                 return;
             }
 
@@ -334,8 +351,11 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
             }
 
             if (!arenaCell.getText().equals("")){
-                Toast.makeText(getContext(),
-                        String.format("Obstacle %d at %d, %d", arenaCell.obstacleID, x, y), Toast.LENGTH_SHORT).show();
+                if (toast != null)
+                    toast.cancel();
+                toast = Toast.makeText(getContext(),
+                        String.format("Obstacle %d at %d, %d", arenaCell.obstacleID, x, y), Toast.LENGTH_SHORT);
+                toast.show();
                 return;
             }
 
@@ -406,7 +426,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 //                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
 //                .setIcon(android.R.drawable.ic_dialog_alert);
         androidx.appcompat.app.AlertDialog.Builder builder = new AlertDialog.Builder(this.requireContext());
-        builder.setTitle("Choose direction of image"+"("+x+","+y+")");
+        builder.setTitle(String.format("Choose direction of image (%d,%d) Cell: %d", x, y, cellID));
         builder.setSingleChoiceItems(directions, 0, (dialogInterface, i) -> selectedDirection[0] = directions[i]);
 
         // confirm to add obstacle
@@ -546,8 +566,11 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                         // stops if dropped cell is on a populated cell
                         newArenaCell = newCell.findViewById(newCell.getId());
                         if (newArenaCell.obstacleID != -1) {
-                            Toast.makeText(getContext(),
-                                    String.format("Remove Obstacle %d first!", newArenaCell.obstacleID), Toast.LENGTH_SHORT).show();
+                            if (toast != null)
+                                toast.cancel();
+                            toast = Toast.makeText(getContext(),
+                                    String.format("Remove Obstacle %d first!", newArenaCell.obstacleID), Toast.LENGTH_SHORT);
+                            toast.show();
 
                             // removes all the highlights
                             removeAdjacentCellHighlights(newArenaCell);
@@ -728,5 +751,38 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                 takenPath[i][j] = 0;
             }
         }
+    }
+
+    public void resetArena() {
+        // Remove paths
+        hidePredictedCells();
+        hideTakenCells();
+        removePredictedCells();
+        removeTakenCells();
+
+        // Remove robot
+        robotIV.setVisibility(View.INVISIBLE);
+        spawnBox.setVisibility(View.INVISIBLE);
+        leftStatusFragment.setRobotCoordinates(0,0);
+        leftStatusFragment.setRobotDirection(-1);
+
+        // Remove obstacles
+        for (ArenaCell obstacleCell : obstacleCells) {
+            obstacleList.remove(obstacleCell.obstacleID);
+            obstacleCell.setText("");
+            obstacleCell.setTextSize(15);
+            obstacleCell.obstacleID = -1;
+            obstacleCell.setBackground(arenaCellBG);
+        }
+        obstacleCells = new ArrayList<>();
+        leftStatusFragment.initResultTable(obstacleList.size());
+    }
+
+    public void setCustomArena() {
+        addObstacle(1, 108, 3);
+        addObstacle(2, 206, 2);
+        addObstacle(3, 213, 1);
+        addObstacle(4, 316, 3);
+        addObstacle(5, 96, 2);
     }
 }
