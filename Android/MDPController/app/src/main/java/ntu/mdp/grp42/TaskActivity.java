@@ -659,7 +659,8 @@ public class TaskActivity extends AppCompatActivity
                 handler.postDelayed(() -> arenaFragment.rotateRobotLeft(), delay * 2);
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 3);
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 4);
-                totalDelay += delay * 4;
+                handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 5);
+                totalDelay += delay * 5;
                 break;
 
             case "e":
@@ -668,7 +669,8 @@ public class TaskActivity extends AppCompatActivity
                 handler.postDelayed(() -> arenaFragment.rotateRobotRight(), delay * 2);
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 3);
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 4);
-                totalDelay += delay * 4;
+                handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 5);
+                totalDelay += delay * 5;
                 break;
 
             case "z":
