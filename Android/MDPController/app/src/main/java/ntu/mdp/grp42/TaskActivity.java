@@ -299,7 +299,8 @@ public class TaskActivity extends AppCompatActivity
                         btnTask1.setEnabled(false);
                         btnStop.setEnabled(true);
                         timer_ready = true;
-                        bluetoothService.write(START_TASK2.getBytes(StandardCharsets.UTF_8));
+                        writeMessage(START_TASK2);
+//                        bluetoothService.write(START_TASK2.getBytes(StandardCharsets.UTF_8));
                     }};
                 btnTask2.setOnClickListener(task2Handle);
 
@@ -310,13 +311,15 @@ public class TaskActivity extends AppCompatActivity
                         if (timer_ready){
                             //start timer
                             TimerFragment.setStartTime();
-                            bluetoothService.write(START_TASK1.getBytes(StandardCharsets.UTF_8));
+                            writeMessage(START_TASK1);
+//                            bluetoothService.write(START_TASK1.getBytes(StandardCharsets.UTF_8));
                             btnReset.setEnabled(true);
                             timer_ready = false;
                         } else {
                             //stop timer
                             TimerFragment.stopBTNeffect();
-                            bluetoothService.write(STOP_TASK.getBytes(StandardCharsets.UTF_8));
+                            writeMessage(STOP_TASK);
+//                            bluetoothService.write(STOP_TASK.getBytes(StandardCharsets.UTF_8));
                             timer_ready = true;
                         }
                     }};
@@ -437,11 +440,11 @@ public class TaskActivity extends AppCompatActivity
             disconnected = false;
             reconnectAttempt = 0;
             reconnecting = false;
-            handler.postDelayed(() -> {
-                if (!stm_connected && !rpi_connected && !pc_connected) {
-                    bluetoothService.connect(targetDevice);
-                }
-            }, 5000);
+//            handler.postDelayed(() -> {
+//                if (!stm_connected && !rpi_connected && !pc_connected) {
+//                    bluetoothService.connect(targetDevice);
+//                }
+//            }, 5000);
             query_connection();
         }
         runOnUiThread(() -> {
@@ -566,11 +569,12 @@ public class TaskActivity extends AppCompatActivity
     });
 
     public void writeMessage(String message){
+        leftStatusFragment.setDebugWindow(message, false);
         bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
     }
 
     private void receiveMessage(String message) {
-        leftStatusFragment.setDebugWindow(message);
+        leftStatusFragment.setDebugWindow(message, true);
         try {
             String[] strMessage = message.split(" ");
             Gson gson = new Gson();

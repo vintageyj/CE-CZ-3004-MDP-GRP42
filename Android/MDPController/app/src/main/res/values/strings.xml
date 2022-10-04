@@ -17,5 +17,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="connecting_rpi">RPI: <font color='#00FF00'>Connected</font></string>
+    <string name="outgoing_message"><font color='#ff6961'>OUT: </font></string>
+    <string name="incoming_message"><font color='#8CD47E'>IN: </font></string>
 
 </resources>

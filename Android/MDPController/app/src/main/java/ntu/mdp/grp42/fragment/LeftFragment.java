@@ -206,13 +206,18 @@ public class LeftFragment extends Fragment implements Constants {
         setRobotCoordinates();
     }
 
-    public void setDebugWindow(String message){
-        debugWindow.setText(message);
+    public void setDebugWindow(String message, boolean isIncoming){
         Date currentTime = Calendar.getInstance().getTime();
-        messages.add(String.format("%02d:%02d:%02d : %s",currentTime.getHours(),currentTime.getMinutes(),currentTime.getSeconds(),message));
+        if (isIncoming) {
+            debugWindow.setText(message);
+            messages.add(String.format("IN: %02d:%02d:%02d : %s",currentTime.getHours(), currentTime.getMinutes(), currentTime.getSeconds(), message));
+
+        } else {
+            messages.add(String.format("OUT: %02d:%02d:%02d : %s",currentTime.getHours(), currentTime.getMinutes(), currentTime.getSeconds(), message));
+        }
         if (arrayAdapter != null) {
             arrayAdapter.notifyDataSetChanged();
-            listView.smoothScrollToPosition(arrayAdapter.getCount()-1);
+            listView.smoothScrollToPosition(arrayAdapter.getCount() - 1);
         }
     }
 

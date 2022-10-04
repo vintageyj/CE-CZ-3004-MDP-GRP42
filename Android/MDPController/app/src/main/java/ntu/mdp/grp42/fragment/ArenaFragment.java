@@ -58,7 +58,7 @@ import ntu.mdp.grp42.bluetooth.BluetoothService;
 
 public class ArenaFragment extends Fragment implements View.OnClickListener {
 
-    private boolean TAB_A7 = false;
+    private boolean TAB_A7 = true;
     private String ARENA_FRAGMENT_TAG = "ARENA FRAGMENT";
 
     private TaskActivity taskActivity;
