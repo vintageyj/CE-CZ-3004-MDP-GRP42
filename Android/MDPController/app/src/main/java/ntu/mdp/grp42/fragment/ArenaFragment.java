@@ -58,7 +58,7 @@ import ntu.mdp.grp42.bluetooth.BluetoothService;
 
 public class ArenaFragment extends Fragment implements View.OnClickListener {
 
-    private boolean TAB_A7 = false;
+    private boolean TAB_A7 = true;
     private String ARENA_FRAGMENT_TAG = "ARENA FRAGMENT";
 
     private TaskActivity taskActivity;
@@ -483,7 +483,7 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
             obstacleList.put(obstacleID, obstacle);
 //
         // sends addition of obstacle over to robot
-        taskActivity.sendCommand(ADD_OBSTACLE, obstacle);
+//        taskActivity.sendCommand(ADD_OBSTACLE, obstacle);
 //        Gson gson = new Gson();
 //        sendBTCommand(ADD_OBSTACLE, gson.toJson(obstacle));
 

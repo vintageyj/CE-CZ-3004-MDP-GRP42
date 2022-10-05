@@ -81,6 +81,8 @@ public class ArenaCell extends androidx.appcompat.widget.AppCompatButton {
                 return R.drawable.id_39;
             case 40:
                 return R.drawable.id_40;
+            case 41:
+                return R.drawable.id_41;
             default:
                 return R.drawable.dummy_obstacle;
         }

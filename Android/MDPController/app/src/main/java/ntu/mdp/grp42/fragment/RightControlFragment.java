@@ -1,28 +1,23 @@
 package ntu.mdp.grp42.fragment;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
 
+import ntu.mdp.grp42.R;
 import ntu.mdp.grp42.TaskActivity;
 import ntu.mdp.grp42.bluetooth.BluetoothActivity;
-import ntu.mdp.grp42.R;
 
 public class RightControlFragment extends Fragment
         implements View.OnClickListener, MaterialButtonToggleGroup.OnButtonCheckedListener {
@@ -108,7 +103,13 @@ public class RightControlFragment extends Fragment
                 break;
 
             case R.id.resetArenaButton:
-                arenaFragment.resetArena();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Reset the Arena?");
+                builder.setPositiveButton("Yes", (dialogInterface, i) -> {
+                    arenaFragment.resetArena();
+                });
+                builder.setNegativeButton("No", null);
+                builder.show();
                 break;
         }
     }

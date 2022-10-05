@@ -25,8 +25,6 @@ import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -36,12 +34,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.view.ViewCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -306,7 +299,8 @@ public class TaskActivity extends AppCompatActivity
                         btnTask1.setEnabled(false);
                         btnStop.setEnabled(true);
                         timer_ready = true;
-                        bluetoothService.write(START_TASK2.getBytes(StandardCharsets.UTF_8));
+                        writeMessage(START_TASK2);
+//                        bluetoothService.write(START_TASK2.getBytes(StandardCharsets.UTF_8));
                     }};
                 btnTask2.setOnClickListener(task2Handle);
 
@@ -317,13 +311,15 @@ public class TaskActivity extends AppCompatActivity
                         if (timer_ready){
                             //start timer
                             TimerFragment.setStartTime();
-                            bluetoothService.write(START_TASK1.getBytes(StandardCharsets.UTF_8));
+                            writeMessage(START_TASK1);
+//                            bluetoothService.write(START_TASK1.getBytes(StandardCharsets.UTF_8));
                             btnReset.setEnabled(true);
                             timer_ready = false;
                         } else {
                             //stop timer
                             TimerFragment.stopBTNeffect();
-                            bluetoothService.write(STOP_TASK.getBytes(StandardCharsets.UTF_8));
+                            writeMessage(STOP_TASK);
+//                            bluetoothService.write(STOP_TASK.getBytes(StandardCharsets.UTF_8));
                             timer_ready = true;
                         }
                     }};
@@ -444,6 +440,11 @@ public class TaskActivity extends AppCompatActivity
             disconnected = false;
             reconnectAttempt = 0;
             reconnecting = false;
+//            handler.postDelayed(() -> {
+//                if (!stm_connected && !rpi_connected && !pc_connected) {
+//                    bluetoothService.connect(targetDevice);
+//                }
+//            }, 5000);
             query_connection();
         }
         runOnUiThread(() -> {
@@ -568,11 +569,12 @@ public class TaskActivity extends AppCompatActivity
     });
 
     public void writeMessage(String message){
+        leftStatusFragment.setDebugWindow(message, false);
         bluetoothService.write(message.getBytes(StandardCharsets.UTF_8));
     }
 
     private void receiveMessage(String message) {
-        leftStatusFragment.setDebugWindow(message);
+        leftStatusFragment.setDebugWindow(message, true);
         try {
             String[] strMessage = message.split(" ");
             Gson gson = new Gson();
@@ -659,7 +661,8 @@ public class TaskActivity extends AppCompatActivity
                 handler.postDelayed(() -> arenaFragment.rotateRobotLeft(), delay * 2);
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 3);
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 4);
-                totalDelay += delay * 4;
+                handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 5);
+                totalDelay += delay * 5;
                 break;
 
             case "e":
@@ -668,7 +671,8 @@ public class TaskActivity extends AppCompatActivity
                 handler.postDelayed(() -> arenaFragment.rotateRobotRight(), delay * 2);
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 3);
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 4);
-                totalDelay += delay * 4;
+                handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 5);
+                totalDelay += delay * 5;
                 break;
 
             case "z":
