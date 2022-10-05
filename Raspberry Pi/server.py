@@ -88,6 +88,8 @@ import os.path
 from os import path
 import _thread
 import collage
+import torch
+from PIL import Image
 
 host = '192.168.42.12'
 port = 54321
@@ -132,8 +134,7 @@ class Server():
             # update algo file
             #algoOutput = r"C:\Users\acer\COMBINEDCODE\CommandsForSTM.txt"
             algoOutput = algo_folder_name + "\CommandsForSTM.txt"
-            with open(algoOutput, 'r') as f:
-                data = f.read()
+            data = self.get_algo_output(algoOutput)
             result = 'S ' + str(data)
             print('SENDING: ' + result)
             self.algo_clientSocket.send(result.encode('utf-8'))
@@ -141,8 +142,7 @@ class Server():
             print("===READ FROM ALGO OUTPUT FILE FOR ANDROID===")
             #algoOutput = r"C:\Users\acer\COMBINEDCODE\PathForAndroid.txt"
             algoOutput = algo_folder_name + "\PathForAndroid.txt"
-            with open(algoOutput, 'r') as f:
-                data = f.read()
+            data = self.get_algo_output(algoOutput)
             result = "predicted_path "+str(data)
             print('SENDING: ' + result)
             self.algo_clientSocket.send(result.encode('utf-8'))
@@ -196,7 +196,15 @@ class Server():
             if (len(message) == 0):
                 print("RECEIVED EMPTINESS")
                 continue
-            taskno=message
+
+            burst = False
+            msgStr = message.split()
+            if (len(msgStr) > 1):
+                burst = (msgStr[1] == "burst")
+
+            taskno=msgStr[0]
+
+
             # creating image file
             # filePath = r"C:\Users\acer\COMBINEDCODE\yolov5\images\image" + \
             #     str(counter) + ".jpg"
@@ -291,6 +299,15 @@ class Server():
         self.clientSocket_image, self.clientAddress_image = self.server_image.accept()
         print("===IMAGE CLIENT CONNECTED===")
 
+    @staticmethod
+    def get_algo_output(algoOutput):
+        """wait for algo output then only send"""
+        data = ""
+        while not data:
+            with open(algoOutput, 'r') as f:
+                data = str(f.read())
+                time.sleep(0.3)
+        return data
 
 if __name__ == '__main__':
     server = Server()
