@@ -1,0 +1,252 @@
+package utils;
+import algorithms.*;
+import com.google.gson.Gson;
+import map.Arena;
+import map.MapConstants;
+import map.PictureObstacle;
+import robot.Robot;
+import robot.RobotConstants;
+import utils.CommConstants.INSTRUCTION_TYPE;
+import java.awt.*;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+public class PathToCommand {
+
+    static Robot bot = new Robot(RobotConstants.ROBOT_INITIAL_CENTER_COORDINATES, RobotConstants.ROBOT_DIRECTION.NORTH, false);
+    static Arena arena = new Arena(bot);
+    static TripPlannerAlgo algo = new TripPlannerAlgo(arena);
+    static FastestPathAlgo fast = new FastestPathAlgo(arena);
+    static int[] oidArray = new int[8];
+    static int[] actualOrderOfOid = new int[8];
+    /**
+     * main module to start the algo and establish communication with rpi
+     * @param args
+     */
+    public static void main(String[] args) throws IOException, InterruptedException{
+        emptyFile("CommandsForSTM.txt");
+        emptyFile("PathForAndroid.txt");
+        while (true) {
+            try {
+                System.out.println("\nWaiting for obstacle input... ");
+                String st;
+                File file = new File("pathFromRPI.txt");
+                emptyFile("pathFromRPI.txt"); // prevents need for manual reset
+                BufferedReader br
+                        = new BufferedReader(new FileReader(file));
+                while (true) {
+                    st = br.readLine();
+                    if (st != null && st.contains("SPAWN")) {
+                        System.out.println(st);
+                        System.out.println("Generating Path Now");
+                        break;
+                    }
+                    TimeUnit.SECONDS.sleep(1);
+                }
+                emptyFile("CommandsForSTM.txt");
+                emptyFile("PathForAndroid.txt");
+                createMap(st);
+                doThePath();
+                System.out.println("No more possible nodes to visit. Pathing finished");
+                System.out.println("Reseting area and algo... ");
+                resetArenaAndAlgo();
+
+            }
+            catch (Exception e) {
+                e.printStackTrace(System.out);
+                emptyFile("pathFromRPI.txt");
+            }
+        }
+    }
+
+    private static void resetArenaAndAlgo(){
+        bot = new Robot(RobotConstants.ROBOT_INITIAL_CENTER_COORDINATES, RobotConstants.ROBOT_DIRECTION.NORTH, false);
+        arena = new Arena(bot);
+        algo = new TripPlannerAlgo(arena);
+        fast = new FastestPathAlgo(arena);
+        oidArray = new int[8];
+        actualOrderOfOid = new int[8];
+    }
+
+
+    private static void emptyFile(String path) throws IOException {
+        FileWriter writer = new FileWriter(path);
+        BufferedWriter buffer_writer = new BufferedWriter(writer);
+        buffer_writer.write("");
+        buffer_writer.close();
+        System.out.println("Emptying " + path + " ...");
+    }
+
+    private static void doThePath() {
+        int[] path = fast.planFastestPath();
+        algo.constructMap();
+        ArrayList<PictureObstacle> map = Arena.getObstacles();
+        Robot r = arena.getRobot();
+        int startX = r.getX();
+        int startY = r.getY();
+        int startAngle = r.getRobotDirectionAngle();
+        boolean isEndObstacle = false;
+        StringBuilder fullListCommands = new StringBuilder();
+        PictureObstacle next;
+        ArrayList<MoveType> arrayList;
+        Integer count = 0;
+
+        for (int i : path) {
+            next = map.get(i);
+            if (i == path[path.length - 1]){ isEndObstacle = true;}
+            System.out.println("---------------Path " + count + "---------------");
+            System.out.println(next.getX() + ", " + next.getY());
+
+
+            if (next.getVisited()){ // if the obstacle has already been visited (sending a new path during runtime)
+                continue;
+            }
+
+            arrayList = algo.planPath(startX, startY, startAngle, next.getX(), next.getY(), next.getImadeDirectionAngle(), true, true, true, false);
+
+            // sidestep logic
+            if (arrayList == null){
+                int pictureX = getNewXY(next, -1)[0];
+                int pictureY = getNewXY(next, -1)[1];
+                arrayList = algo.planPath(startX, startY, startAngle, pictureX, pictureY, next.getImadeDirectionAngle(), true, true, true, true);
+            }
+            // if moving to the first side is not allowed, we try moving to the second side
+            if (arrayList == null){
+                int pictureX = getNewXY(next, 1)[0];
+                int pictureY = getNewXY(next, 1)[1];
+                arrayList = algo.planPath(startX, startY, startAngle, pictureX, pictureY, next.getImadeDirectionAngle(), true, true, true, true);
+            }
+
+            if (arrayList != null) { // if there is a path
+                actualOrderOfOid[count] = oidArray[i];
+                String commandsToSend = encodeMoves(arrayList, isEndObstacle, count);
+                fullListCommands.append(commandsToSend);
+                int[] coords = algo.getEndPosition();
+                startX = coords[0];
+                startY = coords[1];
+                startAngle = coords[2];
+                count++;
+            } else {
+                System.out.println("No path found, trying to path to the next obstacle");
+            }
+        }
+        int[][] printedPath = algo.printPath2(algo.totalPathToPrint);
+        Gson gson = new Gson();
+        String pathForAndroid = gson.toJson(printedPath);
+        System.out.println("Writing new PathForAndroid and CommandsForSTM");
+        createTxtFile(pathForAndroid, "PathForAndroid.txt");
+        createTxtFile(fullListCommands.toString(), "CommandsForSTM.txt");
+    }
+    public static int[] getNewXY(PictureObstacle n, int direction){
+        if (n.getImadeDirectionAngle() == 0 || n.getImadeDirectionAngle()==2){
+            return new int[]{n.getX(), n.getY() + direction};
+        }
+        else{
+            return new int[]{n.getX() + direction, n.getY()};
+        }
+    }
+    public static void createTxtFile(String infoToWrite, String filename){
+        try (PrintWriter save_commands = new PrintWriter(filename)) {
+            save_commands.println(infoToWrite);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * encode each robot move to string instructions
+     * @param moveList
+     * @return
+     */
+    private static String encodeMoves(ArrayList<MoveType> moveList, boolean isEndObstacle, Integer count) {
+        String commandsToSend = "";
+        INSTRUCTION_TYPE instructionType;
+        String formatted_distance;
+
+        for(int i=0; i<moveList.size(); i++){
+            if (!moveList.get(i).isLine()){
+                moveList.get(i-1);
+            }
+        }
+
+        for (MoveType move : moveList) {
+            int measure = 0;
+            if (move.isLine()) {
+                measure = (int) move.getLength();
+                formatted_distance = String.format("%03d", measure);
+                //String.format("%03d", 1)  // => "001"
+                ////              │││   └── print the number one
+                ////              ││└────── ... as a decimal integer
+                ////              │└─────── ... minimum of 3 characters wide
+                ////              └──────── ... pad with zeroes instead of spaces
+                if (move.isReverse()) {
+                    instructionType = INSTRUCTION_TYPE.BACKWARD;
+                } else {
+                    instructionType = INSTRUCTION_TYPE.FORWARD;
+                }
+                if (formatted_distance.equals("000")){continue;}
+                commandsToSend += INSTRUCTION_TYPE.encode(instructionType) + formatted_distance + " ";
+            } else {
+                ArcMove moveConverted = (ArcMove) move;
+                if (moveConverted.isTurnLeft()) {
+                    instructionType = INSTRUCTION_TYPE.FORWARD_LEFT;
+                } else {
+                    instructionType = INSTRUCTION_TYPE.FORWARD_RIGHT;
+                }
+                commandsToSend += INSTRUCTION_TYPE.encode(instructionType) + " ";
+            }
+        }
+        String nodeName = " | " + actualOrderOfOid[count] + " ";
+        if (isEndObstacle){nodeName = " | " + actualOrderOfOid[count] + " ";}
+        return commandsToSend.substring(0, commandsToSend.length() - 1) + " " + nodeName + " ";
+    }
+
+    private static void createMap(String posns) {
+        String[] positions = posns.split("\\|");
+        boolean spawnRobotTrigger = false;
+        boolean visitedObstacleTrigger = false;
+        int iterCounter = 0;
+        for (int i = 1; i < positions.length; i++) {
+            if (Objects.equals(positions[i], "POS")) {
+                continue;
+            }
+            else if (Objects.equals(positions[i], "VISITED")) {
+                visitedObstacleTrigger = true;
+                continue;
+            }
+
+            else if (Objects.equals(positions[i], "SPAWN")) {
+                spawnRobotTrigger = true;
+                continue;
+            }
+
+            // regular picture obstacle
+            if (!spawnRobotTrigger && !visitedObstacleTrigger) {
+                String[] obs = positions[i].split(",");
+                oidArray[iterCounter] = Integer.parseInt(obs[0]);
+                arena.addPictureObstacle(Integer.parseInt(obs[1]), Integer.parseInt(obs[2]), MapConstants.IMAGE_DIRECTION.getImageDirection(obs[3]), false);
+                iterCounter ++;
+            }
+
+            // obstacle that has been visited
+            else if (!spawnRobotTrigger && visitedObstacleTrigger){
+                String[] obs = positions[i].split(",");
+                arena.addPictureObstacle(Integer.parseInt(obs[1]), Integer.parseInt(obs[2]), MapConstants.IMAGE_DIRECTION.NORTH, true);
+                visitedObstacleTrigger = false;
+            }
+
+            //spawn robot
+            else if (spawnRobotTrigger){
+                String[] spawnObs = positions[i].split(",");
+                Point ROBOT_INITIAL_CENTER_COORDINATES = new Point(Integer.parseInt(spawnObs[0]) + MapConstants.ARENA_BORDER_SIZE,
+                        Integer.parseInt(spawnObs[1]) + MapConstants.ARENA_BORDER_SIZE);
+                RobotConstants.ROBOT_INITIAL_CENTER_COORDINATES = ROBOT_INITIAL_CENTER_COORDINATES;
+                RobotConstants.ROBOT_DIRECTION robotDir = RobotConstants.getRobotDir(spawnObs[2]);
+                Robot bot = new Robot(ROBOT_INITIAL_CENTER_COORDINATES, robotDir, true);
+                arena.setBot(bot);
+            }
+        }
+    }
+}

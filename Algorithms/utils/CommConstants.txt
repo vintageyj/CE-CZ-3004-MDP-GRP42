@@ -1,0 +1,63 @@
+package utils;
+
+/**
+ * xxxy
+ * <p>
+ * x is the distance (in cm) or angle (in degrees),whether it’s distance or angle is depending on the direction
+ * <p>
+ * And y is the direction of motion
+ * <p>
+ * Values of y with their corresponding motions are:
+ * 0, forwards
+ * 1, backwards
+ * 2, forward left
+ * 3, forward right
+ * 4, backwards left
+ * 5, backwards right
+ * 6, some special algo to position the robot to the next face of the obstacle // i think this was handled
+ * // by their stm?
+ * 7, stop movement for time specified by rpi // i suspect might be handled by their rpi?
+ * 8, reset front wheels (note that effectiveness of resetting wheels might depend on the ground type that the robot
+ * is on, I haven’t had the chance to test it out extensively yet though) // suspect that this might be handled by
+ * // their stm
+ * <p>
+ * Eg. 1000 is equal to 100 cm forwards
+ * 1002 is equal to 100 degrees forward left
+ * And special case 1007 is stop movement for 1 second (to get 1 second take the 100 before the direction number and
+ * multiply by 10 to get 1000ms, yes it’s calculated in milliseconds so that is equal to 1 second)
+ */
+
+public class CommConstants {
+    public static final String HOST_ADDRESS = "10.27.248.240";
+    public static final int PORT = 54321;
+
+    public enum INSTRUCTION_TYPE {
+        FORWARD, BACKWARD, FORWARD_LEFT, FORWARD_RIGHT, BACKWARD_LEFT, BACKWARD_RIGHT, SPECIAL, STOP_AFTER, RESET_WHEELS;
+
+        public static String encode(CommConstants.INSTRUCTION_TYPE i) {
+            switch (i) {
+                case FORWARD:
+                    return "f";
+                case BACKWARD:
+                    return "b";
+                case FORWARD_LEFT:
+                    return "q";
+                case FORWARD_RIGHT:
+                    return "e";
+                case BACKWARD_LEFT:
+                    return "z";
+                case BACKWARD_RIGHT:
+                    return "c";
+                case SPECIAL: // disregard
+                    return "special";
+                case STOP_AFTER: // disregard
+                    return "stop_after";
+                case RESET_WHEELS: // disregard
+                    return "reset_wheels";
+                default:
+                    return "-1";
+            }
+        }
+    }
+
+}
