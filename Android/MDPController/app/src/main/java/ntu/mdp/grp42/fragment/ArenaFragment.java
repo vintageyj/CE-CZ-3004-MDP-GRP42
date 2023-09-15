@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.DragEvent;
@@ -55,8 +56,9 @@ import ntu.mdp.grp42.arena.ArenaCell;
 import ntu.mdp.grp42.arena.ArenaDragShadowBuilder;
 import ntu.mdp.grp42.arena.Obstacle;
 import ntu.mdp.grp42.bluetooth.BluetoothService;
+import ntu.mdp.grp42.bluetooth.RaspberryPiProtocol;
 
-public class ArenaFragment extends Fragment implements View.OnClickListener {
+public class ArenaFragment extends Fragment implements RaspberryPiProtocol, View.OnClickListener {
 
     private boolean TAB_A7 = true;
     private String ARENA_FRAGMENT_TAG = "ARENA FRAGMENT";
@@ -88,6 +90,9 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
 
     final String[] directions = {"Up", "Right", "Down", "Left"};
     public final String[] facings = {"N", "E", "S", "W"};
+
+    final String[] environments = {"Indoor", "Outdoor"};
+    final String[] selectedEnvironment = {"Indoor"};
 
     private TableLayout arenaTable;
     private ImageView robotIV, spawnBox;
@@ -227,10 +232,38 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.robotIV:
-                rotateRobotRight();
-                taskActivity.sendCommand(ROTATE_ROBOT + " " + robotIV.getRotation());
+//                rotateRobotRight();
+//                taskActivity.sendCommand(ROTATE_ROBOT + " " + robotIV.getRotation());
+                setTaskEnvironment();
                 break;
         }
+    }
+
+    private void setTaskEnvironment() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new AlertDialog.Builder(this.requireContext());
+        builder.setTitle("Choose Task Environment");
+        builder.setSingleChoiceItems(
+                environments,
+                Arrays.asList(environments).indexOf(selectedEnvironment[0]),
+                (dialogInterface, i) -> selectedEnvironment[0] = environments[i]);
+
+        // confirm to add obstacle
+        builder.setPositiveButton("Confirm", (dialogInterface, i) -> {
+            int environment = Arrays.asList(environments).indexOf(selectedEnvironment[0]);
+            switch (environment) {
+                case 0:
+                    taskActivity.writeMessage(INDOOR);
+                    break;
+                case 1:
+                    taskActivity.writeMessage(OUTDOOR);
+                    break;
+            }
+            dialogInterface.dismiss();
+        });
+
+        // exit process
+        builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
+        builder.show();
     }
 
     public void rotateRobotRight() {
@@ -242,9 +275,27 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
             setRobotWarning();
     }
 
+    public void rotateRobotHalfRight() {
+        if (robotIV != null && robotIV.getVisibility() == View.VISIBLE) {
+            robotIV.setRotation((robotIV.getRotation() + 45) % 360);
+            leftStatusFragment.setRobotDirection((int) robotIV.getRotation() / 90);
+        }
+        else
+            setRobotWarning();
+    }
+
     public void rotateRobotLeft() {
         if (robotIV != null && robotIV.getVisibility() == View.VISIBLE) {
             robotIV.setRotation((robotIV.getRotation() + 270) % 360);
+            leftStatusFragment.setRobotDirection((int) robotIV.getRotation() / 90);
+        }
+        else
+            setRobotWarning();
+    }
+
+    public void rotateRobotHalfLeft() {
+        if (robotIV != null && robotIV.getVisibility() == View.VISIBLE) {
+            robotIV.setRotation((robotIV.getRotation() + 315) % 360);
             leftStatusFragment.setRobotDirection((int) robotIV.getRotation() / 90);
         }
         else
@@ -367,6 +418,13 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
                 if (showTakenPath)
                     showTakenCells();
                 taskActivity.sendCommand(SPAWN_ROBOT, arenaCell);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        taskActivity.sendCommand(OBSTACLE_COUNT + " " + obstacleCells.size());
+                    }
+                }, 500);
             }
             else {
                 int totalObstacle = ArenaFragment.arenaCoord.length * ArenaFragment.arenaCoord[0].length;
@@ -779,10 +837,30 @@ public class ArenaFragment extends Fragment implements View.OnClickListener {
     }
 
     public void setCustomArena() {
-        addObstacle(1, 108, 3);
-        addObstacle(2, 206, 2);
-        addObstacle(3, 213, 1);
-        addObstacle(4, 316, 3);
-        addObstacle(5, 96, 2);
+        addObstacle(1, toCellID(7,5), 3);
+        addObstacle(2, toCellID(5, 10), 2);
+        addObstacle(3, toCellID(12, 10), 1);
+        addObstacle(4, toCellID(15, 15), 3);
+        addObstacle(5, toCellID(15, 4), 2);
+
+//        // L1 Second Lift Lobby Toilet Arena
+//        addObstacle(1, 42, 2);
+//        addObstacle(2, 167, 0);
+//        addObstacle(3, 271, 1);
+//        addObstacle(4, 96, 3);
+//        addObstacle(5, 240, 3);
+//        addObstacle(6, 394, 1);
+
+        // L1 Second Lift Lobby Toilet Arena
+//        addObstacle(1, toCellID(1,1), 2);
+//        addObstacle(2, toCellID(6, 7), 0);
+//        addObstacle(3, toCellID(10, 12), 1);
+//        addObstacle(4, toCellID(15, 3), 3);
+//        addObstacle(5, toCellID(19, 10), 3);
+//        addObstacle(6, toCellID(15, 17), 1);
+    }
+
+    private int toCellID(int x, int y) {
+        return y * 20 + x + 1;
     }
 }

@@ -19,6 +19,9 @@ public interface RaspberryPiProtocol {
     String START_TASK2 = "start_task_2";
     String STOP_TASK = "stop_task";
     String TAKE_PHOTO = "take_image";
+    String INDOOR = "indoor";
+    String OUTDOOR = "outdoor";
+    String OBSTACLE_COUNT = "count";
 
     // Update Status Window
     String ALGO_INSTRUCTION = "algo";

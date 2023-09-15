@@ -85,4 +85,8 @@ public class VideoFragment extends Fragment implements RaspberryPiProtocol, View
 //        mediaPlayer.setMedia(media);
 //        media.release();
     }
+
+    public Button getPlayPauseBtn() {
+        return playPauseBtn;
+    }
 }

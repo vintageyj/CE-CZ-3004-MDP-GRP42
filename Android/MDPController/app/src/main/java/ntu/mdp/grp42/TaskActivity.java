@@ -14,6 +14,8 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.os.Looper;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -59,6 +62,7 @@ import ntu.mdp.grp42.bluetooth.RaspberryPiProtocol;
 import ntu.mdp.grp42.fragment.ArenaFragment;
 import ntu.mdp.grp42.fragment.BlankFragment;
 import ntu.mdp.grp42.fragment.LeftFragment;
+import ntu.mdp.grp42.fragment.ResultsFragment;
 import ntu.mdp.grp42.fragment.RightControlFragment;
 import ntu.mdp.grp42.fragment.StartTaskFragment;
 import ntu.mdp.grp42.fragment.TimerFragment;
@@ -91,6 +95,8 @@ public class TaskActivity extends AppCompatActivity
     ArrayList<String> connectionStatusColor = new ArrayList<>(Arrays.asList("#FF0000", "", "#FEC20C", "#00FF00"));
     private AlertDialog alertDialog;
     private Handler handler;
+    public static int imageToUpdate = -1;
+    public static Bitmap[] imageResults = new Bitmap[8];
 
     private boolean rpi_connected = false;
     private boolean stm_connected = false;
@@ -119,6 +125,12 @@ public class TaskActivity extends AppCompatActivity
     private Button btnTask1, btnTask2, btnReset, btnStop;
     private Button photoBtn;
     private boolean timer_ready;
+
+    public void showFinalResults() {
+        Intent intent = new Intent(TaskActivity.this, ResultsActivity.class);
+        intent.putExtra(FINAL_RESULTS, imageResults);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,6 +241,8 @@ public class TaskActivity extends AppCompatActivity
         arenaFragment = (ArenaFragment) viewPagerAdapter3.getItem(0);
         rightControlFragment.setArenaFragment(arenaFragment);
         rightControlFragment.setVideoFragment(videoFragment);
+
+        leftStatusFragment.setTaskActivity(this);
     }
 
     private void initTabs() {
@@ -250,20 +264,33 @@ public class TaskActivity extends AppCompatActivity
         tabLayout2 = findViewById(R.id.tab_layout2);
         tabLayout2.setupWithViewPager(viewPager2,true);
 
+        VideoFragment bigVideo = new VideoFragment();
+        VideoFragment smallVideo = new VideoFragment();
         viewPager3 = findViewById(R.id.viewpager3);
         viewPagerAdapter3 = new ViewPagerAdapter(fragmentManager);
         viewPagerAdapter3.add(new ArenaFragment(), "Arena");
-        viewPagerAdapter3.add(new VideoFragment(), "Video");
+        viewPagerAdapter3.add(bigVideo, "Video");
         viewPager3.setAdapter(viewPagerAdapter3);
+        viewPager3.setOnTouchListener((view, motionEvent) -> {
+            viewPager_video.onTouchEvent(motionEvent);
+            return false;
+        });
 
         tabLayout3 = findViewById(R.id.tab_layout3);
         tabLayout3.setupWithViewPager(viewPager3, true);
 
         viewPager_video = findViewById(R.id.viewpager_video);
         viewPagerAdapter4 = new ViewPagerAdapter(fragmentManager);
-        viewPagerAdapter4.add(new VideoFragment(), "Video");
+        viewPagerAdapter4.add(smallVideo, "Video");
         viewPagerAdapter4.add(new BlankFragment(), "Blank");
         viewPager_video.setAdapter(viewPagerAdapter4);
+        viewPager_video.setOnTouchListener((view, motionEvent) -> {
+            viewPager3.onTouchEvent(motionEvent);
+            return false;
+        });
+//
+//        smallVideo.getPlayPauseBtn().setOnClickListener(view -> bigVideo.getPlayPauseBtn().performClick());
+//        bigVideo.getPlayPauseBtn().setOnClickListener(view -> smallVideo.getPlayPauseBtn().performClick());
 
         tabLayout_video = findViewById(R.id.tab_layout_video);
         tabLayout_video.setupWithViewPager(viewPager_video, true);
@@ -565,6 +592,16 @@ public class TaskActivity extends AppCompatActivity
                 e.printStackTrace();
             }
         }
+//        else if (message.what == 3) {
+//            BitmapFactory.Options options = new BitmapFactory.Options();
+//            options.inSampleSize = 2;
+//            Bitmap image = BitmapFactory.decodeByteArray(((byte[]) message.obj), 0, ((byte[]) message.obj).length, options);
+//
+//            if (imageToUpdate != -1) {
+//                imageResults[imageToUpdate-1] = image;
+//                imageToUpdate = -1;
+//            }
+//        }
         return false;
     });
 
@@ -656,23 +693,35 @@ public class TaskActivity extends AppCompatActivity
                 break;
 
             case "q":
+                delay = 3000 / 10;
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), 0);
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 1);
                 handler.postDelayed(() -> arenaFragment.rotateRobotLeft(), delay * 2);
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 3);
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 4);
-                handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 5);
-                totalDelay += delay * 5;
+                handler.postDelayed(() -> arenaFragment.rotateRobotHalfRight(), delay * 5);
+                handler.postDelayed(() -> arenaFragment.rotateRobotHalfRight(), delay * 6);
+                handler.postDelayed(() -> arenaFragment.reverseRobot(), delay * 7);
+                handler.postDelayed(() -> arenaFragment.rotateRobotLeft(), delay * 8);
+                handler.postDelayed(() -> arenaFragment.reverseRobot(), delay * 9);
+                handler.postDelayed(() -> arenaFragment.reverseRobot(), delay * 10);
+                totalDelay += delay * 10;
                 break;
 
             case "e":
+                delay = 3000 / 10;
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), 0);
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 1);
                 handler.postDelayed(() -> arenaFragment.rotateRobotRight(), delay * 2);
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 3);
                 handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 4);
-                handler.postDelayed(() -> arenaFragment.forwardRobot(), delay * 5);
-                totalDelay += delay * 5;
+                handler.postDelayed(() -> arenaFragment.rotateRobotHalfLeft(), delay * 5);
+                handler.postDelayed(() -> arenaFragment.rotateRobotHalfLeft(), delay * 6);
+                handler.postDelayed(() -> arenaFragment.reverseRobot(), delay * 7);
+                handler.postDelayed(() -> arenaFragment.rotateRobotRight(), delay * 8);
+                handler.postDelayed(() -> arenaFragment.reverseRobot(), delay * 9);
+                handler.postDelayed(() -> arenaFragment.reverseRobot(), delay * 10);
+                totalDelay += delay * 10;
                 break;
 
             case "z":
@@ -738,6 +787,9 @@ public class TaskActivity extends AppCompatActivity
                 break;
             case RIGHT_TURN:
                 writeMessage(STM + " " + RIGHT_TURN);
+                break;
+            case OBSTACLE_COUNT:
+                writeMessage(message);
                 break;
         }
     }

@@ -2,6 +2,7 @@ package ntu.mdp.grp42.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import java.util.Comparator;
 import java.util.Date;
 
 import ntu.mdp.grp42.R;
+import ntu.mdp.grp42.TaskActivity;
 import ntu.mdp.grp42.arena.ArenaCell;
 import ntu.mdp.grp42.bluetooth.Constants;
 
@@ -44,6 +46,8 @@ public class LeftFragment extends Fragment implements Constants {
     private ArrayAdapter<String> arrayAdapter;
     private ArrayList<String> messages = new ArrayList<>();
     private ListView listView;
+
+    private TaskActivity taskActivity;
 
     public LeftFragment() {
         // Required empty public constructor
@@ -73,6 +77,7 @@ public class LeftFragment extends Fragment implements Constants {
         debugWindow = view.findViewById(R.id.debugWindow);
         resultTable = view.findViewById(R.id.resultTable);
         debugWindow.setOnClickListener(this::displayLog);
+//        resultTable.setOnClickListener(this::showFinalResults);
 
         resultTable.getViewTreeObserver().addOnPreDrawListener( () -> {
             if (!resultTableDrawn) {
@@ -83,17 +88,13 @@ public class LeftFragment extends Fragment implements Constants {
         });
     }
 
+    private void showFinalResults(View view) {
+        taskActivity.showFinalResults();
+    }
+
     private void displayLog(View view) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//        builder.setTitle("Received Messages");
-//        builder.setNeutralButton("Done", (dialogInterface, i) -> {
-//            dialogInterface.dismiss();
-//        });
-//        builder.show();
-
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Received Messages");
+        builder.setTitle("Message Logs");
 
         listView = new ListView(getContext());
         arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, android.R.id.text1, messages);
@@ -273,6 +274,10 @@ public class LeftFragment extends Fragment implements Constants {
         setRpiColor(2);
         setPcColor(2);
         setStmColor(2);
+    }
+
+    public void setTaskActivity(TaskActivity taskActivity){
+        this.taskActivity = taskActivity;
     }
 }
 

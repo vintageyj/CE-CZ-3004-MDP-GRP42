@@ -30,7 +30,7 @@ public class DeviceAdapter extends ArrayAdapter<BluetoothDevice> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         BluetoothDevice device = getItem(position);
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
             String deviceName = "Device Name: " + device.getName();
             String deviceAddress = "Device Address: " + device.getAddress(); // MAC Address
 

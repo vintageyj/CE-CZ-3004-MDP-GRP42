@@ -26,4 +26,7 @@ public interface Constants {
 
     // Bluetooth Reconnection Window
     int RECONNECTION_LIMIT = 30; // In seconds
+
+    // Final Results
+    String FINAL_RESULTS = "stitch";
 }

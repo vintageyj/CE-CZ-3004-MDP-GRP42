@@ -3,6 +3,7 @@ package ntu.mdp.grp42.bluetooth;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.IntentCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -59,7 +60,6 @@ public class BluetoothActivity extends AppCompatActivity
 //    private static TextView messageList;
 
 
-
     Set<BluetoothDevice> pairedDevices, scannedDevices;
     ArrayAdapter pairAdapter, scanAdapter;
     ArrayList<BluetoothDevice> pairedList = new ArrayList<>();
@@ -111,7 +111,7 @@ public class BluetoothActivity extends AppCompatActivity
         if (!bluetoothAdapter.isEnabled()) {
             onButton.setText("On Bluetooth");
         } else {
-            onButton.setText("Off Bluetooth"); 
+            onButton.setText("Off Bluetooth");
         }
 
         onButton.setOnClickListener(this);
@@ -162,7 +162,7 @@ public class BluetoothActivity extends AppCompatActivity
         super.onDestroy();
         try {
             unregisterReceiver(broadcastReceiver);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
     }
@@ -178,13 +178,24 @@ public class BluetoothActivity extends AppCompatActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.onButton:
+//                Toast.makeText(BluetoothActivity.this, "Outside",
+//                        Toast.LENGTH_SHORT).show();
                 if (!bluetoothAdapter.isEnabled()) {
-                    Intent bluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    if (ActivityCompat.checkSelfPermission(BluetoothActivity.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                        startActivityForResult(bluetoothIntent, BLUETOOTH_REQUEST_CODE);
-                    } else {
-                        bluetoothAdapter.disable();
-                        onButton.setText("On Bluetooth");
+                    Toast.makeText(BluetoothActivity.this, "Turning on Bluetooth!", Toast.LENGTH_SHORT).show();
+//                    Intent bluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//                    if (ActivityCompat.checkSelfPermission(BluetoothActivity.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+//                        startActivityForResult(bluetoothIntent, BLUETOOTH_REQUEST_CODE);
+//                    } else if (ActivityCompat.checkSelfPermission(BluetoothActivity.this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+//                        startActivityForResult(bluetoothIntent, BLUETOOTH_REQUEST_CODE);
+//                    }
+//                    else {
+//                        bluetoothAdapter.disable();
+//                        onButton.setText("On Bluetooth");
+//                    }
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
+                        bluetoothAdapter.enable();
+                        onButton.setText("Off Bluetooth");
+                        return;
                     }
                 } else {
                     Toast.makeText(BluetoothActivity.this, "Turning off Bluetooth!", Toast.LENGTH_SHORT).show();
@@ -203,7 +214,7 @@ public class BluetoothActivity extends AppCompatActivity
                 break;
             case R.id.scanButton:
                 if (bluetoothAdapter.isEnabled()) {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
                         // Query paired devices
                         pairedDevices = bluetoothAdapter.getBondedDevices();
                         pairedList.clear();

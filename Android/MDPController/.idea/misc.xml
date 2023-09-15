@@ -100,14 +100,16 @@
         <entry key="app/src/main/res/drawable/id_40.xml" value="0.18" />
         <entry key="app/src/main/res/drawable/id_41.xml" value="0.116" />
         <entry key="app/src/main/res/layout-land/activity_task.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_bluetooth.xml" value="0.15520833333333334" />
+        <entry key="app/src/main/res/layout/activity_bluetooth.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.15070921985815602" />
+        <entry key="app/src/main/res/layout/activity_results.xml" value="0.23641304347826086" />
         <entry key="app/src/main/res/layout/activity_task.xml" value="0.15070921985815602" />
-        <entry key="app/src/main/res/layout/device_adapter_view_layout.xml" value="0.15070921985815602" />
+        <entry key="app/src/main/res/layout/device_adapter_view_layout.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_arena.xml" value="0.15520833333333334" />
         <entry key="app/src/main/res/layout/fragment_control1.xml" value="0.15070921985815602" />
         <entry key="app/src/main/res/layout/fragment_control2.xml" value="0.15070921985815602" />
         <entry key="app/src/main/res/layout/fragment_left.xml" value="0.15070921985815602" />
+        <entry key="app/src/main/res/layout/fragment_results.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_right_control.xml" value="0.10520833333333333" />
         <entry key="app/src/main/res/layout/fragment_start_task.xml" value="0.15070921985815602" />
         <entry key="app/src/main/res/layout/fragment_timer.xml" value="0.15070921985815602" />
